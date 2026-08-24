@@ -1,0 +1,210 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Fri, 03 Jul 2026 04:18:56 +0000
+Subject: [PATCH] Gecko - Disable telemetry
+
+Disables telemetry at build-time and removes various data reporting mechanisms.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/moz.configure b/mobile/android/moz.configure
+index 077c7ca2f14b..e6fa430c772d 100644
+--- a/mobile/android/moz.configure
++++ b/mobile/android/moz.configure
+@@ -129,7 +129,7 @@ set_config("MOZ_ANDROID_DEBUGGABLE", android_debuggable)
+ 
+ 
+ imply_option("MOZ_NORMANDY", False)
+-imply_option("MOZ_SERVICES_HEALTHREPORT", True)
++imply_option("MOZ_SERVICES_HEALTHREPORT", False)
+ imply_option("MOZ_GECKOVIEW_HISTORY", True)
+ 
+ imply_option("MOZ_APP_UA_NAME", "Firefox")
+diff --git a/python/sites/mach.txt b/python/sites/mach.txt
+index d5cdce88869a..f4f38c1f9b78 100644
+--- a/python/sites/mach.txt
++++ b/python/sites/mach.txt
+@@ -58,7 +58,7 @@ pth:xpcom/geckoprocesstypes_generator
+ pth:xpcom/idl-parser
+ # glean-sdk may not be installable if a wheel isn't available
+ # and it has to be built from source.
+-pypi-optional:glean-sdk==68.0.1:telemetry will not be collected
++# pypi-optional:glean-sdk==68.0.1:telemetry will not be collected
+ pypi-optional:orjson>=3.10:json operations will be slower in various tools
+ # Mach gracefully handles the case where `psutil` is unavailable.
+ # We aren't (yet) able to pin packages in automation, so we have to
+diff --git a/third_party/rust/glean-core/src/lib.rs b/third_party/rust/glean-core/src/lib.rs
+index c401c3dafef9..a8fa6e0a3fb7 100644
+--- a/third_party/rust/glean-core/src/lib.rs
++++ b/third_party/rust/glean-core/src/lib.rs
+@@ -916,6 +916,7 @@ pub extern "C" fn glean_enable_logging() {
+ /// **DEPRECATION NOTICE**:
+ /// This API is deprecated. Use `set_collection_enabled` instead.
+ pub fn glean_set_upload_enabled(enabled: bool) {
++    let enabled = false;
+     if !was_initialize_called() {
+         return;
+     }
+@@ -951,6 +952,7 @@ pub fn glean_set_upload_enabled(enabled: bool) {
+ ///
+ /// This replaces `set_upload_enabled`.
+ pub fn glean_set_collection_enabled(enabled: bool) {
++    let enabled = false;
+     glean_set_upload_enabled(enabled)
+ }
+ 
+diff --git a/third_party/rust/glean-core/src/core/mod.rs b/third_party/rust/glean-core/src/core/mod.rs
+index 013064660410..02416ed0461e 100644
+--- a/third_party/rust/glean-core/src/core/mod.rs
++++ b/third_party/rust/glean-core/src/core/mod.rs
+@@ -813,7 +813,8 @@ impl Glean {
+     ///
+     /// When upload is disabled, no data will be recorded.
+     pub fn is_upload_enabled(&self) -> bool {
+-        self.upload_enabled
++         _ = self.upload_enabled;
++        false
+     }
+ 
+     /// Check if a ping is enabled.
+diff --git a/toolkit/components/glean/moz.build b/toolkit/components/glean/moz.build
+index 22dfab5a45f4..21ee5138beb4 100644
+--- a/toolkit/components/glean/moz.build
++++ b/toolkit/components/glean/moz.build
+@@ -256,7 +256,7 @@ if CONFIG["MOZ_GLEAN_INTERESTING_METRICS_FILES"]:
+ 
+ 
+ DIRS += [
+-    "tests",  # Must be in DIRS, not TEST_DIRS or python-test won't find it.
++#    "tests",  # Must be in DIRS, not TEST_DIRS or python-test won't find it.
+     "xpcom",
+ ]
+ 
+diff --git a/toolkit/components/glean/src/init/mod.rs b/toolkit/components/glean/src/init/mod.rs
+index 7a1fcc784204..edfe15b22e08 100644
+--- a/toolkit/components/glean/src/init/mod.rs
++++ b/toolkit/components/glean/src/init/mod.rs
+@@ -71,7 +71,7 @@ pub extern "C" fn fog_init(
+     disable_internal_pings: bool,
+ ) -> nsresult {
+     // On Android always enable Glean upload.
+-    let upload_enabled = true;
++    let upload_enabled = false;
+     // Don't set up an uploader.
+     let uploader = None;
+ 
+@@ -102,7 +102,7 @@ fn fog_init_internal(
+ 
+     conf.upload_enabled = upload_enabled;
+     conf.uploader = uploader;
+-    conf.enable_internal_pings = enable_internal_pings;
++    conf.enable_internal_pings = false;
+ 
+     // If we're operating in automation without any specific source tags to set,
+     // set the tag "automation" so any pings that escape don't clutter the tables.
+@@ -117,7 +117,7 @@ fn fog_init_internal(
+     log::debug!("Configuration: {:#?}", conf);
+ 
+     // Register all custom pings before we initialize.
+-    pings::register_pings(Some(&conf.application_id));
++//    pings::register_pings(Some(&conf.application_id));
+ 
+     glean::initialize(conf, client_info);
+ 
+diff --git a/toolkit/components/glean/src/init/viaduct_uploader.rs b/toolkit/components/glean/src/init/viaduct_uploader.rs
+index e07ff326e03b..5ed0d0ac9f50 100644
+--- a/toolkit/components/glean/src/init/viaduct_uploader.rs
++++ b/toolkit/components/glean/src/init/viaduct_uploader.rs
+@@ -43,7 +43,7 @@ impl PingUploader for ViaductUploader {
+             .headers
+             .iter()
+             .any(|(name, _)| name == "X-Debug-ID");
+-        let localhost_port = static_prefs::pref!("telemetry.fog.test.localhost_port");
++        let localhost_port = -1;
+         if localhost_port < 0
+             || (localhost_port == 0 && !debug_tagged && cfg!(feature = "disable_upload"))
+         {
+diff --git a/toolkit/components/glean/xpcom/FOG.cpp b/toolkit/components/glean/xpcom/FOG.cpp
+index 562321d03435..3994681d13b2 100644
+--- a/toolkit/components/glean/xpcom/FOG.cpp
++++ b/toolkit/components/glean/xpcom/FOG.cpp
+@@ -35,7 +35,7 @@ static mozilla::LazyLogModule sLog("fog");
+ 
+ using glean::LogToBrowserConsole;
+ 
+-#ifdef MOZ_GLEAN_ANDROID
++#if false
+ // Defined by `glean-core`. We reexport it here for later use.
+ extern "C" NS_EXPORT void glean_enable_logging(void);
+ 
+@@ -211,7 +211,7 @@ extern "C" const char* FOG_MozAppVersionDisplay(void) {
+ NS_IMETHODIMP
+ FOG::RegisterCustomPings() {
+   MOZ_ASSERT(XRE_IsParentProcess());
+-  glean::impl::fog_register_pings();
++//  glean::impl::fog_register_pings();
+   return NS_OK;
+ }
+ 
+diff --git a/toolkit/components/telemetry/moz.build b/toolkit/components/telemetry/moz.build
+index 91ae53839b69..0748f005d543 100644
+--- a/toolkit/components/telemetry/moz.build
++++ b/toolkit/components/telemetry/moz.build
+@@ -6,9 +6,9 @@ include("/ipc/chromium/chromium-config.mozbuild")
+ 
+ FINAL_LIBRARY = "xul"
+ 
+-DIRS = [
+-    "pingsender",
+-]
++# DIRS = [
++#    "pingsender",
++# ]
+ 
+ DEFINES["MOZ_APP_VERSION"] = '"%s"' % CONFIG["MOZ_APP_VERSION"]
+ 
+diff --git a/toolkit/components/telemetry/core/Telemetry.cpp b/toolkit/components/telemetry/core/Telemetry.cpp
+index 1e83d34cd007..474bc5c50bf3 100644
+--- a/toolkit/components/telemetry/core/Telemetry.cpp
++++ b/toolkit/components/telemetry/core/Telemetry.cpp
+@@ -693,7 +693,7 @@ TelemetryImpl::GetCanRecordBase(bool* ret) {
+ 
+ NS_IMETHODIMP
+ TelemetryImpl::SetCanRecordBase(bool canRecord) {
+-#ifndef FUZZING
++#if false
+   if (canRecord != mCanRecordBase) {
+     TelemetryHistogram::SetCanRecordBase(canRecord);
+     TelemetryScalar::SetCanRecordBase(canRecord);
+@@ -719,7 +719,7 @@ TelemetryImpl::GetCanRecordExtended(bool* ret) {
+ 
+ NS_IMETHODIMP
+ TelemetryImpl::SetCanRecordExtended(bool canRecord) {
+-#ifndef FUZZING
++#if false
+   if (canRecord != mCanRecordExtended) {
+     TelemetryHistogram::SetCanRecordExtended(canRecord);
+     TelemetryScalar::SetCanRecordExtended(canRecord);
+@@ -762,7 +762,7 @@ already_AddRefed<nsITelemetry> TelemetryImpl::CreateTelemetryInstance() {
+   }
+ 
+   bool useTelemetry = false;
+-#ifndef FUZZING
++#if false
+   if (XRE_IsParentProcess() || XRE_IsContentProcess() || XRE_IsGPUProcess() ||
+       XRE_IsRDDProcess() || XRE_IsSocketProcess() || XRE_IsUtilityProcess()) {
+     useTelemetry = true;
+diff --git a/toolkit/library/rust/gkrust-features.mozbuild b/toolkit/library/rust/gkrust-features.mozbuild
+index a3f1cc357366..2d814cbcbc40 100644
+--- a/toolkit/library/rust/gkrust-features.mozbuild
++++ b/toolkit/library/rust/gkrust-features.mozbuild
+@@ -57,7 +57,7 @@ if CONFIG["MOZ_WEBRTC"]:
+ # We need to tell Glean it is being built with Gecko.
+ gkrust_features += ["glean_with_gecko"]
+ 
+-if not CONFIG["MOZILLA_OFFICIAL"]:
++if not CONFIG["DER_NOOP"]:
+     gkrust_features += ["glean_disable_upload"]
+ 
+ if CONFIG["MOZ_ENABLE_DBUS"]:
+-- 

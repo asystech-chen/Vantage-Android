@@ -1,0 +1,43 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sat, 27 Jun 2026 20:11:41 +0000
+Subject: [PATCH] Fenix - Sanitize data on exit
+
+Ensures the UI reflects our values to sanitize data on exit by default.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/res/xml/delete_browsing_data_quit_preferences.xml b/mobile/android/fenix/app/src/main/res/xml/delete_browsing_data_quit_preferences.xml
+index e0967307ccbc..561f423c1cc8 100644
+--- a/mobile/android/fenix/app/src/main/res/xml/delete_browsing_data_quit_preferences.xml
++++ b/mobile/android/fenix/app/src/main/res/xml/delete_browsing_data_quit_preferences.xml
+@@ -16,10 +16,12 @@
+         app:iconSpaceReserved="false"
+         android:layout="@layout/preference_category_empty">
+         <CheckBoxPreference
++            android:defaultValue="true"
+             android:key="@string/pref_key_delete_open_tabs_on_quit"
+             android:layout="@layout/checkbox_left_preference"
+             android:title="@string/preferences_delete_browsing_data_tabs_title_2" />
+         <CheckBoxPreference
++            android:defaultValue="true"
+             android:key="@string/pref_key_delete_browsing_history_on_quit"
+             android:layout="@layout/checkbox_left_preference"
+             android:title="@string/preferences_delete_browsing_data_browsing_history_title" />
+@@ -29,6 +31,7 @@
+             android:summary="@string/preferences_delete_browsing_data_cookies_subtitle"
+             android:title="@string/preferences_delete_browsing_data_cookies_and_site_data" />
+         <CheckBoxPreference
++            android:defaultValue="true"
+             android:key="@string/pref_key_delete_caches_on_quit"
+             android:layout="@layout/checkbox_left_preference"
+             android:summary="@string/preferences_delete_browsing_data_cached_files_subtitle"
+@@ -39,6 +42,7 @@
+         android:title="@string/preferences_delete_browsing_data_site_permissions" />
+ 
+         <CheckBoxPreference
++            android:defaultValue="true"
+             android:key="@string/pref_key_delete_downloads_on_quit"
+             android:layout="@layout/checkbox_left_preference"
+             android:title="@string/preferences_delete_browsing_data_downloads" />
+-- 

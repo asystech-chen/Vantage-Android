@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Gecko - IronFox branding
+
+Modifies branding elements to IronFox.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/toolkit/content/aboutSupport.js b/toolkit/content/aboutSupport.js
+index 58de33cd7d60c..5235710277c55 100644
+--- a/toolkit/content/aboutSupport.js
++++ b/toolkit/content/aboutSupport.js
+@@ -13,6 +13,9 @@ const { ResetProfile } = ChromeUtils.importESModule(
+ const { AppConstants } = ChromeUtils.importESModule(
+   "resource://gre/modules/AppConstants.sys.mjs"
+ );
++const { IFConstants } = ChromeUtils.importESModule(
++  "resource://gre/modules/IFConstants.sys.mjs"
++);
+ 
+ ChromeUtils.defineESModuleGetters(this, {
+   DownloadUtils: "resource://gre/modules/DownloadUtils.sys.mjs",
+@@ -111,7 +114,7 @@ var snapshotFormatters = {
+       "XREExeF",
+       Ci.nsIFile
+     ).path;
+-    $("supportLink").href = data.supportURL;
++    $("supportLink").href = IFConstants.IRONFOX_FAQ_URL;
+     let version = AppConstants.MOZ_APP_VERSION_DISPLAY;
+     if (data.vendor) {
+       version += " (" + data.vendor + ")";
+-- 

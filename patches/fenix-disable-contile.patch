@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sat, 27 Jun 2026 20:11:41 +0000
+Subject: [PATCH] Fenix - Disable Contile
+
+Disables integration with Mozilla's Contile service (sponsored tiles): https://mozilla-services.github.io/contile/.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/HomeSettingsFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/HomeSettingsFragment.kt
+index 579db37cf75a..e2869c0a37e3 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/HomeSettingsFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/HomeSettingsFragment.kt
+@@ -78,6 +78,7 @@ class HomeSettingsFragment : PreferenceFragmentCompat() {
+         }
+ 
+         requirePreference<CheckBoxPreference>(R.string.pref_key_enable_contile).apply {
++            isVisible = false
+             isChecked = fenixSettings.showContileFeature
+             onPreferenceChangeListener = createMetricPreferenceChangeListener("contile")
+         }
+-- 

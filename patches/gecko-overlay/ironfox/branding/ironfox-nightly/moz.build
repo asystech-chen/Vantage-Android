@@ -1,0 +1,4 @@
+DIRS += [
+  "content",
+  "locales",
+]

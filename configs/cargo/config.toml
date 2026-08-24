@@ -1,0 +1,17 @@
+# https://doc.rust-lang.org/cargo/reference/config.html
+
+[http]
+check-revoke = true
+debug = false
+
+[profile.dev]
+debug = false
+lto = true
+opt-level = 3
+overflow-checks = true
+
+[profile.release]
+debug = false
+lto = true
+opt-level = 3
+overflow-checks = true

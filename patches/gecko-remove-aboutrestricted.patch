@@ -1,0 +1,44 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Gecko - Remove about:restricted
+
+Removes the `about:restricted` page (used for ex. parental controls).
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/docshell/base/nsAboutRedirector.cpp b/docshell/base/nsAboutRedirector.cpp
+index 6789b3d1d8ba..c18b4ac94ab0 100644
+--- a/docshell/base/nsAboutRedirector.cpp
++++ b/docshell/base/nsAboutRedirector.cpp
+@@ -172,11 +172,11 @@ static const RedirEntry kRedirMap[] = {
+          nsIAboutModule::HIDE_FROM_ABOUTABOUT},
+     {"processes", "chrome://global/content/aboutProcesses.html",
+      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
+-    {"restricted",
+-     "chrome://global/content/aboutRestricted/aboutRestricted.html",
+-     nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
+-         nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
+-         nsIAboutModule::HIDE_FROM_ABOUTABOUT},
++//    {"restricted",
++//     "chrome://global/content/aboutRestricted/aboutRestricted.html",
++//     nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
++//         nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
++//         nsIAboutModule::HIDE_FROM_ABOUTABOUT},
+     // about:serviceworkers always wants to load in the parent process because
+     // the only place nsIServiceWorkerManager has any data is in the parent
+     // process.
+diff --git a/docshell/build/components.conf b/docshell/build/components.conf
+index 5c1543ab806f..d770131596c5 100644
+--- a/docshell/build/components.conf
++++ b/docshell/build/components.conf
+@@ -26,7 +26,7 @@ about_pages = [
+     'networking',
+     'performance',
+     'processes',
+-    'restricted',
++#    'restricted',
+     'serviceworkers',
+     'srcdoc',
+     'support',
+-- 

@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 05:15:52 +0000
+Subject: [PATCH] Fenix - IronFox Settings: Always use private browsing
+
+Provides support for a UI setting to always use private browsing mode.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/PrivateBrowsingFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/PrivateBrowsingFragment.kt
+index 826acce5d92d..6300f494cad8 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/PrivateBrowsingFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/PrivateBrowsingFragment.kt
+@@ -74,6 +74,7 @@ class PrivateBrowsingFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
+         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_open_links_in_a_private_tab).apply {
+             onPreferenceChangeListener = SharedPreferenceUpdater()
+             isChecked = context.components.settings.openLinksInAPrivateTab
++            isVisible = !context.components.settings.ironfox.alwaysUsePrivateBrowsing
+         }
+ 
+         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_allow_screenshots_in_private_mode).apply {
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt
+index 83e0f40483b7..fac08fa708f9 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt
+@@ -1370,7 +1370,7 @@ class Settings(
+                 false,
+             )
+ 
+-            return if (lastKnownModeWasPrivate) {
++            return if (ironfox.alwaysUsePrivateBrowsing || lastKnownModeWasPrivate) {
+                 BrowsingMode.Private
+             } else {
+                 BrowsingMode.Normal
+-- 

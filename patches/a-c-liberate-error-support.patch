@@ -1,0 +1,115 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Android Components - Remove Error Support
+
+Removes the Rust 'Error Support' library.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/android-components/components/browser/storage-sync/build.gradle b/mobile/android/android-components/components/browser/storage-sync/build.gradle
+index 94e5a3956d3b..d5e7f0f481a0 100644
+--- a/mobile/android/android-components/components/browser/storage-sync/build.gradle
++++ b/mobile/android/android-components/components/browser/storage-sync/build.gradle
+@@ -29,7 +29,7 @@ dependencies {
+     implementation project(':components:support-appservices')
+     implementation project(':components:support-utils')
+ 
+-    implementation ComponentsDependencies.mozilla_appservices_errorsupport
++//    implementation ComponentsDependencies.mozilla_appservices_errorsupport
+     implementation ComponentsDependencies.mozilla_appservices_syncmanager
+     implementation libs.androidx.work.runtime
+ 
+diff --git a/mobile/android/android-components/components/browser/storage-sync/src/main/java/mozilla/components/browser/storage/sync/PlacesStorage.kt b/mobile/android/android-components/components/browser/storage-sync/src/main/java/mozilla/components/browser/storage/sync/PlacesStorage.kt
+index 7ddcd8605aeb..66240a2307ec 100644
+--- a/mobile/android/android-components/components/browser/storage-sync/src/main/java/mozilla/components/browser/storage/sync/PlacesStorage.kt
++++ b/mobile/android/android-components/components/browser/storage-sync/src/main/java/mozilla/components/browser/storage/sync/PlacesStorage.kt
+@@ -21,7 +21,7 @@ import mozilla.components.concept.sync.SyncStatus
+ import mozilla.components.concept.sync.SyncableStore
+ import mozilla.components.support.base.log.logger.Logger
+ import mozilla.components.support.base.utils.NamedThreadFactory
+-import mozilla.components.support.rusterrors.reportRustError
++// import mozilla.components.support.rusterrors.reportRustError
+ import mozilla.components.support.utils.logElapsedTime
+ import java.nio.charset.MalformedInputException
+ import java.util.concurrent.Executors
+@@ -160,7 +160,7 @@ abstract class PlacesStorage(
+             logger.warn("Ignoring PlacesApiException while running $operation", e)
+         } catch (e: UniffiInternalException) {
+             logger.error("Ignoring internal uniffi places exception when running $operation", e)
+-            reportRustError("places-internal-error", e)
++//            reportRustError("places-internal-error", e)
+         }
+     }
+ 
+@@ -193,7 +193,7 @@ abstract class PlacesStorage(
+             default
+         } catch (e: UniffiInternalException) {
+             logger.error("Ignoring internal uniffi places exception when running $operation", e)
+-            reportRustError("places-internal-error", e)
++//            reportRustError("places-internal-error", e)
+             default
+         }
+     }
+diff --git a/mobile/android/android-components/components/feature/fxsuggest/build.gradle b/mobile/android/android-components/components/feature/fxsuggest/build.gradle
+index e4c4d98d9d0c..8a445a1e99b5 100644
+--- a/mobile/android/android-components/components/feature/fxsuggest/build.gradle
++++ b/mobile/android/android-components/components/feature/fxsuggest/build.gradle
+@@ -28,7 +28,7 @@ dependencies {
+     implementation project(':components:support-remotesettings')
+     implementation project(':components:support-ktx')
+ 
+-    implementation ComponentsDependencies.mozilla_appservices_errorsupport
++//    implementation ComponentsDependencies.mozilla_appservices_errorsupport
+     implementation (ComponentsDependencies.mozilla_appservices_viaduct) {
+         // Override the version of concept-fetch that A-S depends on,
+         // since we want to replace it with our own.
+diff --git a/mobile/android/android-components/components/feature/fxsuggest/src/main/java/mozilla/components/feature/fxsuggest/FxSuggestStorage.kt b/mobile/android/android-components/components/feature/fxsuggest/src/main/java/mozilla/components/feature/fxsuggest/FxSuggestStorage.kt
+index c8df3ab6d8e6..beed95e98e52 100644
+--- a/mobile/android/android-components/components/feature/fxsuggest/src/main/java/mozilla/components/feature/fxsuggest/FxSuggestStorage.kt
++++ b/mobile/android/android-components/components/feature/fxsuggest/src/main/java/mozilla/components/feature/fxsuggest/FxSuggestStorage.kt
+@@ -21,7 +21,7 @@ import mozilla.components.concept.base.crash.CrashReporting
+ import mozilla.components.feature.fxsuggest.facts.emitSuggestionQueryCountFact
+ import mozilla.components.support.base.log.logger.Logger
+ import mozilla.components.support.remotesettings.RemoteSettingsService
+-import mozilla.components.support.rusterrors.reportRustError
++// import mozilla.components.support.rusterrors.reportRustError
+ import mozilla.appservices.suggest.InternalException as UniffiInternalException
+ 
+ /**
+@@ -129,7 +129,7 @@ class FxSuggestStorage(
+             default
+         } catch (e: UniffiInternalException) {
+             Logger.error("Ignoring internal exception from `$name`", e)
+-            reportRustError("suggest-internal-error", e)
++//            reportRustError("suggest-internal-error", e)
+             default
+         }
+     }
+diff --git a/mobile/android/android-components/components/support/appservices/build.gradle b/mobile/android/android-components/components/support/appservices/build.gradle
+index d9af2a9b78e8..b525b51fd39e 100644
+--- a/mobile/android/android-components/components/support/appservices/build.gradle
++++ b/mobile/android/android-components/components/support/appservices/build.gradle
+@@ -13,7 +13,7 @@ dependencies {
+     api project(':components:concept-fetch') // Needed for rusthttp
+     api project(':components:support-base') // Log.Priority is in the public api.
+ 
+-    implementation ComponentsDependencies.mozilla_appservices_errorsupport
++//    implementation ComponentsDependencies.mozilla_appservices_errorsupport
+     implementation ComponentsDependencies.mozilla_appservices_fxrelay
+     implementation (ComponentsDependencies.mozilla_appservices_httpconfig) {
+         // Override the version of concept-fetch that A-S depends on,
+diff --git a/mobile/android/android-components/components/support/remotesettings/build.gradle b/mobile/android/android-components/components/support/remotesettings/build.gradle
+index 5a007933c75cf..df2d2e9a59f92 100644
+--- a/mobile/android/android-components/components/support/remotesettings/build.gradle
++++ b/mobile/android/android-components/components/support/remotesettings/build.gradle
+@@ -29,7 +29,7 @@ dependencies {
+     implementation project(':components:support-ktx')
+     implementation project(':components:support-utils')
+ 
+-    implementation ComponentsDependencies.mozilla_appservices_errorsupport
++//    implementation ComponentsDependencies.mozilla_appservices_errorsupport
+     implementation ComponentsDependencies.mozilla_remote_settings
+     implementation libs.androidx.work.runtime
+     implementation libs.kotlinx.serialization.json
+-- 

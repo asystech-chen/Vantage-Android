@@ -1,0 +1,192 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Gecko - Support add-on installation without mozAddonManager
+
+Adds support for installing add-ons from `addons.mozilla.org`, without allowing Mozilla to enable, uninstall, and query a list of the user's
+installed add-ons (via the privileged mozAddonManager API), in addition to websites specified with the `xpinstall.whitelist.add` series of prefs.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/toolkit/modules/PermissionsUtils.sys.mjs b/toolkit/modules/PermissionsUtils.sys.mjs
+index 593cf97b046c4..62f91585304e7 100644
+--- a/toolkit/modules/PermissionsUtils.sys.mjs
++++ b/toolkit/modules/PermissionsUtils.sys.mjs
+@@ -46,7 +46,7 @@ function importPrefBranch(aPrefBranch, aPermission, aAction) {
+       }
+     }
+ 
+-    Services.prefs.setCharPref(pref, "");
++//    Services.prefs.setCharPref(pref, "");
+   }
+ }
+ 
+@@ -80,9 +80,9 @@ export var PermissionsUtils = {
+     }
+ 
+     // Ensure we only import this pref branch once.
+-    if (gImportedPrefBranches.has(aPrefBranch)) {
++/*    if (gImportedPrefBranches.has(aPrefBranch)) {
+       return;
+-    }
++    } */
+ 
+     importPrefBranch(
+       aPrefBranch + "whitelist.add",
+diff --git a/toolkit/mozapps/extensions/AddonManager.sys.mjs b/toolkit/mozapps/extensions/AddonManager.sys.mjs
+index 4fe6aaa127d12..e166515c880a3 100644
+--- a/toolkit/mozapps/extensions/AddonManager.sys.mjs
++++ b/toolkit/mozapps/extensions/AddonManager.sys.mjs
+@@ -104,6 +104,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
+     "resource://gre/modules/addons/siteperms-addon-utils.sys.mjs",
+   isPrincipalInSitePermissionsBlocklist:
+     "resource://gre/modules/addons/siteperms-addon-utils.sys.mjs",
++  GeckoViewWebExtension: "resource://gre/modules/GeckoViewWebExtension.sys.mjs",
++  EventDispatcher: "resource://gre/modules/Messaging.sys.mjs",
+ });
+ 
+ XPCOMUtils.defineLazyPreferenceGetter(
+@@ -2417,7 +2419,21 @@ var AddonManagerInternal = {
+ 
+     return promiseInstall;
+   },
+-
++  async installGeckoViewWebExtension(extensionUri) {
++    const installId = Services.uuid.generateUUID().toString();
++    let { extension } = await lazy.GeckoViewWebExtension.installWebExtension(
++        installId,
++        extensionUri
++    );
++    if (extension) {
++        await lazy.EventDispatcher.instance.sendRequest({
++            type: "GeckoView:WebExtension:OnInstalled",
++            extension,
++        });
++    } else {
++        console.error("Failed to install the extension: extension is null.");
++    }
++  },
+   /**
+    * Starts installation of an AddonInstall notifying the registered
+    * web install listener of a blocked or started install.
+@@ -2590,6 +2606,9 @@ var AddonManagerInternal = {
+       );
+ 
+       if (installAllowed) {
++        aInstall.cancel();
++        this.installGeckoViewWebExtension(aInstall.sourceURI);
++        return;
+         startInstall("AMO");
+       } else if (installPerm === Ci.nsIPermissionManager.DENY_ACTION) {
+         // Block without prompt
+diff --git a/toolkit/mozapps/extensions/amContentHandler.sys.mjs b/toolkit/mozapps/extensions/amContentHandler.sys.mjs
+index 03f4e80539e7..1fa9a6fd7e9c 100644
+--- a/toolkit/mozapps/extensions/amContentHandler.sys.mjs
++++ b/toolkit/mozapps/extensions/amContentHandler.sys.mjs
+@@ -10,9 +10,11 @@
+ const XPI_CONTENT_TYPE = "application/x-xpinstall";
+ 
+ import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
++import { XPIExports } from "resource://gre/modules/addons/XPIExports.sys.mjs";
+ 
+ const lazy = XPCOMUtils.declareLazy({
+   AddonManager: "resource://gre/modules/AddonManager.sys.mjs",
++  IFPrefUtils:  "moz-src:///ironfox/utils/IFPrefUtils.sys.mjs",
+   ThirdPartyUtil: {
+     service: "@mozilla.org/thirdpartyutil;1",
+     iid: Ci.mozIThirdPartyUtil,
+@@ -75,8 +77,6 @@ amContentHandler.prototype = {
+       throw error;
+     }
+ 
+-    aRequest.cancel(Cr.NS_BINDING_ABORTED);
+-
+     let sourceHost;
+     let sourceURL;
+     try {
+@@ -105,6 +105,19 @@ amContentHandler.prototype = {
+       }
+     }
+ 
++    XPIExports.XPIDatabase.importPermissions();
++    let installPerm = Services.perms.testPermissionFromPrincipal(
++      triggeringPrincipal,
++      XPIExports.XPIInternal.XPI_PERMISSION
++    );
++    if (lazy.IFPrefUtils.getBoolPref("xpinstall.enabled") && installPerm == Ci.nsIPermissionManager.ALLOW_ACTION) {
++        aRequest.cancel(Cr.NS_BINDING_ABORTED);
++    } else if (installPerm == Ci.nsIPermissionManager.DENY_ACTION) {
++        throw Components.Exception("", Cr.NS_ERROR_WONT_HANDLE_CONTENT);
++    } else {
++        return Cr.NS_OK;
++    };
++
+     lazy.AddonManager.getInstallForURL(uri.spec, {
+       browser,
+       triggeringPrincipal,
+diff --git a/toolkit/mozapps/extensions/components.conf b/toolkit/mozapps/extensions/components.conf
+index 20d433329de61..927ee950f854a 100644
+--- a/toolkit/mozapps/extensions/components.conf
++++ b/toolkit/mozapps/extensions/components.conf
+@@ -35,7 +35,7 @@ Classes = [
+     },
+ ]
+ 
+-if buildconfig.substs['MOZ_WIDGET_TOOLKIT'] != 'android':
++if True:
+     Classes += [
+         {
+             'cid': '{7beb3ba8-6ec3-41b4-b67c-da89b8518922}',
+diff --git a/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs b/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
+index 256cb95fc1193..492f155ecac6b 100644
+--- a/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
++++ b/toolkit/mozapps/extensions/internal/XPIDatabase.sys.mjs
+@@ -29,6 +29,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
+   PermissionsUtils: "resource://gre/modules/PermissionsUtils.sys.mjs",
+   QuarantinedDomains: "resource://gre/modules/ExtensionPermissions.sys.mjs",
+   ExtensionPermissions: "resource://gre/modules/ExtensionPermissions.sys.mjs",
++  IFPrefUtils:          "moz-src:///ironfox/utils/IFPrefUtils.sys.mjs",
+ });
+ 
+ // A temporary hidden pref just meant to be used as a last resort, in case
+@@ -2283,10 +2284,14 @@ export const XPIDatabase = {
+    * manager for the user to change later.
+    */
+   importPermissions() {
+-    lazy.PermissionsUtils.importFromPrefs(
+-      PREF_XPI_PERMISSIONS_BRANCH,
+-      XPIExports.XPIInternal.XPI_PERMISSION
+-    );
++    if (!lazy.IFPrefUtils.getBoolPref("browser.ironfox.xpinstall.permsImported")) {
++        Services.perms.removeByType("install");
++        lazy.PermissionsUtils.importFromPrefs(
++          PREF_XPI_PERMISSIONS_BRANCH,
++          XPIExports.XPIInternal.XPI_PERMISSION
++        );
++        lazy.IFPrefUtils.setUserBoolPref("browser.ironfox.xpinstall.permsImported", true);
++    };
+   },
+ 
+   /**
+diff --git a/uriloader/base/nsURILoader.cpp b/uriloader/base/nsURILoader.cpp
+index 545a358ed0001..08caf1e80e814 100644
+--- a/uriloader/base/nsURILoader.cpp
++++ b/uriloader/base/nsURILoader.cpp
+@@ -518,10 +518,14 @@ nsresult nsDocumentOpenInfo::DispatchContent(nsIRequest* request) {
+             request->Cancel(rv);
+           } else {
+             LOG(("  Content handler taking over load"));
+-            mUsedContentHandler = true;
++            if (mContentType != APPLICATION_XPINSTALL) {
++                mUsedContentHandler = true;
++            }
+           }
+ 
+-          return rv;
++          if (mContentType != APPLICATION_XPINSTALL) {
++            return rv;
++          }
+         }
+       }
+     } else {
+-- 

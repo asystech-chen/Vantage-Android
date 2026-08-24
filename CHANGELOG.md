@@ -1,0 +1,2 @@
+- [Re-enabled legacy packaging for bundle builds](https://gitlab.com/ironfox-oss/IronFox/-/commit/bdfb1811baed7874bcf1d650c00d951fbb392b36) to significantly reduce the output size of APKsets.
+- Minor tweaks and adjustments.

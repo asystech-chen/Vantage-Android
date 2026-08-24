@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sat, 27 Jun 2026 20:11:41 +0000
+Subject: [PATCH] Fenix - Remove AI Controls
+
+Provides support for removing the 'AI Controls' settings menu.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/AndroidManifest.xml b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+index 742522506d..d881cfe5a6 100644
+--- a/mobile/android/fenix/app/src/main/AndroidManifest.xml
++++ b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+@@ -525,7 +525,7 @@
+                 <data android:host="settings"/>
+                 <data android:host="settings_accessibility"/>
+                 <data android:host="settings_addon_manager"/>
+-                <data android:host="settings_ai_controls"/>
++                <!-- <data android:host="settings_ai_controls"/> -->
+                 <data android:host="settings_delete_browsing_data"/>
+                 <data android:host="settings_logins"/>
+                 <data android:host="settings_notifications"/>
+-- 

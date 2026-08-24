@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Android Components - Disable unsolicited favicon fetching
+
+Prevents Firefox from automatically fetching favicons for websites pinned to the browser homepage.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/android-components/components/browser/icons/src/main/java/mozilla/components/browser/icons/preparer/MerinoManifestIconPreparer.kt b/mobile/android/android-components/components/browser/icons/src/main/java/mozilla/components/browser/icons/preparer/MerinoManifestIconPreparer.kt
+index 197635bdae23..284678a74298 100644
+--- a/mobile/android/android-components/components/browser/icons/src/main/java/mozilla/components/browser/icons/preparer/MerinoManifestIconPreparer.kt
++++ b/mobile/android/android-components/components/browser/icons/src/main/java/mozilla/components/browser/icons/preparer/MerinoManifestIconPreparer.kt
+@@ -33,7 +33,7 @@ class MerinoManifestIconPreparer(
+                 url = iconUrl,
+                 type = IconRequest.Resource.Type.MERINO_MANIFEST,
+             )
+-            request.copy(resources = request.resources + resource)
++            request
+         } else {
+             request
+         }
+-- 

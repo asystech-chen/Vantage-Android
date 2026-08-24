@@ -1,0 +1,23 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Android Components - Liberate
+
+Removes proprietary, tracking, and other unwanted libraries/functionality.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/gradle/plugins/conventions/src/main/java/org/mozilla/conventions/SettingsPlugin.kt b/mobile/android/gradle/plugins/conventions/src/main/java/org/mozilla/conventions/SettingsPlugin.kt
+index 207c5a1eaca6..a35e0e608df2 100644
+--- a/mobile/android/gradle/plugins/conventions/src/main/java/org/mozilla/conventions/SettingsPlugin.kt
++++ b/mobile/android/gradle/plugins/conventions/src/main/java/org/mozilla/conventions/SettingsPlugin.kt
+@@ -65,7 +65,7 @@ class SettingsPlugin : Plugin<Settings> {
+         // .buildconfig.yml so inclusion is driven by project metadata rather than
+         // name-prefix matching.
+         val shouldIncludeProject = { name: String, _: ProjectConfig ->
+-            rootDir.contains("android-components") || !name.startsWith("components:samples")
++            !name.startsWith("components:samples") && !name.startsWith("components:feature-webcompat-reporter") && !name.startsWith("components:lib-crash-sentry") && !name.startsWith("components:lib-integrity-googleplay") && !name.startsWith("components:lib-push-firebase") && !name.startsWith("components:service-glean") && !name.startsWith("components:service-mars")
+         }
+ 
+         includeProjects(settings, buildConfig, baseDir, shouldIncludeProject)
+-- 

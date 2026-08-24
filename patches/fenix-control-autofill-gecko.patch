@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Fenix - Control Gecko Autofill
+
+If autofill is enabled/disabled from the browser's UI settings, this ensures that the functionality is also fully enabled/disabled within Gecko.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/autofill/AutofillSettingFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/autofill/AutofillSettingFragment.kt
+index 2a204c8c5832..a69ece4510a6 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/autofill/AutofillSettingFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/autofill/AutofillSettingFragment.kt
+@@ -59,6 +59,7 @@ import org.mozilla.fenix.theme.FirefoxTheme
+ import kotlin.Boolean
+ import com.google.android.material.R as materialR
+ import mozilla.components.ui.icons.R as iconsR
++import org.ironfoxoss.ironfox.utils.GeckoSettingsBridge
+ 
+ /**
+  * Autofill settings fragment displays a list of settings related to auto filling, adding and
+@@ -136,7 +137,12 @@ class AutofillSettingFragment : BiometricPromptPreferenceFragment(), SystemInset
+     internal fun updateSaveAndAutofillCardsSwitch() {
+         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_credit_cards_save_and_autofill_cards).apply {
+             isChecked = context.components.settings.shouldAutofillCreditCardDetails
+-            onPreferenceChangeListener = SharedPreferenceUpdater()
++            onPreferenceChangeListener = object : SharedPreferenceUpdater() {
++                override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
++                    GeckoSettingsBridge.setCardAutofillEnabled(context, requireComponents.core.engine)
++                    return super.onPreferenceChange(preference, newValue)
++                }
++            }
+         }
+     }
+ 
+@@ -146,7 +152,12 @@ class AutofillSettingFragment : BiometricPromptPreferenceFragment(), SystemInset
+     internal fun updateSaveAndAutofillAddressesSwitch() {
+         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_addresses_save_and_autofill_addresses).apply {
+             isChecked = context.components.settings.shouldAutofillAddressDetails
+-            onPreferenceChangeListener = SharedPreferenceUpdater()
++            onPreferenceChangeListener = object : SharedPreferenceUpdater() {
++                override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
++                    GeckoSettingsBridge.setAddressAutofillEnabled(context, requireComponents.core.engine)
++                    return super.onPreferenceChange(preference, newValue)
++                }
++            }
+         }
+     }
+ 
+-- 

@@ -1,0 +1,53 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Gecko - Remove about:telemetry
+
+Removes the `about:telemetry` page.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/docshell/base/nsAboutRedirector.cpp b/docshell/base/nsAboutRedirector.cpp
+index 76f707e5f1e8e..58e069cb6b720 100644
+--- a/docshell/base/nsAboutRedirector.cpp
++++ b/docshell/base/nsAboutRedirector.cpp
+@@ -211,9 +211,9 @@ static const RedirEntry kRedirMap[] = {
+ #  endif
+          nsIAboutModule::ALLOW_SCRIPT},
+ #endif
+-    {"telemetry", "chrome://global/content/aboutTelemetry.xhtml",
+-     nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
+-#ifndef MOZ_WIDGET_ANDROID
++//    {"telemetry", "chrome://global/content/aboutTelemetry.xhtml",
++//     nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
++#if true
+     {"translations",
+      "chrome://global/content/translations/about-translations.html",
+      nsIAboutModule::ALLOW_SCRIPT |
+diff --git a/docshell/build/components.conf b/docshell/build/components.conf
+index 5c1543ab806f5..1f58b563001ad 100644
+--- a/docshell/build/components.conf
++++ b/docshell/build/components.conf
+@@ -30,7 +30,7 @@ about_pages = [
+     'serviceworkers',
+     'srcdoc',
+     'support',
+-    'telemetry',
++#    'telemetry',
+     'url-classifier',
+     'webrtc',
+ ]
+diff --git a/toolkit/content/jar.mn b/toolkit/content/jar.mn
+index f25490bdc554..2d1d5555fc6c 100644
+--- a/toolkit/content/jar.mn
++++ b/toolkit/content/jar.mn
+@@ -44,7 +44,7 @@ toolkit.jar:
+ #endif
+    content/global/aboutTelemetry.js
+    content/global/aboutTelemetry.xhtml
+-   content/global/aboutTelemetry.css
++#   content/global/aboutTelemetry.css
+    content/global/aboutUrlClassifier.js
+    content/global/aboutUrlClassifier.xhtml
+    content/global/aboutUrlClassifier.css
+-- 

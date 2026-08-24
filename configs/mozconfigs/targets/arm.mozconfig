@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+# ARM
+
+set -euo pipefail
+
+ac_add_options --target='arm-linux-androideabi'
+ac_add_options --disable-android-bundle

@@ -1,0 +1,192 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Fenix - Remove Google Play Integrity
+
+Removes the Google Play Integrity library.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/.buildconfig.yml b/mobile/android/fenix/.buildconfig.yml
+index e23ec109a522..736c25ed8705 100644
+--- a/mobile/android/fenix/.buildconfig.yml
++++ b/mobile/android/fenix/.buildconfig.yml
+@@ -80,7 +80,7 @@ projects:
+     - components:lib-crash
+     - components:lib-crash-sentry
+     - components:lib-dataprotect
+-    - components:lib-integrity-googleplay
++#    - components:lib-integrity-googleplay
+     - components:lib-llm-mlpa
+     - components:lib-publicsuffixlist
+     - components:lib-push-firebase
+diff --git a/mobile/android/fenix/app/build.gradle b/mobile/android/fenix/app/build.gradle
+index ad28bfb8c8ff..d8c4a23dbdd0 100644
+--- a/mobile/android/fenix/app/build.gradle
++++ b/mobile/android/fenix/app/build.gradle
+@@ -625,7 +625,7 @@ dependencies {
+     implementation project(':components:lib-push-firebase')
+     implementation project(':components:lib-state')
+     implementation project(':components:lib-accelerometer-sensormanager')
+-    implementation project(':components:lib-integrity-googleplay')
++//    implementation project(':components:lib-integrity-googleplay')
+     implementation project(':components:lib-llm-mlpa')
+     implementation project(':components:lib-shake')
+     implementation project(':components:lib-ai-controls')
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ClientUUID.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ClientUUID.kt
+index c9e41120b3979..6064d053ef564 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ClientUUID.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ClientUUID.kt
+@@ -7,7 +7,7 @@ package org.mozilla.fenix.components
+ import android.content.Context
+ import android.content.SharedPreferences
+ import androidx.core.content.edit
+-import mozilla.components.lib.integrity.googleplay.RequestHashProvider
++// import mozilla.components.lib.integrity.googleplay.RequestHashProvider
+ import mozilla.components.lib.llm.mlpa.UserIdProvider
+ import mozilla.components.lib.llm.mlpa.service.UserId
+ import mozilla.components.support.ktx.kotlin.toHexString
+@@ -41,7 +41,9 @@ fun interface Hasher {
+  * Generates and persists a stable per-install UUID, used to identify this client
+  * consistently across [UserIdProvider] and [RequestHashProvider] consumers.
+  */
+-interface ClientUUID : UserIdProvider, RequestHashProvider {
++interface ClientUUID : UserIdProvider {
++    fun generateHash(): String { return "" }
++    fun getUserID() {}
+     companion object {
+         /**
+          * Convenience initializer that creates a [SharedPreferences] to be used by [ClientUUID].
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
+index 4bca1242d025a..e919b86aee668 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
+@@ -430,11 +430,11 @@ class Components(private val context: Context) {
+     }
+ 
+     val integrityClient by lazyMonitored {
+-        GooglePlayIntegrityClient.create(
++/*        GooglePlayIntegrityClient.create(
+             context = context,
+             projectNumberToken = BuildConfig.GPS_INTEGRITY_TOKEN,
+             requestHashProvider = clientUUID,
+-        )
++        ) */
+     }
+ 
+     val termsOfUsePromptRepository by lazyMonitored {
+@@ -539,7 +539,7 @@ class Components(private val context: Context) {
+             client = core.client,
+             storage = MlpaTokenStorage.sharedPrefs(context),
+             fxaTokenProvider = backgroundServices.accountManager.accessTokenProvider,
+-            integrityClient = integrityClient,
++            integrityClient = null,
+             userIdProvider = clientUUID,
+         )
+     }
+@@ -553,7 +553,7 @@ class Components(private val context: Context) {
+             syncStore = backgroundServices.syncStore,
+             authSources = IPProtectionAuthSources(
+                 fxaAccountManager = lazy { backgroundServices.accountManager },
+-                integrityClient = lazy { integrityClient },
++//                integrityClient = lazy { integrityClient },
+             ),
+             lazyAppStore = lazy { appStore },
+             settings = settings,
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/llm/Llm.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/llm/Llm.kt
+index d7a410697ee9..d1f0ef666a51 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/llm/Llm.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/llm/Llm.kt
+@@ -5,14 +5,14 @@
+ package org.mozilla.fenix.components.llm
+ 
+ import mozilla.components.concept.fetch.Client
+-import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
+-import mozilla.components.lib.integrity.googleplay.IntegrityConsumer
++// import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
++// import mozilla.components.lib.integrity.googleplay.IntegrityConsumer
+ import mozilla.components.lib.llm.mlpa.MlpaLlmProvider
+ import mozilla.components.lib.llm.mlpa.MlpaTokenProvider
+ import mozilla.components.lib.llm.mlpa.MlpaTokenStorage
+ import mozilla.components.lib.llm.mlpa.UserIdProvider
+-import mozilla.components.lib.llm.mlpa.service.PackageName
+-import org.mozilla.fenix.BuildConfig
++import mozilla.components.lib.llm.mlpa.service.AuthorizationToken
++// import org.mozilla.fenix.BuildConfig
+ import org.mozilla.fenix.components.llm.ext.FxaAccessTokenProvider
+ import org.mozilla.fenix.components.llm.ext.choose
+ import org.mozilla.fenix.components.llm.ext.fxaTokenProvider
+@@ -25,7 +25,7 @@ class Llm(
+     private val client: Client,
+     private val storage: MlpaTokenStorage,
+     private val fxaTokenProvider: FxaAccessTokenProvider,
+-    private val integrityClient: GooglePlayIntegrityClient,
++    private val integrityClient: Unit?,
+     private val userIdProvider: UserIdProvider,
+ ) {
+ 
+@@ -35,13 +35,13 @@ class Llm(
+         MlpaLlmProvider(
+             MlpaTokenProvider.choose(
+                 MlpaTokenProvider.fxaTokenProvider(fxaTokenProvider),
+-                MlpaTokenProvider.mlpaIntegrityHandshake(
+-                    integrityClient = integrityClient.forConsumer(IntegrityConsumer.Summarize),
++                MlpaTokenProvider.static(AuthorizationToken.Integrity("my-test-token")),
++/*                    integrityClient = integrityClient.forConsumer(IntegrityConsumer.Summarize),
+                     authenticationService = fenixMlpaService,
+                     userIdProvider = userIdProvider,
+                     storage = storage,
+                     packageName = PackageName(BuildConfig.APPLICATION_ID),
+-                ),
++                ), */
+             ),
+             storage = storage,
+             mlpaService = fenixMlpaService,
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ipprotection/IPProtection.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ipprotection/IPProtection.kt
+index 0faf716438be7..f842ac5acb7f3 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ipprotection/IPProtection.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/ipprotection/IPProtection.kt
+@@ -10,9 +10,9 @@ import mozilla.components.browser.state.store.BrowserStore
+ import mozilla.components.concept.engine.Engine
+ import mozilla.components.feature.ipprotection.IPProtectionFeature
+ import mozilla.components.feature.ipprotection.IPProtectionStorageSynchronizer
+-import mozilla.components.feature.ipprotection.auth.gpi.IPProtectionGpiProvider
++// import mozilla.components.feature.ipprotection.auth.gpi.IPProtectionGpiProvider
+ import mozilla.components.feature.ipprotection.store.IPProtectionStore
+-import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
++// import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
+ import mozilla.components.service.fxa.manager.FxaAccountManager
+ import mozilla.components.service.fxa.store.SyncStore
+ import mozilla.components.support.base.log.logger.Logger
+@@ -28,7 +28,7 @@ import org.mozilla.fenix.utils.Settings
+  */
+ data class IPProtectionAuthSources(
+     val fxaAccountManager: Lazy<FxaAccountManager>,
+-    val integrityClient: Lazy<GooglePlayIntegrityClient>,
++//    val integrityClient: Lazy<GooglePlayIntegrityClient>,
+ )
+ 
+ /**
+@@ -75,7 +75,7 @@ class IPProtection(
+             store = store,
+             engine = engine,
+             accountManager = authSources.fxaAccountManager.value,
+-            extraAuthProvider = IPProtectionGpiProvider(authSources.integrityClient.value),
++            extraAuthProvider = null,
+         )
+     }
+ 
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
+index 3c71fd5f01a1..f7ffe6549d50 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
+@@ -575,7 +575,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
+         }
+         runOnVisualCompleteness(queue) {
+             GlobalScope.launch(IO) {
+-                components.integrityClient.warmUp()
++//                components.integrityClient.warmUp()
+             }
+         }
+     }
+-- 

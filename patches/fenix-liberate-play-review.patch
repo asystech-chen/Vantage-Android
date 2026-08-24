@@ -1,0 +1,72 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Fenix - Remove Google Play Review
+
+Removes the Google Play Review library.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
+index 058a5b356250..65059ad778ce 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
+@@ -12,7 +12,7 @@ import androidx.compose.runtime.ReadOnlyComposable
+ import androidx.compose.ui.platform.LocalContext
+ import androidx.core.app.NotificationManagerCompat
+ import androidx.core.content.getSystemService
+-import com.google.android.play.core.review.ReviewManagerFactory
++// import com.google.android.play.core.review.ReviewManagerFactory
+ import kotlinx.coroutines.CoroutineScope
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.MainScope
+@@ -285,7 +285,7 @@ class Components(private val context: Context) {
+ 
+     val playStoreReviewPromptController by lazyMonitored {
+         PlayStoreReviewPromptController(
+-            manager = ReviewManagerFactory.create(context),
++//            manager = ReviewManagerFactory.create(context),
+             numberOfAppLaunches = { settings.numberOfAppLaunches },
+         )
+     }
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/reviewprompt/CustomReviewPromptBottomSheetFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/reviewprompt/CustomReviewPromptBottomSheetFragment.kt
+index 742b5d64e65d..b5ce0bc7723c 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/reviewprompt/CustomReviewPromptBottomSheetFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/reviewprompt/CustomReviewPromptBottomSheetFragment.kt
+@@ -84,8 +84,8 @@ class CustomReviewPromptBottomSheetFragment : BottomSheetDialogFragment() {
+                 when (event) {
+                     CustomReviewPromptNavigationEvent.Dismiss -> dismissAllowingStateLoss()
+ 
+-                    CustomReviewPromptNavigationEvent.OpenPlayStoreReviewPrompt -> {
+-                        val activity = activity ?: return@collect
++                    CustomReviewPromptNavigationEvent.OpenPlayStoreReviewPrompt -> dismissAllowingStateLoss()
++/*                        val activity = activity ?: return@collect
+                         with(requireComponents.playStoreReviewPromptController) {
+                             tryPromptReview(
+                                 activity = activity,
+@@ -93,9 +93,9 @@ class CustomReviewPromptBottomSheetFragment : BottomSheetDialogFragment() {
+                                 onError = { tryLaunchPlayStoreReview(activity, ::openInNewTab) },
+                             )
+                         }
+-                    }
++                    } */
+ 
+-                    is CustomReviewPromptNavigationEvent.OpenInNewTab -> openInNewTab(event.url)
++                    is CustomReviewPromptNavigationEvent.OpenInNewTab -> dismissAllowingStateLoss()
+                 }
+             }
+         }
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/SettingsFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/SettingsFragment.kt
+index 6200d8376b82..c6c96c24d6fe 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/SettingsFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/SettingsFragment.kt
+@@ -532,7 +532,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment
+ 
+             // About preferences
+             resources.getString(R.string.pref_key_rate) -> {
+-                components.playStoreReviewPromptController.tryLaunchPlayStoreReview(requireActivity(), ::openInNewTab)
++//                components.playStoreReviewPromptController.tryLaunchPlayStoreReview(requireActivity(), ::openInNewTab)
+                 null
+             }
+ 
+-- 

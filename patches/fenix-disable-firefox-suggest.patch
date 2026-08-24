@@ -1,0 +1,113 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Tue, 17 Feb 2026 04:11:12 +0000
+Subject: [PATCH] Fenix - Disable Firefox Suggest
+
+Disables Firefox Suggest by default, removes unwanted Firefox Suggest UI elements, and ensure that suggestions from Firefox Suggest are
+only queried if the user actually enables suggestions.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
+index 3c71fd5f01a1..31bc175e8472 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
+@@ -442,7 +442,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
+         queueNimbusFetchInForeground(queue)
+         queueDownloadWallpapers(queue)
+ 
+-        if (components.settings.enableFxSuggest) {
++        if (components.settings.enableFxSuggest && components.settings.showNonSponsoredSuggestions) {
+             queueSuggestIngest(queue)
+         }
+ 
+@@ -503,7 +503,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
+                     // new search suggestions. The worker requires us to have called
+                     // `GlobalFxSuggestDependencyProvider.initialize`, which we did before
+                     // scheduling these tasks. When disabled we stop the periodic work.
+-                    if (components.settings.enableFxSuggest) {
++                    if (components.settings.enableFxSuggest && components.settings.showNonSponsoredSuggestions) {
+                         components.fxSuggest.ingestionScheduler.startPeriodicIngestion()
+                     } else {
+                         components.fxSuggest.ingestionScheduler.stopPeriodicIngestion()
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/search/awesomebar/SearchSuggestionsProvidersBuilder.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/search/awesomebar/SearchSuggestionsProvidersBuilder.kt
+index 7c68a88f9f45..1ef39c9efaec 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/search/awesomebar/SearchSuggestionsProvidersBuilder.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/search/awesomebar/SearchSuggestionsProvidersBuilder.kt
+@@ -78,7 +78,7 @@ class SearchSuggestionsProvidersBuilder(
+                 components.core.icons,
+                 engineForSpeculativeConnects,
+                 showEditSuggestion = false,
+-                suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++//                suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+             )
+ 
+         defaultCombinedHistoryProvider =
+@@ -90,7 +90,7 @@ class SearchSuggestionsProvidersBuilder(
+                 engine = engineForSpeculativeConnects,
+                 maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
+                 showEditSuggestion = false,
+-                suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++ //               suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+             )
+ 
+         val searchBitmap = suggestionIconProvider.getSearchIconBitmap()
+@@ -301,7 +301,7 @@ class SearchSuggestionsProvidersBuilder(
+                     engine = engineForSpeculativeConnects,
+                     maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
+                     showEditSuggestion = false,
+-                    suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++//                    suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                     resultsUriFilter = filter::shouldIncludeUri,
+                 )
+             } else {
+@@ -316,7 +316,7 @@ class SearchSuggestionsProvidersBuilder(
+                     engine = engineForSpeculativeConnects,
+                     maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
+                     showEditSuggestion = false,
+-                    suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++//                    suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                     resultsUriFilter = filter::shouldIncludeUri,
+                 )
+             } else {
+@@ -428,7 +428,7 @@ class SearchSuggestionsProvidersBuilder(
+                 suggestionIconProvider.getMobileIconDrawable(),
+                 suggestionIconProvider.getTabletIconDrawable(),
+             ),
+-            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++//            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+             resultsUrlFilter = filter?.let { it::shouldIncludeUrl },
+         )
+     }
+@@ -450,7 +450,7 @@ class SearchSuggestionsProvidersBuilder(
+             components.core.icons,
+             suggestionIconProvider.getLocalTabIconDrawable(),
+             excludeSelectedSession = !includeSelectedTab,
+-            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++//            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+             switchToTabDescription = suggestionsStringsProvider.getSwitchToTabDescriptionString(),
+             resultsUriFilter = filter?.let { it::shouldIncludeUri },
+         )
+@@ -474,7 +474,7 @@ class SearchSuggestionsProvidersBuilder(
+             indicatorIcon = suggestionIconProvider.getBookmarkIconDrawable(),
+             engine = engineForSpeculativeConnects,
+             showEditSuggestion = false,
+-            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
++//            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+             resultsUriFilter = filter?.let { it::shouldIncludeUri },
+         )
+     }
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/search/SearchEngineFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/search/SearchEngineFragment.kt
+index e71478723548..a6e3a286622b 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/search/SearchEngineFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/search/SearchEngineFragment.kt
+@@ -45,7 +45,7 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
+         )
+ 
+         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_sponsored_suggestions).apply {
+-            isVisible = context.components.settings.enableFxSuggest
++            isVisible = false
+         }
+         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_nonsponsored_suggestions).apply {
+             isVisible = context.components.settings.enableFxSuggest
+-- 

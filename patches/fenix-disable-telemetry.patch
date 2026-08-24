@@ -1,0 +1,110 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sat, 27 Jun 2026 20:11:41 +0000
+Subject: [PATCH] Fenix - Disable telemetry
+
+Disables telemetry at build-time and removes various data reporting mechanisms.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/build.gradle b/mobile/android/fenix/app/build.gradle
+index d867c71ba500..8b6f86ab1ecc 100644
+--- a/mobile/android/fenix/app/build.gradle
++++ b/mobile/android/fenix/app/build.gradle
+@@ -334,8 +334,8 @@ androidComponents {
+ // -------------------------------------------------------------------------------------------------
+ 
+ android.defaultConfig.with {
+-    buildConfigField 'boolean', 'CRASH_REPORTING', 'true'
+-    buildConfigField 'boolean', 'TELEMETRY', 'true'
++    buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
++    buildConfigField 'boolean', 'TELEMETRY', 'false'
+ 
+     // Reading the sentry token from a local file (if it exists). In a release task on taskcluster it will be available.
+     buildConfigField 'String', 'SENTRY_TOKEN', 'null'
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
+index 5e4c49f47ff8..5d4f324f1fdb 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
+@@ -65,14 +65,14 @@ import mozilla.components.feature.recentlyclosed.RecentlyClosedTabsStorage
+ import mozilla.components.feature.search.SearchApplicationName
+ import mozilla.components.feature.search.SearchDeviceType
+ import mozilla.components.feature.search.SearchUpdateChannel
+-import mozilla.components.feature.search.middleware.AdsTelemetryMiddleware
++// import mozilla.components.feature.search.middleware.AdsTelemetryMiddleware
+ import mozilla.components.feature.search.middleware.SearchExtraParams
+ import mozilla.components.feature.search.middleware.SearchMiddleware
+ import mozilla.components.feature.search.region.RegionMiddleware
+ import mozilla.components.feature.search.storage.SearchEngineSelectorConfig
+-import mozilla.components.feature.search.telemetry.SerpTelemetryRepository
++/* import mozilla.components.feature.search.telemetry.SerpTelemetryRepository
+ import mozilla.components.feature.search.telemetry.ads.AdsTelemetry
+-import mozilla.components.feature.search.telemetry.incontent.InContentTelemetry
++import mozilla.components.feature.search.telemetry.incontent.InContentTelemetry */
+ import mozilla.components.feature.session.HistoryDelegate
+ import mozilla.components.feature.session.middleware.LastAccessMiddleware
+ import mozilla.components.feature.session.middleware.undo.UndoMiddleware
+@@ -146,7 +146,7 @@ import org.mozilla.fenix.summarization.onboarding.FenixSummarizationFeatureConfi
+ import org.mozilla.fenix.summarization.onboarding.SummarizationFeatureDiscoveryConfiguration
+ import org.mozilla.fenix.tabgroups.storage.redux.middleware.TabGroupMiddleware
+ import org.mozilla.fenix.tabgroups.storage.repository.DefaultTabGroupRepository
+-import org.mozilla.fenix.telemetry.TelemetryMiddleware
++// import org.mozilla.fenix.telemetry.TelemetryMiddleware
+ import org.mozilla.fenix.translations.TranslationsEnabledSettings
+ import org.mozilla.fenix.utils.Settings.DeleteDownloadBehavior
+ import org.mozilla.fenix.utils.getUndoDelay
+@@ -381,7 +381,7 @@ class Core(
+                     ),
+                 ),
+                 ReaderViewMiddleware(),
+-                TelemetryMiddleware(context, context.components.settings, metrics, crashReporter),
++//                TelemetryMiddleware(context, context.components.settings, metrics, crashReporter),
+                 ThumbnailsMiddleware(thumbnailStorage),
+                 UndoMiddleware(context.components.settings.getUndoDelay()),
+                 RegionMiddleware(context, locationService),
+@@ -394,7 +394,7 @@ class Core(
+                 ),
+                 RecordingDevicesMiddleware(context, context.components.notificationsDelegate),
+                 PromptMiddleware(),
+-                AdsTelemetryMiddleware(adsTelemetry),
++//                AdsTelemetryMiddleware(adsTelemetry),
+                 LastMediaAccessMiddleware(),
+                 HistoryMetadataMiddleware(historyMetadataService),
+                 ProtectionsDashboardMiddleware(protectionsStorage),
+@@ -446,7 +446,7 @@ class Core(
+             // Install the "icons" WebExtension to automatically load icons for every visited website.
+             icons.install(engine, this)
+ 
+-            CoroutineScope(Dispatchers.Main).launch {
++/*            CoroutineScope(Dispatchers.Main).launch {
+                 val readJson = { context.assets.readJSONObject("search/search_telemetry_v2.json") }
+                 val providerList = withContext(Dispatchers.IO) {
+                     SerpTelemetryRepository(
+@@ -459,7 +459,7 @@ class Core(
+                 adsTelemetry.install(engine, this@apply, providerList)
+                 // Install the "cookies" WebExtension and tracks user interaction with SERPs.
+                 searchTelemetry.install(engine, this@apply, providerList)
+-            }
++            } */
+ 
+             WebNotificationFeature(
+                 context,
+@@ -532,7 +532,7 @@ class Core(
+         )
+     }
+ 
+-    val metrics by lazyMonitored {
++/*    val metrics by lazyMonitored {
+         context.components.analytics.metrics
+     }
+ 
+@@ -542,7 +542,7 @@ class Core(
+ 
+     val searchTelemetry by lazyMonitored {
+         InContentTelemetry()
+-    }
++    } */
+ 
+     /**
+      * Shortcut component for managing shortcuts on the device home screen.
+-- 
