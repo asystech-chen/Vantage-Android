@@ -44,9 +44,14 @@ while [[ $# -gt 0 ]]; do
       # 输出控制交给 aria2c
       shift
       ;;
-    --*)
-      # 丢弃 curl 专属参数（--ciphers/--proto/--tls13-ciphers 等，aria2c 不识别）
-      shift
+    --*|-*)
+      # 丢弃 curl 专属参数；若下一个参数不像选项（不以 - 开头），连同其值一起丢弃
+      # 例: --proto =https → 吞掉 --proto 和 =https；--tlsv1.2 → 只吞自己
+      if [[ $# -gt 1 && "${2}" != -* ]]; then
+        shift 2
+      else
+        shift
+      fi
       ;;
     *)
       if [[ -z "${url}" ]]; then
