@@ -1469,19 +1469,18 @@ function get_python() {
     fi
 
     if [[ -d "${IRONFOX_PYTHON_DIR}" ]]; then
-      echo_red_text "Found existing installation at ${IRONFOX_PYTHON_DIR}"
-      echo 'Continuing will remove this installation and related data'
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
-      echo
-      if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
+      # Python 源已存在：venv 完整才跳过；venv 缺失/损坏或 FORCE 则重建环境
+      if [[ -x "${IRONFOX_PYENV}/bin/python3" ]] && [[ -z "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+        echo_green_text "Python environment is complete at ${IRONFOX_PYENV_DIR}. Skipping."
+        return 0
+      else
+        echo_red_text "Python environment is incomplete (missing/validating ${IRONFOX_PYENV}). Re-creating..."
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directories
         backup_dir "${IRONFOX_PYENV_DIR}"
         backup_dir "${IRONFOX_PYTHON_DIR}"
         backup_dir "${IRONFOX_UV_CACHE}"
         backup_dir "${IRONFOX_UV_LOCAL}/python-cache"
         backup_dir "${IRONFOX_UV_PYTHON}"
-      else
-        return 0
       fi
     fi
   fi
