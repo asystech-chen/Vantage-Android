@@ -72,7 +72,7 @@ fi
 for f in "${files[@]}"; do
   # 未完成下载残留清理（aria2c 中断时留下 .aria2 控制文件）
   if [[ -f "${dest}/${f}.aria2" ]]; then
-    echo "Removing incomplete download: ${f}"
+    echo "Removing incomplete download: ${f}" >&2
     rm -f "${dest}/${f}" "${dest}/${f}.aria2"
   fi
 
@@ -80,7 +80,7 @@ for f in "${files[@]}"; do
   if [[ ! -f "${dest}/${f}" ]]; then
     need_download=1
   elif [[ ! -f "${dest}/${f}.sha256" ]]; then
-    echo "Missing checksum file for ${f}, re-downloading..."
+    echo "Missing checksum file for ${f}, re-downloading..." >&2
     rm -f "${dest}/${f}"
     need_download=1
   else
@@ -88,16 +88,16 @@ for f in "${files[@]}"; do
     actual=$(sha256sum "${dest}/${f}" | awk '{print $1}')
     expected=$(awk '{print $1}' "${dest}/${f}.sha256")
     if [[ "${actual}" == "${expected}" ]]; then
-      echo "Already present and valid: ${f}"
+      echo "Already present and valid: ${f}" >&2
     else
-      echo "Checksum mismatch for ${f}, re-downloading..."
+      echo "Checksum mismatch for ${f}, re-downloading..." >&2
       rm -f "${dest}/${f}" "${dest}/${f}.sha256"
       need_download=1
     fi
   fi
 
   if [[ "${need_download}" == 1 ]]; then
-    echo "Downloading ${f}..."
+    echo "Downloading ${f}..." >&2
     "${aria2c_cmd}" -x 16 -s 16 -k 1M \
       --file-allocation=none --max-tries=5 --retry-wait=3 --connect-timeout=30 --timeout=120 \
       --console-log-level=warn --summary-interval=0 --auto-file-renaming=false --allow-overwrite=true \
@@ -117,7 +117,7 @@ for f in "${files[@]}"; do
   fi
 done
 
-echo "All Rust dist files ready at ${dest}"
+echo "All Rust dist files ready at ${dest}" >&2
 
 echo "export RUSTUP_DIST_SERVER=\"file://${dest}\""
 # 注意：RUSTUP_UPDATE_ROOT 不设（保持官方）——rustup-init 二进制仍走官方下载（aria2c 16 线程 S3，很快）
