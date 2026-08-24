@@ -25,10 +25,6 @@ set -euo pipefail
 # Set-up our environment
 source $(dirname $0)/env.sh
 
-if [[ -n "${FDROID_BUILD+x}" ]]; then
-  source "${IRONFOX_ENV_FDROID}"
-fi
-
 # Include utilities
 source "${IRONFOX_UTILS}"
 

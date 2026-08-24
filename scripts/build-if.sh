@@ -702,10 +702,6 @@ if [[ "${IRONFOX_BUILD_GECKO}" == 1 ]]; then
   fi
 fi
 
-if [[ -n "${FDROID_BUILD+x}" ]]; then
-  source "${IRONFOX_ENV_FDROID}"
-fi
-
 source "${IRONFOX_CARGO_ENV}"
 source "${IRONFOX_NVM_ENV}"
 source "${IRONFOX_PYENV}"

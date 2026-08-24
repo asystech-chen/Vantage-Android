@@ -58,10 +58,6 @@ export IRONFOX_APK_ARTIFACTS
 export IRONFOX_APKS_ARTIFACTS
 export IRONFOX_LOG_ARTIFACTS
 
-# Environment configuration
-readonly IRONFOX_ENV_FDROID="${IRONFOX_SCRIPTS}/env_fdroid.sh"
-export IRONFOX_ENV_FDROID
-
 # Build environment configuration
 readonly IRONFOX_ENV_BUILD="${IRONFOX_SCRIPTS}/env_build.sh"
 export IRONFOX_ENV_BUILD
