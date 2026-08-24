@@ -471,13 +471,11 @@ function clone_repo() {
   fi
 
   if [[ -d "${path}" ]]; then
-    echo_red_text "'${path}' already exists"
-    read -p "Do you want to re-clone this repository? [y/N] " -n 1 -r
-    echo
-    if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-      echo_red_text "Removing ${path}..."
+    if [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+      echo_red_text "'${path}' already exists. IRONFOX_FORCE_DOWNLOAD is set, re-cloning..."
       "${IRONFOX_RM}" -rf "${path}"
     else
+      echo_green_text "'${path}' already exists. Skipping clone."
       return 0
     fi
   fi
@@ -528,17 +526,18 @@ function download() {
   fi
 
   if [[ -f "${file}" ]]; then
-    echo_red_text "${file} already exists."
-    read -p "Do you want to re-download? [y/N] " -n 1 -r
-    echo
-    if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-      # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our file
-      echo_red_text "Removing ${file}..."
+    # File already exists: validate checksum, skip download if valid
+    if [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+      echo_red_text "${file} already exists. IRONFOX_FORCE_DOWNLOAD is set, re-downloading..."
       backup_file "${file}"
-    else
+    elif validate_checksum "${expected_sha512sum}" "${file}" 'sha512sum'; then
+      echo_green_text "${file} already exists with a valid checksum. Skipping download."
       unset IRONFOX_DOWNLOAD_EXIT
       IRONFOX_PERFORM_POST_DOWNLOAD=0
       return 0
+    else
+      echo_red_text "${file} already exists, but checksum validation failed. Re-downloading..."
+      backup_file "${file}"
     fi
   fi
 
