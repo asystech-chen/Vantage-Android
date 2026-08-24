@@ -137,8 +137,8 @@ elif [[ "${IRONFOX_OS}" == 'fedora' ]]; then
     zlib-devel || error_fn
   echo
 
-# Ubuntu
-elif [[ "${IRONFOX_OS}" == 'ubuntu' ]]; then
+# Ubuntu / Debian
+elif [[ "${IRONFOX_OS}" == 'ubuntu' ]] || [[ "${IRONFOX_OS}" == 'debian' ]]; then
   # Ensure we're up to date
   sudo apt update || error_fn
   echo
@@ -167,6 +167,6 @@ else
   echo_red_text "Apologies, your operating system is currently not supported."
   echo_red_text "If you think this is a mistake, please let us know!"
   echo_green_text "https://codeberg.org/ironfox-oss/bugs/issues"
-  echo_red_text "Otherwise, please try again on a system running the latest version of Fedora, macOS, secureblue, or Ubuntu."
+  echo_red_text "Otherwise, please try again on a system running the latest version of Fedora, macOS, secureblue, Ubuntu, or Debian."
   exit 1
 fi

@@ -90,7 +90,7 @@ docker pull registry.gitlab.com/ironfox-oss/ironfox:v135-0
 
 ### 不使用 Docker 构建
 
-**注意**：目前支持在最新版本的 **`Fedora`**、**`macOS`**、**`secureblue`** 和 **`Ubuntu`** 系统上构建。其他操作系统/环境可能有效，效果因人而异。
+**注意**：目前支持在最新版本的 **`Fedora`**、**`macOS`**、**`secureblue`**、**`Ubuntu`** 和 **`Debian`** 系统上构建。其他操作系统/环境可能有效，效果因人而异。
 
 **注意**：**`macOS`** 用户必须先安装 [Homebrew](https://brew.sh/) _（如果尚未安装）_，然后再执行以下步骤。
 
@@ -112,7 +112,7 @@ brew install git
 
 `secureblue` 默认已安装 `git`，无需任何操作。
 
-**`Ubuntu`**：
+**`Ubuntu` / **`Debian`**：
 
 ```sh
 sudo apt install git

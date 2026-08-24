@@ -25,7 +25,7 @@
 - **Android SDK**：platform 37.1 / build-tools 37.0.0（见 `scripts/versions.sh`）
 - **Android NDK**：r29
 - **JDK**：17 / 21 / 25（构建脚本按需自动选择）
-- **Git**、**Docker**（推荐）或 Fedora / Ubuntu / macOS / secureblue 构建环境
+- **Git**、**Docker**（推荐）或 Fedora / Ubuntu / Debian / macOS / secureblue 构建环境
 - 至少 100GB 可用磁盘空间、16GB+ 内存
 
 ### 源码结构
@@ -534,7 +534,7 @@ configs/mozconfigs/
 ./scripts/run-docker.sh -- ./scripts/build.sh bundle
 ```
 
-**本地构建**（Fedora / Ubuntu / macOS / secureblue）：
+**本地构建**（Fedora / Ubuntu / Debian / macOS / secureblue）：
 
 ```bash
 # 1. 初始化环境（安装依赖）
