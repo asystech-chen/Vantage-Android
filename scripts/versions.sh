@@ -3,9 +3,10 @@
 
 # Firefox
 # Version: 154.0 (RELEASE)
-# https://github.com/mozilla-firefox/firefox
+# https://archive.mozilla.org/pub/firefox/releases/154.0/source/firefox-154.0.source.tar.xz
+# (aria2c 多线程 36MiB/s，远快于 GitHub codeload 单连接)
 readonly IRONFOX_GECKO_COMMIT='8f8652c14a965821e863e1b1b9152d77f3bf96cc'
-readonly IRONFOX_GECKO_SHA512SUM='4c8b851b5fa2334056d80d1a1ff7132729711e43449de6b4c98502ff6285bec5bd86f07f429b3a372f65de01ae17eac7c9688b097cc62d240b0063e104813787'
+readonly IRONFOX_GECKO_SHA512SUM='a77cd664982add628681167ef5939bd6bf0c894aa380cca66f9b5fb265947874d1e819d42264f1dd07c843f8a6dc020da268cca9ff1e064fca019de91af9b996'
 readonly IRONFOX_GECKO_VERSION='154.0'
 
 # IronFox

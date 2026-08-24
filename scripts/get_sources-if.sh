@@ -1078,7 +1078,7 @@ function get_cbindgen() {
 # Get Firefox (Gecko/mozilla-central)
 function get_firefox() {
   echo_red_text 'Downloading Firefox...'
-  download_and_extract 'gecko' "https://github.com/mozilla-firefox/firefox/archive/${IRONFOX_GECKO_COMMIT}.tar.gz" "${IRONFOX_GECKO}" "${IRONFOX_GECKO_SHA512SUM}"
+  download_and_extract 'gecko' "https://archive.mozilla.org/pub/firefox/releases/${IRONFOX_GECKO_VERSION}/source/firefox-${IRONFOX_GECKO_VERSION}.source.tar.xz" "${IRONFOX_GECKO}" "${IRONFOX_GECKO_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Firefox at ${IRONFOX_GECKO}"
   fi
