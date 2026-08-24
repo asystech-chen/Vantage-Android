@@ -1636,7 +1636,15 @@ function get_rust() {
 
   echo_red_text 'Downloading Rust...'
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    download "https://raw.githubusercontent.com/rust-lang/rustup/${IRONFOX_RUSTUP_COMMIT}/rustup-init.sh" "${IRONFOX_DOWNLOADS}/rustup-init.sh" "${IRONFOX_RUSTUP_SHA512SUM}"
+    # rustup-init 二进制（static.rust-lang.org S3，raw.githubusercontent.com 国内不稳定）
+    if [[ "${IRONFOX_PLATFORM}" == 'linux' ]] && [[ "${IRONFOX_PLATFORM_ARCH}" == 'x86-64' ]]; then
+      local -r rustup_url="https://static.rust-lang.org/rustup/archive/${IRONFOX_RUSTUP_VERSION}/x86_64-unknown-linux-gnu/rustup-init"
+      local -r rustup_sha="${IRONFOX_RUSTUP_BIN_SHA512SUM_LINUX_X86_64}"
+    else
+      echo_red_text "ERROR: rustup-init binary checksum not defined for ${IRONFOX_PLATFORM}-${IRONFOX_PLATFORM_ARCH}" >&2
+      exit 1
+    fi
+    download "${rustup_url}" "${IRONFOX_DOWNLOADS}/rustup-init" "${rustup_sha}"
   else
     # Tell `download` to return instead of exit upon an error
     IRONFOX_DOWNLOAD_EXIT=0
@@ -1646,7 +1654,15 @@ function get_rust() {
     local IRONFOX_CARGO_INSTALL_FAILED=0
     local IRONFOX_DOWNLOAD_FAILED=0
 
-    download "https://raw.githubusercontent.com/rust-lang/rustup/${IRONFOX_RUSTUP_COMMIT}/rustup-init.sh" "${IRONFOX_DOWNLOADS}/rustup-init.sh" "${IRONFOX_RUSTUP_SHA512SUM}" || local IRONFOX_DOWNLOAD_FAILED=1
+    # rustup-init 二进制（static.rust-lang.org S3，raw.githubusercontent.com 国内不稳定）
+    if [[ "${IRONFOX_PLATFORM}" == 'linux' ]] && [[ "${IRONFOX_PLATFORM_ARCH}" == 'x86-64' ]]; then
+      local -r rustup_url="https://static.rust-lang.org/rustup/archive/${IRONFOX_RUSTUP_VERSION}/x86_64-unknown-linux-gnu/rustup-init"
+      local -r rustup_sha="${IRONFOX_RUSTUP_BIN_SHA512SUM_LINUX_X86_64}"
+    else
+      echo_red_text "ERROR: rustup-init binary checksum not defined for ${IRONFOX_PLATFORM}-${IRONFOX_PLATFORM_ARCH}" >&2
+      exit 1
+    fi
+    download "${rustup_url}" "${IRONFOX_DOWNLOADS}/rustup-init" "${rustup_sha}" || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-up, clean-up, and exit
     if [[ "${IRONFOX_DOWNLOAD_FAILED}" == 1 ]]; then
@@ -1661,7 +1677,8 @@ function get_rust() {
       eval "$("${IRONFOX_SCRIPTS}/fetch-rust-dist.sh" "${IRONFOX_RUST_VERSION}")"
 
       echo_red_text 'Installing Rust...'
-      /bin/bash -x "${IRONFOX_DOWNLOADS}/rustup-init.sh" -y --no-modify-path --no-update-default-toolchain --profile=minimal || local IRONFOX_CARGO_INSTALL_FAILED=1
+      chmod +x "${IRONFOX_DOWNLOADS}/rustup-init"
+      "${IRONFOX_DOWNLOADS}/rustup-init" -y --no-modify-path --no-update-default-toolchain --profile=minimal || local IRONFOX_CARGO_INSTALL_FAILED=1
 
       # If the install failed, restore our back-ups, clean-up, and exit
       if [[ "${IRONFOX_CARGO_INSTALL_FAILED}" == 1 ]]; then

@@ -231,8 +231,10 @@ readonly IRONFOX_RUST_VERSION='1.97.1'
 # Version: 1.29.0
 # https://github.com/rust-lang/rustup/tags
 readonly IRONFOX_RUSTUP_COMMIT='28d1352dbcb436d3111c3594b9e1588e94950464'
-readonly IRONFOX_RUSTUP_SHA512SUM='cd9fd64eabc989f19a6a16e9cd2caabe935082e2715b9308150f86d3839c99eb9a7e42a7ef6730c6d956d870638ee89a04dd9e7e14fe243cc165967b7f2918da'
 readonly IRONFOX_RUSTUP_VERSION='1.29.0'
+# rustup-init 二进制（static.rust-lang.org/rustup/archive，替代 raw.githubusercontent.com 的 .sh）
+# Linux x86_64 实测 19MB @ 11MiB/s
+readonly IRONFOX_RUSTUP_BIN_SHA512SUM_LINUX_X86_64='245e554e5203df236a4794e595f647bb9019b8664efb1ba1c7faef8f362f9dcc31c7b1475d54e75425962341180612db32ee94cc45256977ea631d75628f43db'
 
 # s3cmd
 # https://github.com/s3tools/s3cmd
