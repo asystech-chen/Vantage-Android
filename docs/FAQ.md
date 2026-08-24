@@ -1,3 +1,3 @@
-# Frequently Asked Questions
+# 常见问题
 
-This page has moved to [`https://ironfoxoss.org/docs/faq/`](https://ironfoxoss.org/docs/faq/).
+此页面已迁移到 [`https://ironfoxoss.org/docs/faq/`](https://ironfoxoss.org/docs/faq/)。

@@ -11,226 +11,223 @@
 <div align="center">
 
 [<img src="assets/accrescent.png"
-  alt="Get it on Accrescent"
+  alt="在 Accrescent 上获取"
   height="80">](https://accrescent.app/app/org.ironfoxoss.ironfox)
 [<img src="assets/f-droid.png"
-  alt="Get it on F-Droid"
+  alt="在 F-Droid 上获取"
   height="80">](fdroidrepos://fdroid.ironfoxoss.org/fdroid/repo?fingerprint=C5E291B5A571F9C8CD9A9799C2C94E02EC9703948893F2CA756D67B94204F904)
 [<img src="assets/obtainium.png"
-  alt="Get it on Obtainium"
+  alt="在 Obtainium 上获取"
   height="80">](obtainium://app/%7B%22id%22%3A%22org.ironfoxoss.ironfox%22%2C%22url%22%3A%22https%3A%2F%2Freleases.ironfoxoss.org%2Fironfox%2Freleases%2Fupdates.json%22%2C%22author%22%3A%22releases.ironfoxoss.org%22%2C%22name%22%3A%22App%22%2C%22preferredApkIndex%22%3A0%2C%22additionalSettings%22%3A%22%7B%5C%22intermediateLink%5C%22%3A%5B%5D%2C%5C%22customLinkFilterRegex%5C%22%3A%5C%22%5C%22%2C%5C%22filterByLinkText%5C%22%3Afalse%2C%5C%22matchLinksOutsideATags%5C%22%3Afalse%2C%5C%22skipSort%5C%22%3Afalse%2C%5C%22reverseSort%5C%22%3Afalse%2C%5C%22sortByLastLinkSegment%5C%22%3Afalse%2C%5C%22versionExtractWholePage%5C%22%3Atrue%2C%5C%22requestHeader%5C%22%3A%5B%7B%5C%22requestHeader%5C%22%3A%5C%22User-Agent%3A%20Mozilla%2F5.0%20(Linux%3B%20Android%2010%3B%20K)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F114.0.0.0%20Mobile%20Safari%2F537.36%5C%22%7D%5D%2C%5C%22defaultPseudoVersioningMethod%5C%22%3A%5C%22partialAPKHash%5C%22%2C%5C%22trackOnly%5C%22%3Afalse%2C%5C%22versionExtractionRegEx%5C%22%3A%5C%22%5C%5C%5C%22org%5C%5C%5C%5C.ironfoxoss%5C%5C%5C%5C.ironfox%5C%5C%5C%22%5C%5C%5C%5Cs*%3A%5C%5C%5C%5Cs*%5C%5C%5C%5C%7B.*%3F%5C%5C%5C%22version%5C%5C%5C%22%5C%5C%5C%5Cs*%3A%5C%5C%5C%5Cs*%5C%5C%5C%22(%5B%5E%5C%5C%5C%22%5D%2B)%5C%5C%5C%22%5C%22%2C%5C%22matchGroupToUse%5C%22%3A%5C%221%5C%22%2C%5C%22versionDetection%5C%22%3Atrue%2C%5C%22useVersionCodeAsOSVersion%5C%22%3Afalse%2C%5C%22apkFilterRegEx%5C%22%3A%5C%22universal%5C%22%2C%5C%22invertAPKFilter%5C%22%3Afalse%2C%5C%22autoApkFilterByArch%5C%22%3Atrue%2C%5C%22appName%5C%22%3A%5C%22IronFox%5C%22%2C%5C%22appAuthor%5C%22%3A%5C%22IronFox%20OSS%5C%22%2C%5C%22shizukuPretendToBeGooglePlay%5C%22%3Afalse%2C%5C%22allowInsecure%5C%22%3Afalse%2C%5C%22exemptFromBackgroundUpdates%5C%22%3Afalse%2C%5C%22skipUpdateNotifications%5C%22%3Afalse%2C%5C%22about%5C%22%3A%5C%22Private%2C%20secure%2C%20user%20first%20web%20browser%20for%20Android.%5C%22%2C%5C%22refreshBeforeDownload%5C%22%3Atrue%7D%22%2C%22overrideSource%22%3A%22HTML%22%7D)
 
 </div>
 
-**<div align="center">F-Droid QR Code:</div>**
+**<div align="center">F-Droid 二维码：</div>**
 
 <div align="center">
 
 [<img src="assets/f-droid_qr.png"
-  alt="Get it on F-Droid"
+  alt="在 F-Droid 上获取"
   height="300">](fdroidrepos://fdroid.ironfoxoss.org/fdroid/repo?fingerprint=C5E291B5A571F9C8CD9A9799C2C94E02EC9703948893F2CA756D67B94204F904)
 
 </div>
 
 ---
 
-IronFox is a fork of [Divested Computing Group](https://divested.dev/)'s [Mull Browser](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull), based on [Mozilla Firefox](https://www.firefox.com/). **Our goal is to continue the legacy of Mull by providing a free and open source, privacy and security-oriented web browser for daily use.**
+IronFox 是 [Divested Computing Group](https://divested.dev/) 的 [Mull 浏览器](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull) 的一个分支，基于 [Mozilla Firefox](https://www.firefox.com/)。**我们的目标是延续 Mull 的遗产，提供一款免费开源、注重隐私与安全的日常网页浏览器。**
 
 > [!TIP]
-> Find a bug? Encounter an annoying problem? Have a tip, idea, or suggestion you'd like to share? **Please file any issues, bug reports, and suggestions over at [our unified issue tracker](https://codeberg.org/ironfox-oss/bugs/issues)!**
+> 发现了 Bug？遇到了烦人的问题？有想分享的技巧、想法或建议？**请在我们的[统一问题跟踪器](https://codeberg.org/ironfox-oss/bugs/issues)提交任何问题、Bug 报告和建议！**
 
 > [!IMPORTANT]
->**⚠️ All users are HIGHLY recommended to take a look at our [documentation](https://ironfoxoss.org/docs/), ESPECIALLY the [Limitations](https://ironfoxoss.org/docs/limitations/) and [Frequently Asked Questions](https://ironfoxoss.org/docs/faq/) pages!**
+> **⚠️ 强烈建议所有用户阅读我们的[文档](https://ironfoxoss.org/docs/)，尤其是[限制](https://ironfoxoss.org/docs/limitations/)和[常见问题](https://ironfoxoss.org/docs/faq/)页面！**
 
-> While IronFox's home is [GitLab](https://gitlab.com/ironfox-oss/IronFox), this repo is also mirrored to both [Codeberg](https://codeberg.org/ironfox-oss/IronFox) and [GitHub](https://github.com/ironfox-oss/IronFox).
+> IronFox 的主仓库在 [GitLab](https://gitlab.com/ironfox-oss/IronFox)，同时镜像到 [Codeberg](https://codeberg.org/ironfox-oss/IronFox) 和 [GitHub](https://github.com/ironfox-oss/IronFox)。
 
-### Want to join the IronFox Community?
+### 想加入 IronFox 社区吗？
 
-We'd love to see you over on [Matrix](https://matrix.to/#/#ironfox:unredacted.org) _(Recommended)_ and [Discord](https://discord.gg/zbdzfRVyVh)!
+欢迎来到 [Matrix](https://matrix.to/#/#ironfox:unredacted.org) _（推荐）_ 和 [Discord](https://discord.gg/zbdzfRVyVh) 与我们交流！
 
-## App Installation
+## 应用安装
 
-For details and step-by-step instructions on how to install IronFox, see our [Download](https://ironfoxoss.org/download/) page.
+关于如何安装 IronFox 的详细信息和分步说明，请参阅[下载](https://ironfoxoss.org/download/)页面。
 
-## App Verification
+## 应用验证
 
-**Package ID**: `org.ironfoxoss.ironfox`
+**包 ID**：`org.ironfoxoss.ironfox`
 
-**Package ID** *(Nightly)*: `org.ironfoxoss.ironfox.nightly`
+**包 ID** _（Nightly）_：`org.ironfoxoss.ironfox.nightly`
 
-**SHA-256 Hash of Signing Certificate**:
+**签名证书的 SHA-256 哈希**：
 
 ```text
 C5:E2:91:B5:A5:71:F9:C8:CD:9A:97:99:C2:C9:4E:02:EC:97:03:94:88:93:F2:CA:75:6D:67:B9:42:04:F9:04
 ```
 
-## Building
+## 构建
 
-IronFox makes it easier (and faster) to build the project locally.
-For example, prebuilt versions of wasi-sdk sysroot and llvm-project are used instead of building them locally. ~~F-Droid builds still build those from source.~~
+IronFox 让本地构建项目变得更容易（也更快）。例如，使用预构建的 wasi-sdk sysroot 和 llvm-project，而不是在本地构建它们。~~F-Droid 构建仍然从源码构建这些。~~
 
-**It is recommended to use the Docker image for building IronFox.**
+**建议使用 Docker 镜像构建 IronFox。**
 
-### Build with Docker
+### 使用 Docker 构建
 
-Pull the docker image with :
+拉取 docker 镜像：
 
 ```sh
 docker pull registry.gitlab.com/ironfox-oss/ironfox:latest
 ```
 
-You can also use the `main` tag to pull the image which was used to
-build the latest IronFox release. Or you can use exact version names
-to pull images for those versions.
+你也可以使用 `main` 标签拉取用于构建最新 IronFox 发布的镜像。或者使用精确的版本名拉取对应版本的镜像。
 
-For example:
+例如：
 
 ```
 docker pull registry.gitlab.com/ironfox-oss/ironfox:v135-0
 ```
 
-Then, you need to [set up the source files](#get--patch-sources).
+然后，你需要[设置源文件](#获取源文件)。
 
-### Build without Docker
+### 不使用 Docker 构建
 
-**NOTE**: Currently, builds on the latest versions of **`Fedora`**, **`macOS`**, **`secureblue`**, and **`Ubuntu`** systems are supported. YMMV for other operating systems/environments.
+**注意**：目前支持在最新版本的 **`Fedora`**、**`macOS`**、**`secureblue`** 和 **`Ubuntu`** 系统上构建。其他操作系统/环境可能有效，效果因人而异。
 
-**NOTE**: **`macOS`** users must install [Homebrew](https://brew.sh/) *(if is not already installed)* before following the steps below.
+**注意**：**`macOS`** 用户必须先安装 [Homebrew](https://brew.sh/) _（如果尚未安装）_，然后再执行以下步骤。
 
-First, if you haven't already installed it, you'll want to install `git` for your platform of choice:
+首先，如果尚未安装 `git`，请为你的平台安装：
 
-**`Fedora`**:
+**`Fedora`**：
 
 ```sh
 sudo dnf install git
 ```
 
-**`macOS`**:
+**`macOS`**：
 
 ```sh
 brew install git
 ```
 
-**`secureblue`**:
+**`secureblue`**：
 
-`git` is already installed on secureblue by default, so nothing to do here.
+`secureblue` 默认已安装 `git`，无需任何操作。
 
-**`Ubuntu`**:
+**`Ubuntu`**：
 
 ```sh
 sudo apt install git
 ```
 
-After you've successfully installed `git`, the first thing you'll need to do is clone IronFox's source repository:
+成功安装 `git` 后，你需要做的第一件事是克隆 IronFox 的源代码仓库：
 
-*(`--depth=1` is specified below to reduce the size of the cloned repository, it can be removed if preferred)*
+_（下面指定了 `--depth=1` 以减少克隆仓库的大小，如果愿意可以移除）_
 
 ```sh
 git clone --depth=1 git@gitlab.com:ironfox-oss/IronFox.git IronFox
 ```
 
-You should now navigate to the root of IronFox's source directory, and run the `bootstrap` script:
+现在，你应该导航到 IronFox 源目录的根目录，并运行 `bootstrap` 脚本：
 
-*(The `bootstrap` script will set-up and install dependencies required to build IronFox on your system)*
+_（`bootstrap` 脚本将设置并安装构建 IronFox 所需的依赖）_
 
 ```sh
 cd IronFox
 ./scripts/bootstrap.sh
 ```
 
-#### Get sources
+#### 获取源文件
 
-Still from the root of IronFox's source directory, you should now run the `get_sources` script to download the external sources required for building IronFox:
+仍然在 IronFox 源目录的根目录，现在你应该运行 `get_sources` 脚本下载构建 IronFox 所需的外部源：
 
-**NOTE**: If you need to fetch sources for a different version of a dependency than the version IronFox is currently using, you'll need to modify `scripts/versions.sh` **BEFORE** running the `get_sources` script.
+**注意**：如果需要获取与 IronFox 当前使用的不同版本的依赖源，你需要在运行 `get_sources` 脚本**之前**修改 `scripts/versions.sh`。
 
-_This may take some time depending on your network speed..._
+_这可能需要一些时间，取决于你的网络速度……_
 
 ```sh
 ./scripts/get_sources.sh
 ```
 
-#### Preparing sources
+#### 准备源文件
 
-You now need to patch/prepare your newly downloaded sources with the `prebuild` script:
+现在你需要使用 `prebuild` 脚本对新下载的源进行打补丁/准备：
 
-_This must be run once after getting your sources._
+_获取源文件后必须运行一次。_
 
 ```sh
 ./scripts/prebuild.sh
 ```
 
-#### Build
+#### 构建
 
-Finally, you can start the build process with:
+最后，你可以开始构建过程：
 
 ```sh
-./scripts/build.sh <build-variant>
+./scripts/build.sh <构建变体>
 ```
 
-Where `<build-variant>` specifies the variant to build, and is **one** of the following:
+其中 `<构建变体>` 指定要构建的变体，是以下**之一**：
 
-- `arm` - 32-bit ARM (`armeabi-v7a`)
-- `arm64` - 64-bit ARM (`arm64-v8a`)
-- `x86_64` - 64-bit x86
-- `bundle` - Android App Bundle (AAB) with all supported ABIs
+- `arm` - 32 位 ARM（`armeabi-v7a`）
+- `arm64` - 64 位 ARM（`arm64-v8a`）
+- `x86_64` - 64 位 x86
+- `bundle` - 包含所有受支持 ABI 的 Android App Bundle（AAB）
 
-In addition to the `AAB`, the `bundle` target also produces APKs for each architecture *(`arm`, `arm64`, and `x86_64`)*, as well as a universal APK containing all architectures.
+除了 `AAB` 之外，`bundle` 目标还会为每个架构生成 APK _（`arm`、`arm64` 和 `x86_64`）_，以及包含所有架构的 universal APK。
 
 ### Linting
 
-IronFox is largely driven by shell scripts, which are checked with [`shellcheck`](https://www.shellcheck.net/) *(static analysis)* and [`shfmt`](https://github.com/mvdan/sh) *(formatting)*. These run automatically in CI *(the `lint-scripts` job)* and are enforced there — a lint failure stops the pipeline before any build starts.
+IronFox 主要由 shell 脚本驱动，使用 [`shellcheck`](https://www.shellcheck.net/) _（静态分析）_ 和 [`shfmt`](https://github.com/mvdan/sh) _（格式化）_ 检查。这些在 CI _（`lint-scripts` 作业）_ 中自动运行并强制执行——lint 失败会在任何构建开始前停止流水线。
 
-`./scripts/get_sources.sh` installs both tools and enables a git pre-commit hook *(via `core.hooksPath`)* that lints your staged scripts before each commit. The hook is a convenience and can be bypassed with `git commit --no-verify`; CI remains the source of truth.
+`./scripts/get_sources.sh` 会安装这两个工具，并启用一个 git pre-commit 钩子 _（通过 `core.hooksPath`）_，在每次提交前对你的暂存脚本进行 lint。该钩子只是为了方便，可以用 `git commit --no-verify` 绕过；CI 仍然是权威来源。
 
-If you are providing your own copies of `shellcheck` and `shfmt` *(instead of getting them from `./scripts/get_sources.sh`)*, after setting `IRONFOX_SHELLCHECK_DIR` and `IRONFOX_SHFMT_DIR` to the appropriate directories, you can set-up the pre-commit hook directly by running:
+如果你提供自己的 `shellcheck` 和 `shfmt` 副本 _（而不是从 `./scripts/get_sources.sh` 获取）_，在将 `IRONFOX_SHELLCHECK_DIR` 和 `IRONFOX_SHFMT_DIR` 设置为适当的目录后，你可以直接运行以下命令设置 pre-commit 钩子：
 
 ```sh
 ./scripts/lint-hook.sh
 ```
 
-To run the linting checks manually:
+手动运行 lint 检查：
 
 ```sh
 ./scripts/lint.sh
 ```
 
-To auto-fix formatting:
+自动修复格式：
 
 ```sh
 git ls-files 'scripts/*.sh' | xargs shfmt -w
 ```
 
-Linter configuration lives in `.shellcheckrc` *(checks)* and `.editorconfig` *(formatting)*.
+Linter 配置位于 `.shellcheckrc` _（检查）_ 和 `.editorconfig` _（格式化）_ 中。
 
-## Translation
+## 翻译
 
-IronFox is translated using Weblate. Visit the [Weblate project](https://hosted.weblate.org/engage/ironfox/) to help with translations.
+IronFox 使用 Weblate 进行翻译。访问 [Weblate 项目](https://hosted.weblate.org/engage/ironfox/) 帮助翻译。
 
-## Licensing
+## 许可
 
-The scripts are licensed under the [GNU Affero General Public License, version 3 or later](COPYING).
+脚本根据 [GNU Affero General Public License, version 3 or later](COPYING) 许可。
 
-Changes to patches are licensed according to the header in the files this patch adds or modifies ([Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) or [MPL 2.0](https://www.mozilla.org/MPL/)).
+对补丁的更改根据补丁添加或修改的文件头中的许可 _（[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) 或 [MPL 2.0](https://www.mozilla.org/MPL/)）_ 许可。
 
-[Phoenix](https://phoenix.celenity.dev/) is licensed under the [GNU General Public License v3.0 or later](https://spdx.org/licenses/GPL-3.0-or-later.html) _(`GPL-3.0-or-later`)_ where applicable. See [`COPYING`](https://phoenix.celenity.dev/COPYING.txt).
+[Phoenix](https://phoenix.celenity.dev/) 在适用情况下根据 [GNU General Public License v3.0 or later](https://spdx.org/licenses/GPL-3.0-or-later.html) _（`GPL-3.0-or-later`）_ 许可。参见 [`COPYING`](https://phoenix.celenity.dev/COPYING.txt)。
 
-`a-c-liberate.patch`, `a-s-localize-maven.patch`, and `fenix-liberate.patch` are adapted from [Fennec F-Droid](https://gitlab.com/relan/fennecbuild). See [`COPYING`](https://gitlab.com/relan/fennecbuild/-/blob/master/COPYING).
+`a-c-liberate.patch`、`a-s-localize-maven.patch` 和 `fenix-liberate.patch` 改编自 [Fennec F-Droid](https://gitlab.com/relan/fennecbuild)。参见 [`COPYING`](https://gitlab.com/relan/fennecbuild/-/blob/master/COPYING)。
 
-`gecko-configure-ublock-origin.patch`, `gecko-devtools-bypass.patch`, `gecko-prevent-exposing-name-and-vendor-to-extensions.patch`, and `gecko-rs-blocker.patch` are adapted from [LibreWolf](https://librewolf.net/). See [LibreWolf License and Disclaimers](https://librewolf.net/license-disclaimers/).
+`gecko-configure-ublock-origin.patch`、`gecko-devtools-bypass.patch`、`gecko-prevent-exposing-name-and-vendor-to-extensions.patch` 和 `gecko-rs-blocker.patch` 改编自 [LibreWolf](https://librewolf.net/)。参见 [LibreWolf License and Disclaimers](https://librewolf.net/license-disclaimers/)。
 
-`fenix-disable-network-connectivity-monitoring.patch`, `gecko-disable-network-id.patch`, `gecko-prevent-fingerprinting-via-chrome-resources.patch`, `geckoview-ironfox-settings-support-spoof-english.patch`, and `glean-noop.patch` are adapted from the [Tor Project](https://www.torproject.org/). See [`LICENSE`](https://gitlab.torproject.org/tpo/core/tor/-/raw/HEAD/LICENSE).
+`fenix-disable-network-connectivity-monitoring.patch`、`gecko-disable-network-id.patch`、`gecko-prevent-fingerprinting-via-chrome-resources.patch`、`geckoview-ironfox-settings-support-spoof-english.patch` 和 `glean-noop.patch` 改编自 [Tor Project](https://www.torproject.org/)。参见 [`LICENSE`](https://gitlab.torproject.org/tpo/core/tor/-/raw/HEAD/LICENSE)。
 
-Our current set of default wallpapers are taken from [Fennec F-Droid](https://gitlab.com/relan/fennecmedia), and are available under the [Unsplash license](https://gitlab.com/relan/fennecmedia#licenses).
+我们当前默认的壁纸集取自 [Fennec F-Droid](https://gitlab.com/relan/fennecmedia)，可在 [Unsplash license](https://gitlab.com/relan/fennecmedia#licenses) 下使用。
 
-## Notices
+## 声明
 
-Mozilla Firefox is a trademark of The Mozilla Foundation.
+Mozilla Firefox 是 Mozilla 基金会的商标。
 
-This is not an officially supported Mozilla product. IronFox is in no way affiliated with Mozilla.
+这不是 Mozilla 官方支持的产品。IronFox 与 Mozilla 没有任何关联。
 
-IronFox is not sponsored or endorsed by Mozilla.
+IronFox 不受 Mozilla 赞助或认可。
 
-IronFox is not associated with DivestOS, Divested Computing Group, or Mull in any manner.
+IronFox 与 DivestOS、Divested Computing Group 或 Mull 没有任何关联。
 
-Firefox source code is available at [https://github.com/mozilla-firefox/firefox](https://github.com/mozilla-firefox/firefox).
+Firefox 源代码可在 [https://github.com/mozilla-firefox/firefox](https://github.com/mozilla-firefox/firefox) 获取。

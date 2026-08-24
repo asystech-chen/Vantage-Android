@@ -1,3 +1,3 @@
-# IronFox Nightly vs. Release
+# IronFox Nightly 与 Release
 
-This page has moved to [`https://ironfoxoss.org/docs/nightly-vs-release/`](https://ironfoxoss.org/docs/nightly-vs-release/).
+此页面已迁移到 [`https://ironfoxoss.org/docs/nightly-vs-release/`](https://ironfoxoss.org/docs/nightly-vs-release/)。

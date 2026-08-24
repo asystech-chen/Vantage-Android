@@ -1,3 +1,3 @@
-# Limitations
+# 限制
 
-This page has moved to [`https://ironfoxoss.org/docs/limitations/`](https://ironfoxoss.org/docs/limitations/).
+此页面已迁移到 [`https://ironfoxoss.org/docs/limitations/`](https://ironfoxoss.org/docs/limitations/)。

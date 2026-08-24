@@ -1,3 +1,3 @@
-# Docs
+# 文档
 
-IronFox documentation has moved to [`https://ironfoxoss.org/docs/`](https://ironfoxoss.org/docs/).
+IronFox 文档已迁移到 [`https://ironfoxoss.org/docs/`](https://ironfoxoss.org/docs/)。

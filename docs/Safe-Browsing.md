@@ -1,3 +1,3 @@
-# Safe Browsing
+# 安全浏览
 
-This page has moved to [`https://ironfoxoss.org/docs/safe-browsing/`](https://ironfoxoss.org/docs/safe-browsing/).
+此页面已迁移到 [`https://ironfoxoss.org/docs/safe-browsing/`](https://ironfoxoss.org/docs/safe-browsing/)。
