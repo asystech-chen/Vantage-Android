@@ -115,11 +115,11 @@ if [[ "${IRONFOX_OS}" == 'osx' ]] || [[ "${IRONFOX_OS}" == 'secureblue' ]]; then
 # Fedora
 elif [[ "${IRONFOX_OS}" == 'fedora' ]]; then
   # Ensure we're up to date
-  sudo dnf update -y --refresh || error_fn
+  /usr/bin/sudo dnf update -y --refresh || error_fn
   echo
 
   # Install our dependencies...
-  sudo dnf install -y \
+  /usr/bin/sudo dnf install -y \
     cmake \
     clang \
     gawk \
@@ -140,12 +140,12 @@ elif [[ "${IRONFOX_OS}" == 'fedora' ]]; then
 # Ubuntu / Debian
 elif [[ "${IRONFOX_OS}" == 'ubuntu' ]] || [[ "${IRONFOX_OS}" == 'debian' ]]; then
   # Ensure we're up to date
-  sudo apt update || error_fn
+  /usr/bin/sudo apt update || error_fn
   echo
-  sudo apt upgrade || error_fn
+  /usr/bin/sudo apt upgrade || error_fn
   echo
 
-  sudo apt install -y \
+  /usr/bin/sudo apt install -y \
     apt-transport-https \
     cmake \
     clang-18 \
