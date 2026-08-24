@@ -536,7 +536,8 @@ function download() {
     elif validate_checksum "${expected_sha512sum}" "${file}" 'sha512sum'; then
       echo_green_text "${file} already exists with a valid checksum. Skipping download."
       unset IRONFOX_DOWNLOAD_EXIT
-      IRONFOX_PERFORM_POST_DOWNLOAD=0
+      # 注意：不设 PERFORM_POST_DOWNLOAD=0，保留环境搭建步骤
+      # （如 pip 安装/venv 创建等 post-download 动作，调用方负责幂等）
       return 0
     else
       echo_red_text "${file} already exists, but checksum validation failed. Re-downloading..."
