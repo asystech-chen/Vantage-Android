@@ -664,15 +664,14 @@ function download_and_extract() {
   fi
 
   if [[ -d "${path}" ]] && [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
-    echo_red_text "'${path}' already exists"
-    REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
-    echo
-    if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
+    if [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+      echo_red_text "'${path}' already exists. IRONFOX_FORCE_DOWNLOAD is set, re-downloading..."
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
       echo_red_text "Removing ${path}..."
       backup_dir "${path}"
     else
-      IRONFOX_PERFORM_POST_DOWNLOAD=0
+      echo_green_text "'${path}' already exists. Skipping."
+      # 注意：不设 PERFORM_POST_DOWNLOAD=0，保留环境搭建步骤（调用方负责幂等）
       return 0
     fi
   fi
