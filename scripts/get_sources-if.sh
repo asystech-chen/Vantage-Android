@@ -1618,12 +1618,16 @@ function get_pyyaml() {
 # Get + set-up rust/cargo
 function get_rust() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_CARGO_HOME}" ]]; then
-    # 已有 Rust 安装：rustc 可用则跳过，缺失/损坏则重装，FORCE 强制重装
-    if [[ -x "${IRONFOX_CARGO_HOME}/bin/rustc" ]] && [[ -z "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
-      echo_green_text "Rust is already installed at ${IRONFOX_CARGO_HOME}. Skipping."
+    # 已有 Rust 安装：验证 rustc 可执行且版本匹配；版本不匹配/缺失/损坏/FORCE 则重装
+    local rustc_version=''
+    if [[ -x "${IRONFOX_CARGO_HOME}/bin/rustc" ]]; then
+      rustc_version="$("${IRONFOX_CARGO_HOME}/bin/rustc" --version 2>/dev/null | "${IRONFOX_AWK}" '{print $2}' || true)"
+    fi
+    if [[ "${rustc_version}" == "${IRONFOX_RUST_VERSION}" ]] && [[ -z "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+      echo_green_text "Rust ${rustc_version} is already installed at ${IRONFOX_CARGO_HOME}. Skipping."
       return 0
     else
-      echo_red_text "Found existing installation at ${IRONFOX_CARGO_HOME}. Re-installing..."
+      echo_red_text "Found existing installation at ${IRONFOX_CARGO_HOME} (rustc=${rustc_version:-missing}, want=${IRONFOX_RUST_VERSION}). Re-installing..."
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directories
       backup_dir "${IRONFOX_CARGO_HOME}"
       backup_dir "${IRONFOX_RUSTUP_HOME}"
@@ -1652,6 +1656,10 @@ function get_rust() {
       "${IRONFOX_RM}" -rf "${IRONFOX_EXTERNAL}/temp"
       exit 1
     elif [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
+      # 预下载 Rust dist（aria2c 多线程）→ RUSTUP_DIST_SERVER=file:// 离线安装（避免 rustup 慢速下载）
+      echo_red_text 'Pre-fetching Rust dist files (aria2c)...'
+      eval "$("${IRONFOX_SCRIPTS}/fetch-rust-dist.sh" "${IRONFOX_RUST_VERSION}")"
+
       echo_red_text 'Installing Rust...'
       /bin/bash -x "${IRONFOX_DOWNLOADS}/rustup-init.sh" -y --no-modify-path --no-update-default-toolchain --profile=minimal || local IRONFOX_CARGO_INSTALL_FAILED=1
 
