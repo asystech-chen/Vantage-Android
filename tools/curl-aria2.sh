@@ -94,6 +94,15 @@ aria2_args=(
   -d "${dir}"
   -o "${file}"
 )
+# GitHub release 对高并发连接有限制（-x 16 会报 connection refused），降到 8
+case "${url}" in
+  *github.com*|*githubusercontent.com*|*githubassets.com*|*githubreleaseassets*)
+    aria2_args[0]="-x"
+    aria2_args[1]=8
+    aria2_args[2]="-s"
+    aria2_args[3]=8
+    ;;
+esac
 if [[ -n "${user_agent+x}" ]]; then
   aria2_args+=(--user-agent "${user_agent}")
 fi
