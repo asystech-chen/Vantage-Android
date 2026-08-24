@@ -693,7 +693,7 @@ if [[ "${IRONFOX_BUILD_GECKO}" == 1 ]]; then
       echo_red_text "ERROR: IRONFOX_SB_GAPI_KEY_FILE has not been set! Aborting..."
       exit 1
     fi
-    read -p 'Do you want to continue [y/N] ' -n 1 -r
+    REPLY='y'
     echo ''
     if ! [[ "${REPLY}" =~ ^[Yy]$ ]]; then
       echo_red_text 'Aborting...'

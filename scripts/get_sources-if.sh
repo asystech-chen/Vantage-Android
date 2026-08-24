@@ -474,9 +474,12 @@ function clone_repo() {
     if [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
       echo_red_text "'${path}' already exists. IRONFOX_FORCE_DOWNLOAD is set, re-cloning..."
       "${IRONFOX_RM}" -rf "${path}"
-    else
-      echo_green_text "'${path}' already exists. Skipping clone."
+    elif [[ -d "${path}/.git" ]]; then
+      echo_green_text "'${path}' already exists (complete). Skipping clone."
       return 0
+    else
+      echo_red_text "'${path}' already exists, but is incomplete (no .git). Re-cloning..."
+      "${IRONFOX_RM}" -rf "${path}"
     fi
   fi
 
@@ -661,7 +664,7 @@ function download_and_extract() {
 
   if [[ -d "${path}" ]] && [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
     echo_red_text "'${path}' already exists"
-    read -p "Do you want to re-download? [y/N] " -n 1 -r
+    REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -732,7 +735,7 @@ function get_androguard() {
 
     if [[ -d "${IRONFOX_ANDROGUARD}" ]]; then
       echo_red_text "androguard is already installed at ${IRONFOX_ANDROGUARD}"
-      read -p "Do you want to re-download it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -780,7 +783,7 @@ function get_android_sdk() {
     if [[ -d "${IRONFOX_ANDROID_SDK}" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}"
       echo 'Continuing will remove this installation and related data'
-      read -p "Do you still want to continue? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -905,7 +908,7 @@ function get_android_sdk_platform() {
     if [[ -d "${IRONFOX_ANDROID_SDK}/platforms/android-${IRONFOX_ANDROID_SDK_PLATFORM_VERSION}" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}/platforms/android-${IRONFOX_ANDROID_SDK_PLATFORM_VERSION}"
       echo 'Continuing will remove this installation and related data'
-      read -p "Do you still want to continue? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -951,7 +954,7 @@ function get_android_sdk_platform_36() {
     if [[ -d "${IRONFOX_ANDROID_SDK}/platforms/android-36" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}/platforms/android-36"
       echo 'Continuing will remove this installation and related data'
-      read -p "Do you still want to continue? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -1053,7 +1056,7 @@ function get_cbindgen() {
 
     if [[ -d "${IRONFOX_CARGO_HOME}/bin/cbindgen" ]]; then
       echo_red_text "cbindgen is already installed at ${IRONFOX_CARGO_HOME}/bin/cbindgen."
-      read -p "Do you want to re-download it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1120,7 +1123,7 @@ function get_glean_parser() {
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_PYENV_DIR}/bin/glean_parser" ]]; then
     echo_red_text "Glean Parser is already installed at ${IRONFOX_PYENV_DIR}/bin/glean_parser"
-    read -p "Do you want to re-download it? [y/N] " -n 1 -r
+    REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
     echo
     if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
       return 0
@@ -1169,7 +1172,7 @@ function get_gyp() {
 
     if [[ -d "${IRONFOX_PYENV_DIR}/bin/gyp" ]]; then
       echo_red_text "GYP is already installed at ${IRONFOX_PYENV_DIR}/bin/gyp"
-      read -p "Do you want to re-download it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1363,7 +1366,7 @@ function get_node() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
     if [[ -d "${IRONFOX_NVM}" ]]; then
       echo_red_text "The Node.js environment is already set-up at ${IRONFOX_NVM}"
-      read -p "Do you want to re-create it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         "${IRONFOX_RM}" -rf "${IRONFOX_NPM_CACHE}" "${IRONFOX_NVM}" "${IRONFOX_ROOT}/node_modules"
@@ -1457,7 +1460,7 @@ function get_python() {
 
     if [[ -d "${IRONFOX_PYENV_DIR}" ]]; then
       echo_red_text "The Python environment is already set-up at ${IRONFOX_PYENV_DIR}"
-      read -p "Do you want to re-create it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -1468,7 +1471,7 @@ function get_python() {
     if [[ -d "${IRONFOX_PYTHON_DIR}" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_PYTHON_DIR}"
       echo 'Continuing will remove this installation and related data'
-      read -p "Do you still want to continue? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directories
@@ -1591,7 +1594,7 @@ function get_pyyaml() {
 
     if [[ -d "${IRONFOX_PYYAML}" ]]; then
       echo_red_text "PyYAML is already downloaded at ${IRONFOX_PYYAML}"
-      read -p "Do you want to re-download it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1616,16 +1619,15 @@ function get_pyyaml() {
 # Get + set-up rust/cargo
 function get_rust() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_CARGO_HOME}" ]]; then
-    echo_red_text "Found existing installation at ${IRONFOX_CARGO_HOME}"
-    echo 'Continuing will remove this installation and related data'
-    read -p "Do you still want to continue? [y/N] " -n 1 -r
-    echo
-    if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
+    # 已有 Rust 安装：rustc 可用则跳过，缺失/损坏则重装，FORCE 强制重装
+    if [[ -x "${IRONFOX_CARGO_HOME}/bin/rustc" ]] && [[ -z "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+      echo_green_text "Rust is already installed at ${IRONFOX_CARGO_HOME}. Skipping."
+      return 0
+    else
+      echo_red_text "Found existing installation at ${IRONFOX_CARGO_HOME}. Re-installing..."
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directories
       backup_dir "${IRONFOX_CARGO_HOME}"
       backup_dir "${IRONFOX_RUSTUP_HOME}"
-    else
-      return 0
     fi
   fi
 
@@ -1700,7 +1702,7 @@ function get_s3cmd() {
 
     if [[ -d "${IRONFOX_S3CMD}" ]]; then
       echo_red_text "s3cmd is already installed at ${IRONFOX_S3CMD}"
-      read -p "Do you want to re-download it? [y/N] " -n 1 -r
+      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1874,7 +1876,7 @@ function get_uv() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_UV_DIR}" ]]; then
     echo_red_text "Found existing installation at ${IRONFOX_UV_DIR}"
     echo 'Continuing will remove this installation and related data'
-    read -p "Do you still want to continue? [y/N] " -n 1 -r
+    REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directories
