@@ -83,6 +83,24 @@ dir="${output%/*}"
 file="${output##*/}"
 mkdir -p "${dir}"
 
+# GitHub release 下载 → 国内镜像优先（中科大/清华/上交 + GitHub 兜底），aria2c 多镜像并行拉分片
+# 规则: github.com/OWNER/REPO/releases/download/TAG/FILE → MIRROR/OWNER/REPO/TAG/FILE
+aria2_urls=("${url}")
+if [[ "${url}" == *"/releases/download/"* ]]; then
+  if [[ "${url}" == "https://github.com/"* ]]; then
+    rest="${url#https://github.com/}"                # OWNER/REPO/releases/download/TAG/FILE
+    rest="${rest/\/releases\/download\//\/}"        # OWNER/REPO/TAG/FILE
+    rest="${rest//+/%2B}"                            # 文件名里的 + 号 URL 编码（镜像服务器要求）
+    aria2_urls=(
+      "https://mirrors.ustc.edu.cn/github-release/${rest}"
+      "https://mirrors.tuna.tsinghua.edu.cn/github-release/${rest}"
+      "https://mirrors.sjtug.sjtu.edu.cn/github-release/${rest}"
+      "${url}"
+    )
+    echo "Using GitHub release mirrors (USTC/TUNA/SJTU + GitHub) for ${file}" >&2
+  fi
+fi
+
 aria2_args=(
   -x 16
   -s 16
@@ -111,7 +129,7 @@ esac
 if [[ -n "${user_agent+x}" ]]; then
   aria2_args+=(--user-agent "${user_agent}")
 fi
-aria2_args+=("${url}")
+aria2_args+=("${aria2_urls[@]}")
 
 if ! "${aria2c_cmd}" "${aria2_args[@]}"; then
   # 模拟 curl --remove-on-error：失败时清理残留文件
