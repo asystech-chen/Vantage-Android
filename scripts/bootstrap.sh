@@ -35,6 +35,14 @@ function error_fn() {
 echo_green_text "Installing dependencies..."
 echo_green_text "Detected operating system: ${IRONFOX_OS}"
 
+# Privilege escalation: root (CI/Docker) uses commands directly, non-root uses absolute-path sudo
+## (env_common.sh unsets PATH, so we can't use bare `sudo`)
+if [[ "${EUID}" == 0 ]]; then
+  readonly IRONFOX_SUDO=''
+else
+  readonly IRONFOX_SUDO='/usr/bin/sudo'
+fi
+
 # macOS, secureblue
 ## (Both use Homebrew)
 if [[ "${IRONFOX_OS}" == 'osx' ]] || [[ "${IRONFOX_OS}" == 'secureblue' ]]; then
@@ -115,11 +123,11 @@ if [[ "${IRONFOX_OS}" == 'osx' ]] || [[ "${IRONFOX_OS}" == 'secureblue' ]]; then
 # Fedora
 elif [[ "${IRONFOX_OS}" == 'fedora' ]]; then
   # Ensure we're up to date
-  /usr/bin/sudo dnf update -y --refresh || error_fn
+  ${IRONFOX_SUDO} dnf update -y --refresh || error_fn
   echo
 
   # Install our dependencies...
-  /usr/bin/sudo dnf install -y \
+  ${IRONFOX_SUDO} dnf install -y \
     cmake \
     clang \
     gawk \
@@ -140,12 +148,12 @@ elif [[ "${IRONFOX_OS}" == 'fedora' ]]; then
 # Ubuntu / Debian
 elif [[ "${IRONFOX_OS}" == 'ubuntu' ]] || [[ "${IRONFOX_OS}" == 'debian' ]]; then
   # Ensure we're up to date
-  /usr/bin/sudo apt update || error_fn
+  ${IRONFOX_SUDO} apt update || error_fn
   echo
-  /usr/bin/sudo apt upgrade || error_fn
+  ${IRONFOX_SUDO} apt upgrade || error_fn
   echo
 
-  /usr/bin/sudo apt install -y \
+  ${IRONFOX_SUDO} apt install -y \
     apt-transport-https \
     cmake \
     clang-18 \

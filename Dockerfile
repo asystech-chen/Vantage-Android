@@ -8,6 +8,7 @@ RUN dnf update -y --refresh
 
 # Install our dependencies...
 RUN dnf install -y \
+  aria2 \
   cmake \
   clang \
   gawk \

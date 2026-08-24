@@ -57,13 +57,25 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+aria2c_cmd=""
+for candidate in /usr/bin/aria2c /usr/local/bin/aria2c /bin/aria2c; do
+  if [[ -x "${candidate}" ]]; then
+    aria2c_cmd="${candidate}"
+    break
+  fi
+done
+if [[ -z "${aria2c_cmd}" ]]; then
+  echo "curl-aria2 wrapper: aria2c not found (install with: sudo apt install aria2)" >&2
+  exit 1
+fi
+
 if [[ -z "${url}" || -z "${output}" ]]; then
   echo "curl-aria2 wrapper: missing url or output" >&2
   exit 1
 fi
 
-dir="$(dirname "${output}")"
-file="$(basename "${output}")"
+dir="${output%/*}"
+file="${output##*/}"
 mkdir -p "${dir}"
 
 aria2_args=(
@@ -87,7 +99,7 @@ if [[ -n "${user_agent+x}" ]]; then
 fi
 aria2_args+=("${url}")
 
-if ! aria2c "${aria2_args[@]}"; then
+if ! "${aria2c_cmd}" "${aria2_args[@]}"; then
   # 模拟 curl --remove-on-error：失败时清理残留文件
   rm -f "${output}" 2>/dev/null
   exit 1
