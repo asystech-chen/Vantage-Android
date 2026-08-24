@@ -83,6 +83,33 @@ dir="${output%/*}"
 file="${output##*/}"
 mkdir -p "${dir}"
 
+# GitLab raw/archive → API 路径（gitlab.com 的 -/raw 和 -/archive 被 Cloudflare 挑战返回 403，API 可用）
+# raw:     gitlab.com/GROUP/PROJ/-/raw/COMMIT/PATH → api/v4/projects/GROUP%2FPROJ/repository/files/PATH%2Fenc/raw?ref=COMMIT
+# archive: gitlab.com/GROUP/PROJ/-/archive/COMMIT/x.tar.gz → api/v4/projects/GROUP%2FPROJ/repository/archive.tar.gz?sha=COMMIT
+if [[ "${url}" == "https://gitlab.com/"* ]]; then
+  if [[ "${url}" == *"/-/raw/"* ]]; then
+    rest="${url#https://gitlab.com/}"
+    proj="${rest%%/-/raw/*}"
+    tail="${rest#*/-/raw/}"
+    commit="${tail%%/*}"
+    path="${tail#*/}"
+    url="https://gitlab.com/api/v4/projects/${proj//\//%2F}/repository/files/${path//\//%2F}/raw?ref=${commit}"
+    echo "GitLab raw → API: ${file}" >&2
+  elif [[ "${url}" == *"/-/archive/"* ]]; then
+    rest="${url#https://gitlab.com/}"
+    proj="${rest%%/-/archive/*}"
+    tail="${rest#*/-/archive/}"
+    commit="${tail%%/*}"
+    url="https://gitlab.com/api/v4/projects/${proj//\//%2F}/repository/archive.tar.gz?sha=${commit}"
+    echo "GitLab archive → API: ${file}" >&2
+    # API archive 是动态打包，多连接 Range 不稳定 → 单连接下载
+    aria2_args[0]="-x"
+    aria2_args[1]=1
+    aria2_args[2]="-s"
+    aria2_args[3]=1
+  fi
+fi
+
 # GitHub release 下载 → 国内镜像优先（中科大/清华/上交 + GitHub 兜底），aria2c 多镜像并行拉分片
 # 规则: github.com/OWNER/REPO/releases/download/TAG/FILE → MIRROR/OWNER/REPO/TAG/FILE
 aria2_urls=("${url}")
@@ -114,6 +141,7 @@ aria2_args=(
   --summary-interval=0
   --auto-file-renaming=false
   --allow-overwrite=true
+  --user-agent "Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0"
   -d "${dir}"
   -o "${file}"
 )
