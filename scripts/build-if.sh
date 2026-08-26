@@ -703,7 +703,17 @@ if [[ "${IRONFOX_BUILD_GECKO}" == 1 ]]; then
 fi
 
 source "${IRONFOX_CARGO_ENV}"
-source "${IRONFOX_NVM_ENV}"
+# source nvm.sh 前临时移走 ~/.npmrc（nvm 检测到 prefix/globalconfig 会 exit 11 杀脚本）；source 后立即恢复
+# （构建后续通过绝对路径 IRONFOX_NPM/IRONFOX_NODE 调用，不依赖 nvm 的持续状态）
+NPMRC_BAK=""
+if [[ -f "${HOME}/.npmrc" ]]; then
+  NPMRC_BAK="${HOME}/.npmrc.vantage-bak"
+  /bin/mv "${HOME}/.npmrc" "${NPMRC_BAK}" 2> /dev/null || NPMRC_BAK=""
+fi
+source "${IRONFOX_NVM_ENV}" || true
+if [[ -n "${NPMRC_BAK}" ]]; then
+  /bin/mv "${NPMRC_BAK}" "${HOME}/.npmrc" 2> /dev/null || true
+fi
 source "${IRONFOX_PYENV}"
 
 # Include version info

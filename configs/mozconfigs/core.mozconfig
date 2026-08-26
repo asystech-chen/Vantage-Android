@@ -16,7 +16,7 @@ export AUTOCLOBBER=1
 
 ## Configure allowed Gradle maven repositories
 # shellcheck disable=SC2140
-export GRADLE_MAVEN_REPOSITORIES="file://${IRONFOX_MAVEN_LOCAL}/","https://plugins.gradle.org/m2/","https://maven.google.com/"
+export GRADLE_MAVEN_REPOSITORIES="https://maven.aliyun.com/repository/google","https://maven.aliyun.com/repository/gradle-plugin","https://maven.aliyun.com/repository/central","file://${IRONFOX_MAVEN_LOCAL}/","https://plugins.gradle.org/m2/","https://maven.google.com/"
 
 ## Disable android:debuggable
 ac_add_options --disable-android-debuggable
