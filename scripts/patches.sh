@@ -28,13 +28,13 @@ declare -a GLEAN_PATCH_FILES
 declare -a UP_AC_PATCH_FILES
 
 # shellcheck disable=SC2207
-readonly PATCH_FILES=($("${IRONFOX_YQ}" '.patches[].file' "$("${IRONFOX_DIRNAME}" "$0")"/patches.yaml))
+readonly PATCH_FILES=($("${IRONFOX_YQ}" -r '.patches[].file' "$("${IRONFOX_DIRNAME}" "$0")"/patches.yaml))
 # shellcheck disable=SC2207
-readonly AS_PATCH_FILES=($("${IRONFOX_YQ}" '.patches[].file' "$("${IRONFOX_DIRNAME}" "$0")"/a-s-patches.yaml))
+readonly AS_PATCH_FILES=($("${IRONFOX_YQ}" -r '.patches[].file' "$("${IRONFOX_DIRNAME}" "$0")"/a-s-patches.yaml))
 # shellcheck disable=SC2207
-readonly GLEAN_PATCH_FILES=($("${IRONFOX_YQ}" '.patches[].file' "$("${IRONFOX_DIRNAME}" "$0")"/glean-patches.yaml))
+readonly GLEAN_PATCH_FILES=($("${IRONFOX_YQ}" -r '.patches[].file' "$("${IRONFOX_DIRNAME}" "$0")"/glean-patches.yaml))
 # shellcheck disable=SC2207
-readonly UP_AC_PATCH_FILES=($("${IRONFOX_YQ}" '.patches[].file' "${IRONFOX_UP_AC}"/patches/patches.yaml))
+readonly UP_AC_PATCH_FILES=($("${IRONFOX_YQ}" -r '.patches[].file' "${IRONFOX_UP_AC}"/patches/patches.yaml))
 
 function check_patch() {
   local -r patch="${IRONFOX_PATCHES}/$1"

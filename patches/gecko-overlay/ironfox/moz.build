@@ -2,7 +2,6 @@ DIRS += [
   "about",
   "core",
   "dumps",
-  "enterprisepolicies",
   "locales",
   "prefs",
   "themes/global",

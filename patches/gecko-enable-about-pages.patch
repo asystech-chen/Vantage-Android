@@ -33,19 +33,6 @@ index 8173a460fd10..1ca5b4feaffa 100644
      about_pages.append('pdf')
      about_pages.append('translations')
  if buildconfig.substs['MOZ_WIDGET_TOOLKIT'] == 'android':
-diff --git a/toolkit/components/moz.build b/toolkit/components/moz.build
-index 1435813505f2..17da3590af64 100644
---- a/toolkit/components/moz.build
-+++ b/toolkit/components/moz.build
-@@ -113,7 +113,7 @@ if CONFIG["MOZ_BUILD_APP"] != "mobile/android":
- if CONFIG["BUILD_CTYPES"]:
-     DIRS += ["ctypes"]
- 
--DIRS += ["autocomplete", "printingui", "satchel", "captivedetect"]
-+DIRS += ["aboutpdf", "autocomplete", "printingui", "satchel", "captivedetect"]
- 
- if CONFIG["OS_TARGET"] != "Android":
-     DIRS += ["terminator"]
 diff --git a/toolkit/modules/ActorManagerParent.sys.mjs b/toolkit/modules/ActorManagerParent.sys.mjs
 index 8cab331f21d9..b7f30660f194 100644
 --- a/toolkit/modules/ActorManagerParent.sys.mjs
