@@ -50,13 +50,7 @@
 
 ## 构建
 
-IronFox 让本地构建项目变得更容易（也更快）。例如，使用预构建的 wasi-sdk sysroot 和 llvm-project，而不是在本地构建它们。~~F-Droid 构建仍然从源码构建这些。~~
-
-**建议使用 Docker 镜像构建 IronFox。**
-
-### 使用 Docker 构建
-
-你也可以使用 `main` 标签拉取用于构建最新 IronFox 发布的镜像。或者使用精确的版本名拉取对应版本的镜像。
+Vantage 继承 IronFox 的构建体系：使用预构建的 wasi-sdk sysroot 和 llvm-project，而不是在本地构建它们，让本地构建项目变得更容易。
 
 ### 不使用 Docker 构建
 
@@ -156,7 +150,7 @@ Vantage 当前构建验证目标为 `arm64`（主流手机全覆盖）。
 4. **GitLab 源**：curl-aria2 包装器已自动处理 GitLab 的 Cloudflare 拦截（raw/archive 重写为 API 路径、archive 优先走 GitHub 镜像）；对打包产物与官方 SHA512 不一致的仓库（Phoenix/prebuilds/unifiedpush-ac）已改为 git 浅克隆指定 commit。
 5. **编译机配置**：实测 8 vCPU / 16GB 内存即可完成 arm64 全链路构建（gradle 阶段约 10 分钟；GeckoView C++/Rust 编译耗时数小时）。
 
-构建成功验证：`build/outputs/apk/` 下应出现 `ironfox-<版本>-<abi>-debug-signed.apk`。
+构建成功验证：`build/outputs/apk/` 下应出现对应 ABI 的已签名 APK。
 
 更多构建踩坑记录见 [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md)。
 
