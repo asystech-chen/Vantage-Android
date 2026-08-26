@@ -174,6 +174,18 @@ _获取源文件后必须运行一次。_
 
 除了 `AAB` 之外，`bundle` 目标还会为每个架构生成 APK _（`arm`、`arm64` 和 `x86_64`）_，以及包含所有架构的 universal APK。
 
+### 国内网络构建提示
+
+构建过程需要大量访问海外资源（GitHub / GitLab / Google maven / Mozilla 等），国内网络下推荐以下措施：
+
+1. **保持代理在线（重要）**：gradle 依赖解析会访问 `maven.google.com`，即使已配置阿里云镜像，个别依赖仍会回落直连 Google 并卡死（TCP 握手无限重试，表现为构建停在 `> IDLE`）。**必须使用 TUN/透明代理模式**（如 clash 的 TUN 开关），仅设置系统代理（GNOME/gsettings）对 Java/gradle 无效。代理断开后最典型症状：`ss -tn state syn-sent` 看到大量指向 `142.251.x.x`（Google）的连接。
+2. **aria2c 多线程下载**：执行 `./scripts/enable-aria2.sh --env` 并 eval 输出（或直接跑 `./scripts/enable-aria2.sh` 生成 `env_override.sh`），将 curl 下载替换为 aria2c 16 线程，实测 NDK 783MB 28s（约 26MiB/s）。
+3. **Gradle 二进制预下载**：gradlew.py 缓存目录为 `build/gradle/cache/`，网络不稳时可用国内镜像（腾讯云 `mirrors.cloud.tencent.com/gradle/`、华为云 `mirrors.huaweicloud.com/gradle/`）或 aria2c 预先下载对应版本 zip 放入缓存目录，脚本命中缓存后校验 sha256 通过即跳过联网。
+4. **GitLab 源**：curl-aria2 包装器已自动处理 GitLab 的 Cloudflare 拦截（raw/archive 重写为 API 路径、archive 优先走 GitHub 镜像）；对打包产物与官方 SHA512 不一致的仓库（Phoenix/prebuilds/unifiedpush-ac）已改为 git 浅克隆指定 commit。
+5. **编译机配置**：实测 8 vCPU / 16GB 内存即可完成 arm64 全链路构建（gradle 阶段约 10 分钟；GeckoView C++/Rust 编译耗时数小时）。
+
+构建成功验证：`build/outputs/apk/` 下应出现 `ironfox-<版本>-<abi>-debug-signed.apk`。
+
 ### Linting
 
 IronFox 主要由 shell 脚本驱动，使用 [`shellcheck`](https://www.shellcheck.net/) _（静态分析）_ 和 [`shfmt`](https://github.com/mvdan/sh) _（格式化）_ 检查。这些在 CI _（`lint-scripts` 作业）_ 中自动运行并强制执行——lint 失败会在任何构建开始前停止流水线。
