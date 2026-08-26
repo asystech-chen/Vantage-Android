@@ -487,6 +487,37 @@ function clone_repo() {
   "${IRONFOX_GIT}" clone --revision="${revision}" --depth=1 "${url}" "${path}"
 }
 
+# 浅克隆指定 commit（git clone 不支持 --revision；clone_repo 上游参数是 hg 的，从未实际可用）
+# 用于 GitLab 仓库：archive 下载（API 重写后）产物 SHA512 与官方不一致 → 改用 git 自带完整性校验
+function clone_at_commit() {
+  local -r url="$1"
+  local -r path="$2"
+  local -r revision="$3"
+
+  if [[ -d "${path}" ]]; then
+    if [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+      echo_red_text "'${path}' already exists. IRONFOX_FORCE_DOWNLOAD is set, re-cloning..."
+      "${IRONFOX_RM}" -rf "${path}"
+    elif [[ -d "${path}/.git" ]]; then
+      echo_green_text "'${path}' already exists (complete). Skipping clone."
+      return 0
+    else
+      echo_red_text "'${path}' already exists, but is incomplete (no .git). Re-cloning..."
+      "${IRONFOX_RM}" -rf "${path}"
+    fi
+  fi
+
+  echo_red_text "Cloning ${url}::${revision}..."
+  "${IRONFOX_MKDIR}" -p "${path}"
+  "${IRONFOX_GIT}" -C "${path}" init -q
+  "${IRONFOX_GIT}" -C "${path}" remote add origin "${url}"
+  "${IRONFOX_GIT}" -C "${path}" fetch -q --depth=1 origin "${revision}" || {
+    echo_red_text "ERROR: git fetch failed for ${url}::${revision}"
+    exit 1
+  }
+  "${IRONFOX_GIT}" -C "${path}" checkout -q FETCH_HEAD
+}
+
 function download() {
   local -r url="$1"
   local -r file_in="$2"
@@ -735,7 +766,8 @@ function get_androguard() {
 
     if [[ -d "${IRONFOX_ANDROGUARD}" ]]; then
       echo_red_text "androguard is already installed at ${IRONFOX_ANDROGUARD}"
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -783,7 +815,8 @@ function get_android_sdk() {
     if [[ -d "${IRONFOX_ANDROID_SDK}" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}"
       echo 'Continuing will remove this installation and related data'
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -908,7 +941,8 @@ function get_android_sdk_platform() {
     if [[ -d "${IRONFOX_ANDROID_SDK}/platforms/android-${IRONFOX_ANDROID_SDK_PLATFORM_VERSION}" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}/platforms/android-${IRONFOX_ANDROID_SDK_PLATFORM_VERSION}"
       echo 'Continuing will remove this installation and related data'
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -954,7 +988,8 @@ function get_android_sdk_platform_36() {
     if [[ -d "${IRONFOX_ANDROID_SDK}/platforms/android-36" ]]; then
       echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}/platforms/android-36"
       echo 'Continuing will remove this installation and related data'
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -1056,7 +1091,8 @@ function get_cbindgen() {
 
     if [[ -d "${IRONFOX_CARGO_HOME}/bin/cbindgen" ]]; then
       echo_red_text "cbindgen is already installed at ${IRONFOX_CARGO_HOME}/bin/cbindgen."
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1123,7 +1159,8 @@ function get_glean_parser() {
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_PYENV_DIR}/bin/glean_parser" ]]; then
     echo_red_text "Glean Parser is already installed at ${IRONFOX_PYENV_DIR}/bin/glean_parser"
-    REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+    REPLY='n'
+    [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
     echo
     if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
       return 0
@@ -1172,7 +1209,8 @@ function get_gyp() {
 
     if [[ -d "${IRONFOX_PYENV_DIR}/bin/gyp" ]]; then
       echo_red_text "GYP is already installed at ${IRONFOX_PYENV_DIR}/bin/gyp"
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1366,7 +1404,8 @@ function get_node() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
     if [[ -d "${IRONFOX_NVM}" ]]; then
       echo_red_text "The Node.js environment is already set-up at ${IRONFOX_NVM}"
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         "${IRONFOX_RM}" -rf "${IRONFOX_NPM_CACHE}" "${IRONFOX_NVM}" "${IRONFOX_ROOT}/node_modules"
@@ -1378,10 +1417,29 @@ function get_node() {
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_red_text 'Installing Node.js...'
+    # 用户 ~/.npmrc 若有 prefix/globalconfig，nvm 连 `source nvm.sh` 都会 exit 11（加载时自动激活已装版本）
+    # → 先移走 ~/.npmrc（不动内容）再 source，nvm 流程完整跑完，最后恢复；trap EXIT 保证异常/中断时也恢复
+    local npmrc_moved=0
+    if [[ -f "${HOME}/.npmrc" ]]; then
+      /bin/mv "${HOME}/.npmrc" "${HOME}/.npmrc.vantage-bak" 2> /dev/null && npmrc_moved=1
+    fi
+    restore_npmrc() {
+      if [[ "${npmrc_moved}" == "1" && -f "${HOME}/.npmrc.vantage-bak" && ! -f "${HOME}/.npmrc" ]]; then
+        /bin/mv "${HOME}/.npmrc.vantage-bak" "${HOME}/.npmrc" 2> /dev/null || true
+      fi
+    }
+    trap restore_npmrc EXIT
     source "${IRONFOX_NVM_ENV}"
-    nvm install "${IRONFOX_NODE_VERSION}"
-    nvm alias default "${IRONFOX_NODE_VERSION}"
-    nvm use "${IRONFOX_NODE_VERSION}"
+    # 管道强制子 shell：nvm 函数内部若 exit 11，只杀管道左侧，不会杀死 get_sources
+    nvm install "${IRONFOX_NODE_VERSION}" 2>&1 | cat || true
+    nvm alias default "${IRONFOX_NODE_VERSION}" 2>&1 | cat || true
+    nvm use "${IRONFOX_NODE_VERSION}" 2>&1 | cat || true
+    restore_npmrc
+    trap - EXIT
+    if [[ ! -x "${IRONFOX_NVM}/versions/node/v${IRONFOX_NODE_VERSION}/bin/node" ]]; then
+      echo_red_text "ERROR: Node.js ${IRONFOX_NODE_VERSION} installation failed!"
+      exit 1
+    fi
     echo_green_text "SUCCESS: Set-up Node.js environment at ${IRONFOX_NVM}"
   fi
 }
@@ -1399,8 +1457,24 @@ function get_npm() {
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_red_text 'Installing npm...'
-    source "${IRONFOX_NVM_ENV}"
-    "${IRONFOX_NPM}" install -g npm@file:"${IRONFOX_DOWNLOADS}/npm.tgz"
+    # 与 get_node 相同：~/.npmrc 有 prefix 时 source nvm.sh / npm install -g 都会受影响
+    # → 临时移走（不动内容），完事恢复；trap EXIT 保证异常时也恢复
+    local npmrc_moved=0
+    if [[ -f "${HOME}/.npmrc" ]]; then
+      /bin/mv "${HOME}/.npmrc" "${HOME}/.npmrc.vantage-bak" 2> /dev/null && npmrc_moved=1
+    fi
+    restore_npmrc() {
+      if [[ "${npmrc_moved}" == "1" && -f "${HOME}/.npmrc.vantage-bak" && ! -f "${HOME}/.npmrc" ]]; then
+        /bin/mv "${HOME}/.npmrc.vantage-bak" "${HOME}/.npmrc" 2> /dev/null || true
+      fi
+    }
+    trap restore_npmrc EXIT
+    source "${IRONFOX_NVM_ENV}" || true
+    # 管道子 shell 隔离：nvm/npm 函数内部 exit 不会杀死 get_sources；
+    # 同时把 npm 全局包装到 nvm 默认 prefix（避免装到 ~/.npm-global）
+    "${IRONFOX_NPM}" install -g npm@file:"${IRONFOX_DOWNLOADS}/npm.tgz" 2>&1 | cat || true
+    restore_npmrc
+    trap - EXIT
     echo_green_text "SUCCESS: Set-up npm at ${IRONFOX_NPM}"
   fi
 }
@@ -1408,7 +1482,8 @@ function get_npm() {
 # Get Phoenix
 function get_phoenix() {
   echo_red_text 'Downloading Phoenix...'
-  download_and_extract 'phoenix' "https://gitlab.com/celenityy/Phoenix/-/archive/${IRONFOX_PHOENIX_COMMIT}/Phoenix-${IRONFOX_PHOENIX_COMMIT}.tar.gz" "${IRONFOX_PHOENIX}" "${IRONFOX_PHOENIX_SHA512SUM}"
+  # GitLab archive（API 重写）产物 SHA512 与官方不一致、GitHub 镜像可能限流 → git 浅克隆指定 commit（git 自带完整性校验）
+  clone_at_commit "https://gitlab.com/celenityy/Phoenix.git" "${IRONFOX_PHOENIX}" "${IRONFOX_PHOENIX_COMMIT}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Phoenix at ${IRONFOX_PHOENIX}"
   fi
@@ -1438,7 +1513,8 @@ function get_pip() {
 # Get the IronFox prebuilds repo
 function get_prebuilds() {
   echo_red_text 'Downloading the IronFox prebuilds repository...'
-  download_and_extract 'prebuilds' "https://gitlab.com/ironfox-oss/prebuilds/-/archive/${IRONFOX_PREBUILDS_COMMIT}/prebuilds-${IRONFOX_PREBUILDS_COMMIT}.tar.gz" "${IRONFOX_PREBUILDS}" "${IRONFOX_PREBUILDS_SHA512SUM}"
+  # GitLab archive（API 重写）打包产物与官方 SHA512 不一致 → 改用 git 浅克隆指定 commit（git 自带完整性校验）
+  clone_at_commit "https://gitlab.com/ironfox-oss/prebuilds.git" "${IRONFOX_PREBUILDS}" "${IRONFOX_PREBUILDS_COMMIT}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     pushd "${IRONFOX_PREBUILDS}"
@@ -1460,7 +1536,8 @@ function get_python() {
 
     if [[ -d "${IRONFOX_PYENV_DIR}" ]]; then
       echo_red_text "The Python environment is already set-up at ${IRONFOX_PYENV_DIR}"
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
@@ -1593,7 +1670,8 @@ function get_pyyaml() {
 
     if [[ -d "${IRONFOX_PYYAML}" ]]; then
       echo_red_text "PyYAML is already downloaded at ${IRONFOX_PYYAML}"
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1621,7 +1699,7 @@ function get_rust() {
     # 已有 Rust 安装：验证 rustc 可执行且版本匹配；版本不匹配/缺失/损坏/FORCE 则重装
     local rustc_version=''
     if [[ -x "${IRONFOX_CARGO_HOME}/bin/rustc" ]]; then
-      rustc_version="$("${IRONFOX_CARGO_HOME}/bin/rustc" --version 2>/dev/null | "${IRONFOX_AWK}" '{print $2}' || true)"
+      rustc_version="$("${IRONFOX_CARGO_HOME}/bin/rustc" --version 2> /dev/null | "${IRONFOX_AWK}" '{print $2}' || true)"
     fi
     if [[ "${rustc_version}" == "${IRONFOX_RUST_VERSION}" ]] && [[ -z "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
       echo_green_text "Rust ${rustc_version} is already installed at ${IRONFOX_CARGO_HOME}. Skipping."
@@ -1726,7 +1804,8 @@ function get_s3cmd() {
 
     if [[ -d "${IRONFOX_S3CMD}" ]]; then
       echo_red_text "s3cmd is already installed at ${IRONFOX_S3CMD}"
-      REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+      REPLY='n'
+      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
         return 0
@@ -1888,7 +1967,8 @@ function get_uniffi() {
 # Get UnifiedPush-AC
 function get_up_ac() {
   echo_red_text 'Downloading UnifiedPush-AC...'
-  download_and_extract 'unifiedpush-ac' "https://gitlab.com/ironfox-oss/unifiedpush-ac/-/archive/${IRONFOX_UP_AC_COMMIT}/unifiedpush-ac-${IRONFOX_UP_AC_COMMIT}.tar.gz" "${IRONFOX_UP_AC}" "${IRONFOX_UP_AC_SHA512SUM}"
+  # GitLab archive（API 重写）打包产物与官方 SHA512 不一致 → git 浅克隆指定 commit
+  clone_at_commit "https://gitlab.com/ironfox-oss/unifiedpush-ac.git" "${IRONFOX_UP_AC}" "${IRONFOX_UP_AC_COMMIT}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up UnifiedPush-AC at ${IRONFOX_UP_AC}"
   fi
@@ -1900,7 +1980,8 @@ function get_uv() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_UV_DIR}" ]]; then
     echo_red_text "Found existing installation at ${IRONFOX_UV_DIR}"
     echo 'Continuing will remove this installation and related data'
-    REPLY='n'; [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+    REPLY='n'
+    [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directories
