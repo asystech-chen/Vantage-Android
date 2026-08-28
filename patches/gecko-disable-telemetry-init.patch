@@ -1,0 +1,14 @@
+--- build/mach_initialize.py	2026-08-28 16:37:59.579068723 +0800
++++ b/build/mach_initialize.py	2026-08-28 16:37:59.559068727 +0800
+@@ -393,7 +393,10 @@
+         )
+     else:
+         telemetry_executor = ThreadPoolExecutor(max_workers=1)
+-        driver._telemetry_future = telemetry_executor.submit(_create_telemetry)
++        # Vantage fix: Glean 遥测初始化在本机死锁（C/Rust 层 futex），本地构建直接禁用。
++        # main.py 的 `if self._telemetry_future is not None:` 会跳过 Event 创建与 wait。
++        # 保留 ThreadPoolExecutor 定义（下方 shutdown 为 if/else 外共用语句）。
++        driver._telemetry_future = None
+ 
+         class _LazyResult:
+             def result(self):
