@@ -170,7 +170,7 @@ function apply_overlay() {
 }
 
 function prepare_ac() {
-  echo_red_text 'Preparing Android Components...'
+  echo_yellow_text 'Preparing Android Components...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_AC}" 'IRONFOX_AC' || exit 1
@@ -261,7 +261,7 @@ function prepare_ac() {
 }
 
 function prepare_android_sdk() {
-  echo_red_text 'Preparing Android SDK...'
+  echo_yellow_text 'Preparing Android SDK...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_ANDROID_NDK}" 'IRONFOX_ANDROID_NDK' || exit 1
@@ -295,7 +295,7 @@ function prepare_android_sdk() {
 }
 
 function prepare_as() {
-  echo_red_text 'Preparing Application Services...'
+  echo_yellow_text 'Preparing Application Services...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_AS}" 'IRONFOX_AS' || exit 1
@@ -386,7 +386,7 @@ function prepare_as() {
 }
 
 function prepare_bundletool() {
-  echo_red_text 'Preparing Bundletool...'
+  echo_yellow_text 'Preparing Bundletool...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_BUNDLETOOL_DIR}" 'IRONFOX_BUNDLETOOL_DIR' || exit 1
@@ -405,7 +405,7 @@ function prepare_bundletool() {
 }
 
 function prepare_fenix() {
-  echo_red_text 'Preparing Fenix...'
+  echo_yellow_text 'Preparing Fenix...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_FENIX}" 'IRONFOX_FENIX' || exit 1
@@ -659,7 +659,7 @@ function prepare_fenix() {
 }
 
 function prepare_firefox() {
-  echo_red_text 'Preparing Firefox...'
+  echo_yellow_text 'Preparing Firefox...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_GECKO}" 'IRONFOX_GECKO' || exit 1
@@ -910,7 +910,7 @@ function prepare_firefox() {
 }
 
 function prepare_glean() {
-  echo_red_text 'Preparing Glean...'
+  echo_yellow_text 'Preparing Glean...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_GLEAN}" 'IRONFOX_GLEAN' || exit 1
@@ -1011,7 +1011,7 @@ function prepare_glean() {
 }
 
 function prepare_llvm() {
-  echo_red_text 'Preparing LLVM...'
+  echo_yellow_text 'Preparing LLVM...'
 
   if [[ -n "${FDROID_BUILD+x}" ]]; then
     # Patch the LLVM source code
@@ -1027,7 +1027,7 @@ function prepare_llvm() {
 }
 
 function prepare_microg() {
-  echo_red_text 'Preparing microG...'
+  echo_yellow_text 'Preparing microG...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_GMSCORE}" 'IRONFOX_GMSCORE' || exit 1
@@ -1059,7 +1059,7 @@ function prepare_microg() {
 }
 
 function prepare_prebuilds() {
-  echo_red_text 'Preparing IronFox prebuilds...'
+  echo_yellow_text 'Preparing IronFox prebuilds...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_PREBUILDS}" 'IRONFOX_PREBUILDS' || exit 1
@@ -1072,7 +1072,7 @@ function prepare_prebuilds() {
 }
 
 function prepare_rust() {
-  echo_red_text 'Preparing Rust...'
+  echo_yellow_text 'Preparing Rust...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_CONFIGS}" 'IRONFOX_CONFIGS' || exit 1
@@ -1092,7 +1092,7 @@ function prepare_rust() {
   echo_green_text 'SUCCESS: Prepared Rust'
 }
 
-echo_red_text "Preparing to build IronFox ${IRONFOX_VERSION}..."
+echo_yellow_text "Preparing to build IronFox ${IRONFOX_VERSION}..."
 
 # This needs to run before we prepare Android Components, to ensure that ex. patches apply properly
 if [[ "${IRONFOX_PREPARE_GECKO}" == 1 ]]; then

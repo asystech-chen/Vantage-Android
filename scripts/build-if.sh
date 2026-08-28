@@ -912,7 +912,7 @@ function set_build_env() {
 
 # Prepare Application Services
 function prep_as() {
-  echo_red_text 'Preparing Application Services...'
+  echo_yellow_text 'Preparing Application Services...'
 
   if [[ -f "${IRONFOX_AS}/local.properties" ]]; then
     "${IRONFOX_RM}" -f "${IRONFOX_AS}/local.properties"
@@ -930,7 +930,7 @@ function prep_as() {
 
 # Prepare Fenix
 function prep_fenix() {
-  echo_red_text 'Preparing Fenix...'
+  echo_yellow_text 'Preparing Fenix...'
 
   # Configure ABI + release channel
   if [[ -f "${IRONFOX_FENIX}/app/build.gradle" ]]; then
@@ -976,7 +976,7 @@ function prep_fenix() {
 
 # Prepare mozilla-central
 function prep_gecko() {
-  echo_red_text 'Preparing Gecko...'
+  echo_yellow_text 'Preparing Gecko...'
 
   if [[ -f "${IRONFOX_GECKO}/local.properties" ]]; then
     "${IRONFOX_RM}" -f "${IRONFOX_GECKO}/local.properties"
@@ -1016,7 +1016,7 @@ function prep_gecko() {
 
 # Prepare Glean
 function prep_glean() {
-  echo_red_text 'Preparing Glean...'
+  echo_yellow_text 'Preparing Glean...'
 
   if [[ -f "${IRONFOX_GLEAN}/local.properties" ]]; then
     "${IRONFOX_RM}" -f "${IRONFOX_GLEAN}/local.properties"
@@ -1038,7 +1038,7 @@ function prep_glean() {
 
 # Prepare UnifiedPush-AC
 function prep_up_ac() {
-  echo_red_text 'Preparing UnifiedPush-AC...'
+  echo_yellow_text 'Preparing UnifiedPush-AC...'
 
   if [[ -f "${IRONFOX_UP_AC}/local.properties" ]]; then
     "${IRONFOX_RM}" -f "${IRONFOX_UP_AC}/local.properties"
@@ -1054,7 +1054,7 @@ function prep_up_ac() {
 
 # Prepare LLVM
 function prep_llvm() {
-  echo_red_text 'Preparing LLVM...'
+  echo_yellow_text 'Preparing LLVM...'
 
   # Set LLVM build targets
   if [[ -f "${IRONFOX_BUILD}/targets_to_build" ]]; then
@@ -1725,7 +1725,7 @@ function build_fenix() {
 # Prepare build environment...
 ## (These need to be performed here instead of in `prebuild.sh`, so that we can account for if users decide to
 ### change the variables, without them needing to re-run the entire prebuild script...)
-echo_red_text 'Preparing your build environment...'
+echo_yellow_text 'Preparing your build environment...'
 
 # Set-up our build environment
 set_build_env

@@ -13,6 +13,10 @@ function echo_green_text() {
   echo -e "\033[32m$1\033[0m"
 }
 
+function echo_yellow_text() {
+  echo -e "\033[33m$1\033[0m"
+}
+
 # Verify that an executable (corresponding to an environment variable) exists and is properly set-up
 function verify_exec() {
   function print_usage() {

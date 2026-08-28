@@ -587,7 +587,7 @@ function download() {
     local -r CREATED_DIR_FOR_DL=0
   fi
 
-  echo_red_text "Downloading ${url}..."
+  echo_yellow_text "Downloading ${url}..."
   "${IRONFOX_CURL}" ${IRONFOX_CURL_FLAGS} --location "${url}" --output "${file}" || local IRONFOX_DOWNLOAD_FAILED=1
 
   # Verify (or update) SHA512sum
@@ -748,7 +748,7 @@ function download_and_extract() {
     fi
   fi
 
-  echo_red_text "Extracting ${repo_archive}..."
+  echo_yellow_text "Extracting ${repo_archive}..."
   extract "${repo_archive}" "${path}" "${repo_name}"
 
   # Clean-up
@@ -778,7 +778,7 @@ function get_androguard() {
     fi
   fi
 
-  echo_red_text "Downloading androguard..."
+  echo_yellow_text "Downloading androguard..."
   download_and_extract 'androguard' "https://github.com/androguard/androguard/archive/${IRONFOX_ANDROGUARD_COMMIT}.tar.gz" "${IRONFOX_ANDROGUARD_DIR}" "${IRONFOX_ANDROGUARD_SHA512SUM}"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
@@ -792,13 +792,13 @@ function get_androguard() {
 # Get Android NDK
 function get_android_ndk() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading the Android NDK (Linux)...'
+    echo_yellow_text 'Downloading the Android NDK (Linux)...'
     download_and_extract 'android-ndk' "https://dl.google.com/android/repository/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-linux.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_LINUX}"
 
-    echo_red_text 'Downloading the Android NDK (OS X)...'
+    echo_yellow_text 'Downloading the Android NDK (OS X)...'
     download_and_extract 'android-ndk' "https://dl.google.com/android/repository/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-darwin.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_OSX}"
   else
-    echo_red_text 'Downloading the Android NDK...'
+    echo_yellow_text 'Downloading the Android NDK...'
     if [[ "${IRONFOX_PLATFORM}" == 'darwin' ]]; then
       download_and_extract 'android-ndk' "https://dl.google.com/android/repository/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-darwin.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_OSX}"
     else
@@ -830,10 +830,10 @@ function get_android_sdk() {
   fi
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK (Linux)...'
+    echo_yellow_text 'Downloading Android SDK (Linux)...'
     download "https://dl.google.com/android/repository/commandlinetools-linux-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM_LINUX}"
 
-    echo_red_text 'Downloading Android SDK (OS X)...'
+    echo_yellow_text 'Downloading Android SDK (OS X)...'
     download "https://dl.google.com/android/repository/commandlinetools-mac-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM_OSX}"
   else
     # Set our platform
@@ -850,7 +850,7 @@ function get_android_sdk() {
       local -r IRONFOX_ANDROID_SDK_SHA512SUM="${IRONFOX_ANDROID_SDK_SHA512SUM_LINUX}"
     fi
 
-    echo_red_text 'Downloading Android SDK...'
+    echo_yellow_text 'Downloading Android SDK...'
     download_and_extract 'android-sdk-cmdline-tools' "https://dl.google.com/android/repository/commandlinetools-${IRONFOX_ANDROID_SDK_PLATFORM}-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM}"
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -865,10 +865,10 @@ function get_android_sdk() {
 # Get Android SDK Build Tools (latest)
 function get_android_sdk_build_tools() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK Build Tools (latest) (Linux)...'
+    echo_yellow_text 'Downloading Android SDK Build Tools (latest) (Linux)...'
     download "https://dl.google.com/android/repository/build-tools_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION}_linux.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM_LINUX}"
 
-    echo_red_text 'Downloading Android SDK Build Tools (latest) (OS X)...'
+    echo_yellow_text 'Downloading Android SDK Build Tools (latest) (OS X)...'
     download "https://dl.google.com/android/repository/build-tools_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION}_macosx.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM_OSX}"
   else
     # Set our platform
@@ -885,7 +885,7 @@ function get_android_sdk_build_tools() {
       local -r IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM="${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM_LINUX}"
     fi
 
-    echo_red_text 'Downloading Android SDK Build Tools (latest)...'
+    echo_yellow_text 'Downloading Android SDK Build Tools (latest)...'
     download_and_extract 'android-sdk-build-tools' "https://dl.google.com/android/repository/build-tools_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION}_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_PLATFORM}.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM}"
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
       echo_green_text "SUCCESS: Set-up Android SDK Build Tools (latest) at ${IRONFOX_ANDROID_SDK_BUILD_TOOLS}"
@@ -899,10 +899,10 @@ function get_android_sdk_build_tools() {
 ### https://github.com/mozilla/glean/blob/main/docs/dev/android/setup-android-build-environment.md)
 function get_android_sdk_build_tools_35() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK Build Tools (35.0.0) (Linux)...'
+    echo_yellow_text 'Downloading Android SDK Build Tools (35.0.0) (Linux)...'
     download "https://dl.google.com/android/repository/build-tools_r35_linux.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM_LINUX}"
 
-    echo_red_text 'Downloading Android SDK Build Tools (35.0.0) (OS X)...'
+    echo_yellow_text 'Downloading Android SDK Build Tools (35.0.0) (OS X)...'
     download "https://dl.google.com/android/repository/build-tools_r35_macosx.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM_OSX}"
   else
     # Set our platform
@@ -919,7 +919,7 @@ function get_android_sdk_build_tools_35() {
       local -r IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM="${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM_LINUX}"
     fi
 
-    echo_red_text 'Downloading Android SDK Build Tools (35.0.0)...'
+    echo_yellow_text 'Downloading Android SDK Build Tools (35.0.0)...'
     download_and_extract 'android-sdk-build-tools-35' "https://dl.google.com/android/repository/build-tools_r35_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_PLATFORM}.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM}"
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
       echo_green_text "SUCCESS: Set-up Android SDK Build Tools (35.0.0) at ${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}"
@@ -956,7 +956,7 @@ function get_android_sdk_platform() {
     # By default, we know the download hasn't failed...
     local IRONFOX_DOWNLOAD_FAILED=0
 
-    echo_red_text 'Downloading Android SDK Platform (latest)...'
+    echo_yellow_text 'Downloading Android SDK Platform (latest)...'
     "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}/bin/sdkmanager" "platforms;android-${IRONFOX_ANDROID_SDK_PLATFORM_VERSION}" || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-up, clean-up, and exit
@@ -1003,7 +1003,7 @@ function get_android_sdk_platform_36() {
     # By default, we know the download hasn't failed...
     local IRONFOX_DOWNLOAD_FAILED=0
 
-    echo_red_text 'Downloading Android SDK Platform (36)...'
+    echo_yellow_text 'Downloading Android SDK Platform (36)...'
     "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}/bin/sdkmanager" 'platforms;android-36' || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-up, clean-up, and exit
@@ -1021,10 +1021,10 @@ function get_android_sdk_platform_36() {
 # Get Android SDK Platform Tools
 function get_android_sdk_platform_tools() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK Platform Tools (Linux)...'
+    echo_yellow_text 'Downloading Android SDK Platform Tools (Linux)...'
     download "https://dl.google.com/android/repository/platform-tools_r${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_VERSION}-linux.zip" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM_LINUX}"
 
-    echo_red_text 'Downloading Android SDK Platform Tools (OS X)...'
+    echo_yellow_text 'Downloading Android SDK Platform Tools (OS X)...'
     download "https://dl.google.com/android/repository/platform-tools_r${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_VERSION}-darwin.zip" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM_OSX}"
   else
     # Set our platform
@@ -1041,7 +1041,7 @@ function get_android_sdk_platform_tools() {
       local -r IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM="${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM_LINUX}"
     fi
 
-    echo_red_text 'Downloading Android SDK Platform Tools...'
+    echo_yellow_text 'Downloading Android SDK Platform Tools...'
     download_and_extract 'android-sdk-platform-tools' "https://dl.google.com/android/repository/platform-tools_r${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_VERSION}-${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_PLATFORM}.zip" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM}"
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
       echo_green_text "SUCCESS: Set-up Android SDK Platform Tools at ${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}"
@@ -1051,7 +1051,7 @@ function get_android_sdk_platform_tools() {
 
 # Get Application Services
 function get_as() {
-  echo_red_text 'Downloading Application Services...'
+  echo_yellow_text 'Downloading Application Services...'
   download_and_extract 'application-services' "https://github.com/mozilla/application-services/archive/${IRONFOX_AS_COMMIT}.tar.gz" "${IRONFOX_AS}" "${IRONFOX_AS_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Application Services at ${IRONFOX_AS}"
@@ -1061,13 +1061,13 @@ function get_as() {
 # Get + set-up Bundletool
 function get_bundletool() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Bundletool (Source archive)...'
+    echo_yellow_text 'Downloading Bundletool (Source archive)...'
     download_and_extract 'bundletool' "https://github.com/google/bundletool/archive/${IRONFOX_BUNDLETOOL_REPO_COMMIT}.tar.gz" "${IRONFOX_BUNDLETOOL_DIR}" "${IRONFOX_BUNDLETOOL_REPO_SHA512SUM}"
 
-    echo_red_text 'Downloading Bundletool (Prebuilt)...'
+    echo_yellow_text 'Downloading Bundletool (Prebuilt)...'
     download "https://github.com/google/bundletool/releases/download/${IRONFOX_BUNDLETOOL_VERSION}/bundletool-all-${IRONFOX_BUNDLETOOL_VERSION}.jar" "${IRONFOX_BUNDLETOOL_JAR}" "${IRONFOX_BUNDLETOOL_SHA512SUM}"
   else
-    echo_red_text 'Downloading Bundletool...'
+    echo_yellow_text 'Downloading Bundletool...'
     if [[ "${IRONFOX_NO_PREBUILDS}" == "1" ]]; then
       download_and_extract 'bundletool' "https://github.com/google/bundletool/archive/${IRONFOX_BUNDLETOOL_REPO_COMMIT}.tar.gz" "${IRONFOX_BUNDLETOOL_DIR}" "${IRONFOX_BUNDLETOOL_REPO_SHA512SUM}"
     else
@@ -1100,7 +1100,7 @@ function get_cbindgen() {
     fi
   fi
 
-  echo_red_text "Downloading cbindgen..."
+  echo_yellow_text "Downloading cbindgen..."
   download_and_extract 'cbindgen' "https://github.com/mozilla/cbindgen/archive/${IRONFOX_CBINDGEN_COMMIT}.tar.gz" "${IRONFOX_CBINDGEN_DIR}" "${IRONFOX_CBINDGEN_SHA512SUM}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1113,7 +1113,7 @@ function get_cbindgen() {
 
 # Get Firefox (Gecko/mozilla-central)
 function get_firefox() {
-  echo_red_text 'Downloading Firefox...'
+  echo_yellow_text 'Downloading Firefox...'
   download_and_extract 'gecko' "https://archive.mozilla.org/pub/firefox/releases/${IRONFOX_GECKO_VERSION}/source/firefox-${IRONFOX_GECKO_VERSION}.source.tar.xz" "${IRONFOX_GECKO}" "${IRONFOX_GECKO_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Firefox at ${IRONFOX_GECKO}"
@@ -1122,7 +1122,7 @@ function get_firefox() {
 
 # Get firefox-l10n
 function get_firefox_l10n() {
-  echo_red_text 'Downloading firefox-l10n...'
+  echo_yellow_text 'Downloading firefox-l10n...'
   download_and_extract 'l10n-central' "https://github.com/mozilla-l10n/firefox-l10n/archive/${IRONFOX_L10N_CENTRAL_COMMIT}.tar.gz" "${IRONFOX_L10N_CENTRAL}" "${IRONFOX_L10N_CENTRAL_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up firefox-l10n at ${IRONFOX_L10N_CENTRAL}"
@@ -1131,7 +1131,7 @@ function get_firefox_l10n() {
 
 # Get Glean
 function get_glean() {
-  echo_red_text 'Downloading Glean...'
+  echo_yellow_text 'Downloading Glean...'
   download_and_extract 'glean' "https://github.com/mozilla/glean/archive/${IRONFOX_GLEAN_COMMIT}.tar.gz" "${IRONFOX_GLEAN}" "${IRONFOX_GLEAN_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Glean at ${IRONFOX_GLEAN}"
@@ -1175,7 +1175,7 @@ function get_glean_parser() {
 
   "${IRONFOX_MKDIR}" -p "${glean_parser_wheels}"
   source "${IRONFOX_PYENV}"
-  echo_red_text 'Downloading Glean Parser wheels...'
+  echo_yellow_text 'Downloading Glean Parser wheels...'
   pushd "${IRONFOX_GLEAN_PARSER_WHEELS}"
   "${IRONFOX_PIP}" download glean-parser=="${IRONFOX_GLEAN_PARSER_VERSION}"
   popd
@@ -1191,7 +1191,7 @@ function get_glean_parser() {
 
 # Get + set-up F-Droid's Gradle script
 function get_gradle() {
-  echo_red_text "Downloading F-Droid's Gradle script..."
+  echo_yellow_text "Downloading F-Droid's Gradle script..."
   download "https://gitlab.com/fdroid/gradlew-fdroid/-/raw/${IRONFOX_GRADLE_COMMIT}/gradlew.py" "${IRONFOX_GRADLE_PY}" "${IRONFOX_GRADLE_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Gradle at ${IRONFOX_GRADLE_PY}"
@@ -1221,7 +1221,7 @@ function get_gyp() {
     fi
   fi
 
-  echo_red_text "Downloading GYP..."
+  echo_yellow_text "Downloading GYP..."
   download_and_extract 'gyp-next' "https://github.com/nodejs/gyp-next/archive/${IRONFOX_GYP_COMMIT}.tar.gz" "${IRONFOX_GYP}" "${IRONFOX_GYP_SHA512SUM}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1236,16 +1236,16 @@ function get_gyp() {
 ## (Required by GeckoView)
 function get_jdk_17() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading JDK (17) (Linux - ARM64)...'
+    echo_yellow_text 'Downloading JDK (17) (Linux - ARM64)...'
     download "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_aarch64_linux_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading JDK (17) (Linux - x86_64)...'
+    echo_yellow_text 'Downloading JDK (17) (Linux - x86_64)...'
     download "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_x64_linux_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading JDK (17) (OS X - ARM64)...'
+    echo_yellow_text 'Downloading JDK (17) (OS X - ARM64)...'
     download "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_aarch64_mac_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading JDK (17) (OS X - x86_64)...'
+    echo_yellow_text 'Downloading JDK (17) (OS X - x86_64)...'
     download "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_x64_mac_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -1277,7 +1277,7 @@ function get_jdk_17() {
       fi
     fi
 
-    echo_red_text 'Downloading JDK (17)...'
+    echo_yellow_text 'Downloading JDK (17)...'
     download_and_extract 'jdk-17' "https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_${IRONFOX_JDK_17_ARCH}_${IRONFOX_JDK_17_PLATFORM}_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM}"
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
       echo_green_text "SUCCESS: Set-up JDK (17) at ${IRONFOX_JDK_17}"
@@ -1288,16 +1288,16 @@ function get_jdk_17() {
 # Get JDK (21)
 function get_jdk_21() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading JDK (21) (Linux - ARM64)...'
+    echo_yellow_text 'Downloading JDK (21) (Linux - ARM64)...'
     download "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_aarch64_linux_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading JDK (21) (Linux - x86_64)...'
+    echo_yellow_text 'Downloading JDK (21) (Linux - x86_64)...'
     download "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_x64_linux_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading JDK (21) (OS X - ARM64)...'
+    echo_yellow_text 'Downloading JDK (21) (OS X - ARM64)...'
     download "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_aarch64_mac_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading JDK (21) (OS X - x86_64)...'
+    echo_yellow_text 'Downloading JDK (21) (OS X - x86_64)...'
     download "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_x64_mac_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -1329,7 +1329,7 @@ function get_jdk_21() {
       fi
     fi
 
-    echo_red_text 'Downloading JDK (21)...'
+    echo_yellow_text 'Downloading JDK (21)...'
     download_and_extract 'jdk-21' "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_${IRONFOX_JDK_21_ARCH}_${IRONFOX_JDK_21_PLATFORM}_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM}"
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
       echo_green_text "SUCCESS: Set-up JDK (21) at ${IRONFOX_JDK_21}"
@@ -1340,16 +1340,16 @@ function get_jdk_21() {
 # Get JDK (25)
 function get_jdk_25() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading JDK (25) (Linux - ARM64)...'
+    echo_yellow_text 'Downloading JDK (25) (Linux - ARM64)...'
     download "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_aarch64_linux_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading JDK (25) (Linux - x86_64)...'
+    echo_yellow_text 'Downloading JDK (25) (Linux - x86_64)...'
     download "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_x64_linux_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading JDK (25) (OS X - ARM64)...'
+    echo_yellow_text 'Downloading JDK (25) (OS X - ARM64)...'
     download "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_aarch64_mac_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading JDK (25) (OS X - x86_64)...'
+    echo_yellow_text 'Downloading JDK (25) (OS X - x86_64)...'
     download "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_x64_mac_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -1381,7 +1381,7 @@ function get_jdk_25() {
       fi
     fi
 
-    echo_red_text 'Downloading JDK (25)...'
+    echo_yellow_text 'Downloading JDK (25)...'
     download_and_extract 'jdk-25' "https://github.com/adoptium/temurin25-binaries/releases/download/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_${IRONFOX_JDK_25_ARCH}_${IRONFOX_JDK_25_PLATFORM}_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM}"
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
       echo_green_text "SUCCESS: Set-up JDK (25) at ${IRONFOX_JDK_25}"
@@ -1391,7 +1391,7 @@ function get_jdk_25() {
 
 # Get microG
 function get_microg() {
-  echo_red_text 'Downloading microG...'
+  echo_yellow_text 'Downloading microG...'
   download_and_extract 'gmscore' "https://github.com/microg/GmsCore/archive/${IRONFOX_GMSCORE_COMMIT}.tar.gz" "${IRONFOX_GMSCORE}" "${IRONFOX_GMSCORE_SHA512SUM}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up microG at ${IRONFOX_GMSCORE}"
@@ -1452,7 +1452,7 @@ function get_npm() {
     exit 1
   fi
 
-  echo_red_text 'Downloading npm...'
+  echo_yellow_text 'Downloading npm...'
   download "https://registry.npmjs.org/npm/-/npm-${IRONFOX_NPM_VERSION}.tgz" "${IRONFOX_DOWNLOADS}/npm.tgz" "${IRONFOX_NPM_SHA512SUM}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1481,7 +1481,7 @@ function get_npm() {
 
 # Get Phoenix
 function get_phoenix() {
-  echo_red_text 'Downloading Phoenix...'
+  echo_yellow_text 'Downloading Phoenix...'
   # GitLab archive（API 重写）产物 SHA512 与官方不一致、GitHub 镜像可能限流 → git 浅克隆指定 commit（git 自带完整性校验）
   clone_at_commit "https://gitlab.com/celenityy/Phoenix.git" "${IRONFOX_PHOENIX}" "${IRONFOX_PHOENIX_COMMIT}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1499,7 +1499,7 @@ function get_pip() {
     fi
   fi
 
-  echo_red_text 'Downloading pip...'
+  echo_yellow_text 'Downloading pip...'
   download_and_extract 'pip' "https://github.com/pypa/pip/archive/${IRONFOX_PIP_COMMIT}.tar.gz" "${IRONFOX_PIP_DIR}" "${IRONFOX_PIP_SHA512SUM}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1512,13 +1512,13 @@ function get_pip() {
 
 # Get the IronFox prebuilds repo
 function get_prebuilds() {
-  echo_red_text 'Downloading the IronFox prebuilds repository...'
+  echo_yellow_text 'Downloading the IronFox prebuilds repository...'
   # GitLab archive（API 重写）打包产物与官方 SHA512 不一致 → 改用 git 浅克隆指定 commit（git 自带完整性校验）
   clone_at_commit "https://gitlab.com/ironfox-oss/prebuilds.git" "${IRONFOX_PREBUILDS}" "${IRONFOX_PREBUILDS_COMMIT}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     pushd "${IRONFOX_PREBUILDS}"
-    echo_red_text 'Downloading prebuild sources...'
+    echo_yellow_text 'Downloading prebuild sources...'
     /bin/bash "${IRONFOX_PREBUILDS}/scripts/get_sources.sh"
     popd
     echo_green_text "SUCCESS: Set-up the IronFox prebuilds repository at ${IRONFOX_PREBUILDS}"
@@ -1563,16 +1563,16 @@ function get_python() {
   fi
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Python (Linux - ARM64)...'
+    echo_yellow_text 'Downloading Python (Linux - ARM64)...'
     download "https://github.com/astral-sh/python-build-standalone/releases/download/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_DIR}/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading Python (Linux - x86_64)...'
+    echo_yellow_text 'Downloading Python (Linux - x86_64)...'
     download "https://github.com/astral-sh/python-build-standalone/releases/download/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_DIR}/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading Python (OS X - ARM64)...'
+    echo_yellow_text 'Downloading Python (OS X - ARM64)...'
     download "https://github.com/astral-sh/python-build-standalone/releases/download/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-apple-darwin-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_DIR}/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-apple-darwin-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading Python (OS X - x86_64)...'
+    echo_yellow_text 'Downloading Python (OS X - x86_64)...'
     download "https://github.com/astral-sh/python-build-standalone/releases/download/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-apple-darwin-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_DIR}/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-apple-darwin-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -1612,7 +1612,7 @@ function get_python() {
     local IRONFOX_PYENV_FAILED=0
     local IRONFOX_PYTHON_INSTALL_FAILED=0
 
-    echo_red_text 'Downloading Python...'
+    echo_yellow_text 'Downloading Python...'
     download "https://github.com/astral-sh/python-build-standalone/releases/download/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-${IRONFOX_PYTHON_ARCH}-${IRONFOX_PYTHON_PLATFORM}-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_DIR}/${IRONFOX_PYTHON_GIT_RELEASE}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-${IRONFOX_PYTHON_ARCH}-${IRONFOX_PYTHON_PLATFORM}-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM}" || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-ups, clean-up, and exit
@@ -1682,7 +1682,7 @@ function get_pyyaml() {
     fi
   fi
 
-  echo_red_text "Downloading PyYAML..."
+  echo_yellow_text "Downloading PyYAML..."
   download_and_extract 'pyyaml' "https://github.com/yaml/pyyaml/archive/${IRONFOX_PYYAML_COMMIT}.tar.gz" "${IRONFOX_PYYAML}" "${IRONFOX_PYYAML_SHA512SUM}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1712,7 +1712,7 @@ function get_rust() {
     fi
   fi
 
-  echo_red_text 'Downloading Rust...'
+  echo_yellow_text 'Downloading Rust...'
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
     # rustup-init 二进制（static.rust-lang.org S3，raw.githubusercontent.com 国内不稳定）
     if [[ "${IRONFOX_PLATFORM}" == 'linux' ]] && [[ "${IRONFOX_PLATFORM_ARCH}" == 'x86-64' ]]; then
@@ -1816,7 +1816,7 @@ function get_s3cmd() {
     fi
   fi
 
-  echo_red_text "Downloading s3cmd..."
+  echo_yellow_text "Downloading s3cmd..."
   download_and_extract 's3cmd' "https://github.com/s3tools/s3cmd/archive/${IRONFOX_S3CMD_COMMIT}.tar.gz" "${IRONFOX_S3CMD_DIR}" "${IRONFOX_S3CMD_SHA512SUM}"
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1830,16 +1830,16 @@ function get_s3cmd() {
 # Get shellcheck
 function get_shellcheck() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading shellcheck (Linux - ARM64)...'
+    echo_yellow_text 'Downloading shellcheck (Linux - ARM64)...'
     download "https://github.com/koalaman/shellcheck/releases/download/${IRONFOX_SHELLCHECK_VERSION}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.linux.aarch64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading shellcheck (Linux - x86_64)...'
+    echo_yellow_text 'Downloading shellcheck (Linux - x86_64)...'
     download "https://github.com/koalaman/shellcheck/releases/download/${IRONFOX_SHELLCHECK_VERSION}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.linux.x86_64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading shellcheck (OS X - ARM64)...'
+    echo_yellow_text 'Downloading shellcheck (OS X - ARM64)...'
     download "https://github.com/koalaman/shellcheck/releases/download/${IRONFOX_SHELLCHECK_VERSION}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.darwin.aarch64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading shellcheck (OS X - x86_64)...'
+    echo_yellow_text 'Downloading shellcheck (OS X - x86_64)...'
     download "https://github.com/koalaman/shellcheck/releases/download/${IRONFOX_SHELLCHECK_VERSION}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.darwin.x86_64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -1871,7 +1871,7 @@ function get_shellcheck() {
       fi
     fi
 
-    echo_red_text 'Downloading shellcheck...'
+    echo_yellow_text 'Downloading shellcheck...'
     download_and_extract 'shellcheck' "https://github.com/koalaman/shellcheck/releases/download/${IRONFOX_SHELLCHECK_VERSION}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.${IRONFOX_SHELLCHECK_PLATFORM}.${IRONFOX_SHELLCHECK_ARCH}.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM}"
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1888,16 +1888,16 @@ function get_shellcheck() {
 # Get shfmt
 function get_shfmt() {
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading shfmt (Linux - ARM64)...'
+    echo_yellow_text 'Downloading shfmt (Linux - ARM64)...'
     download "https://github.com/mvdan/sh/releases/download/${IRONFOX_SHFMT_VERSION}/shfmt_${IRONFOX_SHFMT_VERSION}_linux_arm64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading shfmt (Linux - x86_64)...'
+    echo_yellow_text 'Downloading shfmt (Linux - x86_64)...'
     download "https://github.com/mvdan/sh/releases/download/${IRONFOX_SHFMT_VERSION}/shfmt_${IRONFOX_SHFMT_VERSION}_linux_amd64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading shfmt (OS X - ARM64)...'
+    echo_yellow_text 'Downloading shfmt (OS X - ARM64)...'
     download "https://github.com/mvdan/sh/releases/download/${IRONFOX_SHFMT_VERSION}/shfmt_${IRONFOX_SHFMT_VERSION}_darwin_arm64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading shfmt (OS X - x86_64)...'
+    echo_yellow_text 'Downloading shfmt (OS X - x86_64)...'
     download "https://github.com/mvdan/sh/releases/download/${IRONFOX_SHFMT_VERSION}/shfmt_${IRONFOX_SHFMT_VERSION}_darwin_amd64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -1929,7 +1929,7 @@ function get_shfmt() {
       fi
     fi
 
-    echo_red_text 'Downloading shfmt...'
+    echo_yellow_text 'Downloading shfmt...'
     download "https://github.com/mvdan/sh/releases/download/${IRONFOX_SHFMT_VERSION}/shfmt_${IRONFOX_SHFMT_VERSION}_${IRONFOX_SHFMT_PLATFORM}_${IRONFOX_SHFMT_ARCH}" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM}"
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1949,13 +1949,13 @@ function get_shfmt() {
 function get_uniffi() {
   # Get uniffi-bindgen for Linux
   if [[ "${IRONFOX_PLATFORM}" == 'linux' ]] || [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading prebuilt uniffi-bindgen (Linux)...'
+    echo_yellow_text 'Downloading prebuilt uniffi-bindgen (Linux)...'
     download_and_extract 'uniffi' "https://gitlab.com/ironfox-oss/prebuilds/-/raw/${IRONFOX_PREBUILDS_COMMIT}/uniffi-bindgen/${IRONFOX_UNIFFI_VERSION}/linux/uniffi-bindgen-${IRONFOX_UNIFFI_VERSION}-${IRONFOX_UNIFFI_IRONFOX_REVISION}-linux.tar.xz" "${IRONFOX_UNIFFI}" "${IRONFOX_UNIFFI_LINUX_IRONFOX_SHA512SUM}"
   fi
 
   # Get uniffi-bindgen for OS X
   if [[ "${IRONFOX_PLATFORM}" == 'darwin' ]] || [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading prebuilt uniffi-bindgen (OS X)...'
+    echo_yellow_text 'Downloading prebuilt uniffi-bindgen (OS X)...'
     download_and_extract 'uniffi' "https://gitlab.com/ironfox-oss/prebuilds/-/raw/${IRONFOX_PREBUILDS_COMMIT}/uniffi-bindgen/${IRONFOX_UNIFFI_VERSION}/osx/uniffi-bindgen-${IRONFOX_UNIFFI_VERSION}-${IRONFOX_UNIFFI_IRONFOX_REVISION}-osx.tar.xz" "${IRONFOX_UNIFFI}" "${IRONFOX_UNIFFI_OSX_IRONFOX_SHA512SUM}"
   fi
 
@@ -1966,7 +1966,7 @@ function get_uniffi() {
 
 # Get UnifiedPush-AC
 function get_up_ac() {
-  echo_red_text 'Downloading UnifiedPush-AC...'
+  echo_yellow_text 'Downloading UnifiedPush-AC...'
   # GitLab archive（API 重写）打包产物与官方 SHA512 不一致 → git 浅克隆指定 commit
   clone_at_commit "https://gitlab.com/ironfox-oss/unifiedpush-ac.git" "${IRONFOX_UP_AC}" "${IRONFOX_UP_AC_COMMIT}"
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1993,16 +1993,16 @@ function get_uv() {
   fi
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading uv (Linux - ARM64)...'
+    echo_yellow_text 'Downloading uv (Linux - ARM64)...'
     download "https://github.com/astral-sh/uv/releases/download/${IRONFOX_UV_VERSION}/uv-aarch64-unknown-linux-gnu.tar.gz" "${IRONFOX_UV_DIR}" "${IRONFOX_UV_SHA512SUM_LINUX_ARM64}"
 
-    echo_red_text 'Downloading uv (Linux - x86_64)...'
+    echo_yellow_text 'Downloading uv (Linux - x86_64)...'
     download "https://github.com/astral-sh/uv/releases/download/${IRONFOX_UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz" "${IRONFOX_UV_DIR}" "${IRONFOX_UV_SHA512SUM_LINUX_X86_64}"
 
-    echo_red_text 'Downloading uv (OS X - ARM64)...'
+    echo_yellow_text 'Downloading uv (OS X - ARM64)...'
     download "https://github.com/astral-sh/uv/releases/download/${IRONFOX_UV_VERSION}/uv-aarch64-apple-darwin.tar.gz" "${IRONFOX_UV_DIR}" "${IRONFOX_UV_SHA512SUM_OSX_ARM64}"
 
-    echo_red_text 'Downloading uv (OS X - x86_64)...'
+    echo_yellow_text 'Downloading uv (OS X - x86_64)...'
     download "https://github.com/astral-sh/uv/releases/download/${IRONFOX_UV_VERSION}/uv-x86_64-apple-darwin.tar.gz" "${IRONFOX_UV_DIR}" "${IRONFOX_UV_SHA512SUM_OSX_X86_64}"
   else
     # Set our platform
@@ -2040,7 +2040,7 @@ function get_uv() {
     # By default, we know the download hasn't failed...
     local IRONFOX_DOWNLOAD_FAILED=0
 
-    echo_red_text 'Downloading uv...'
+    echo_yellow_text 'Downloading uv...'
     download_and_extract 'uv' "https://github.com/astral-sh/uv/releases/download/${IRONFOX_UV_VERSION}/uv-${IRONFOX_UV_ARCH}-${IRONFOX_UV_PLATFORM}.tar.gz" "${IRONFOX_UV_DIR}" "${IRONFOX_UV_SHA512SUM}" || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-up, clean-up, and exit
@@ -2060,13 +2060,13 @@ function get_uv() {
 function get_wasi() {
   # Get WASI SDK for Linux
   if [[ "${IRONFOX_PLATFORM}" == 'linux' ]] || [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading prebuilt WASI SDK (Linux)...'
+    echo_yellow_text 'Downloading prebuilt WASI SDK (Linux)...'
     download_and_extract 'wasi-sdk' "https://gitlab.com/ironfox-oss/prebuilds/-/raw/${IRONFOX_PREBUILDS_COMMIT}/wasi-sdk/${IRONFOX_WASI_VERSION}/linux/wasi-sdk-${IRONFOX_WASI_VERSION}-${IRONFOX_WASI_IRONFOX_REVISION}-linux.tar.xz" "${IRONFOX_WASI}" "${IRONFOX_WASI_LINUX_IRONFOX_SHA512SUM}"
   fi
 
   # Get WASI SDK for OS X
   if [[ "${IRONFOX_PLATFORM}" == 'darwin' ]] || [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading prebuilt WASI SDK (OS X)...'
+    echo_yellow_text 'Downloading prebuilt WASI SDK (OS X)...'
     download_and_extract 'wasi-sdk' "https://gitlab.com/ironfox-oss/prebuilds/-/raw/${IRONFOX_PREBUILDS_COMMIT}/wasi-sdk/${IRONFOX_WASI_VERSION}/osx/wasi-sdk-${IRONFOX_WASI_VERSION}-${IRONFOX_WASI_IRONFOX_REVISION}-osx.tar.xz" "${IRONFOX_WASI}" "${IRONFOX_WASI_OSX_IRONFOX_SHA512SUM}"
   fi
 
