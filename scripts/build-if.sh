@@ -1100,6 +1100,9 @@ function build_llvm() {
 function build_phoenix() {
   echo_red_text 'Building Phoenix...'
 
+  # Vantage: 自动确认（fly.sh 的 outputs 覆盖确认，PHOENIX_ASSUME_YES=1 时不再交互等待）
+  export PHOENIX_ASSUME_YES=1
+
   pushd "${IRONFOX_PHOENIX}"
   /bin/bash "${IRONFOX_PHOENIX}/scripts/build.sh" 'android'
   popd

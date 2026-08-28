@@ -1494,6 +1494,25 @@ function get_phoenix() {
   echo_yellow_text 'Downloading Phoenix...'
   # GitLab archive（API 重写）产物 SHA512 与官方不一致、GitHub 镜像可能限流 → git 浅克隆指定 commit（git 自带完整性校验）
   clone_at_commit "https://gitlab.com/celenityy/Phoenix.git" "${IRONFOX_PHOENIX}" "${IRONFOX_PHOENIX_COMMIT}"
+
+  # Vantage: Phoenix fly.sh 交互确认自动化——PHOENIX_ASSUME_YES=1 时自动继续（否则保持原交互行为）
+  # 防止构建卡在 "Are you sure you want to proceed? [y/N]" 等待终端输入
+  IRONFOX_PHOENIX_DIR="${IRONFOX_PHOENIX}" "${IRONFOX_PYTHON}" - << 'PYEOF'
+import os, pathlib
+p = pathlib.Path(os.environ['IRONFOX_PHOENIX_DIR']) / 'scripts' / 'fly.sh'
+content = p.read_text()
+old = '''    read -p "Are you sure you want to proceed? [y/N] " -n 1 -r
+    echo'''
+new = '''    if [[ "${PHOENIX_ASSUME_YES:-0}" == "1" ]]; then
+      REPLY='y'
+    else
+      read -p "Are you sure you want to proceed? [y/N] " -n 1 -r
+      echo
+    fi'''
+if old in content:
+    p.write_text(content.replace(old, new))
+PYEOF
+
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     echo_green_text "SUCCESS: Set-up Phoenix at ${IRONFOX_PHOENIX}"
   fi
