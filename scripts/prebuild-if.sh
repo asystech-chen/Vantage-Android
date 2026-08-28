@@ -1141,3 +1141,14 @@ fi
 
 echo_green_text "SUCCESS: Prepared to build IronFox ${IRONFOX_VERSION}"
 "${IRONFOX_TOUCH}" "${IRONFOX_BUILD}/finished-prebuild"
+
+# Vantage: 补丁残留自动检查——打完补丁有 *.rej 说明存在冲突，红字列出并阻止继续
+mapfile -t rej_files < <("${IRONFOX_FIND}" "${IRONFOX_ROOT}" -name '*.rej' -not -path '*/build/*' 2> /dev/null || true)
+if [[ ${#rej_files[@]} -gt 0 ]]; then
+  echo_red_text "ERROR: Found ${#rej_files[@]} patch conflict(s) (*.rej):"
+  for rej in "${rej_files[@]}"; do
+    echo_red_text "  ${rej}"
+  done
+  echo_red_text 'Resolve the conflicts and re-run prebuild.sh'
+  exit 1
+fi
