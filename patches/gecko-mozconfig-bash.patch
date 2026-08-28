@@ -1,0 +1,19 @@
+--- a/python/mozbuild/mozbuild/mozconfig.py
++++ b/python/mozbuild/mozbuild/mozconfig.py
+@@ -132,7 +132,7 @@
+         # Since mozconfig_loader is a shell script, running it "normally"
+         # actually leads to two shell executions on Windows. Avoid this by
+         # directly calling sh mozconfig_loader.
+-        shell = "sh"
++        shell = "bash"
+         env = sanitize_shell_env(os.environ)
+         env["PYTHONIOENCODING"] = "utf-8"
+ 
+--- a/python/mozbuild/mozbuild/mozconfig_loader
++++ b/python/mozbuild/mozbuild/mozconfig_loader
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
