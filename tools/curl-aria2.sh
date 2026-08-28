@@ -237,6 +237,18 @@ if [[ "${url}" == "https://dl.google.com/android/repository/"* ]]; then
   exit 1
 fi
 
+# codeload archive（github.com/*/archive/* 或 codeload.github.com）→ curl 走代理直连
+# 背景：aria2c 的 TLS 指纹在代理下握手失败（同 dl.google.com 问题），curl 实测秒通
+if [[ "${url}" == "https://github.com/"*"/archive/"* ]] || [[ "${url}" == "https://codeload.github.com/"* ]]; then
+  if "${curl_real}" -sSL --fail --retry 3 --retry-delay 3 --retry-all-errors --connect-timeout 30 \
+    -o "${output}" "${url}"; then
+    echo "OK: ${file} from codeload (curl)" >&2
+    exit 0
+  fi
+  rm -f "${output}" 2> /dev/null
+  echo "codeload curl failed, falling back to aria2c: ${file}" >&2
+fi
+
 if ! "${aria2c_cmd}" "${aria2_args[@]}" "${url}"; then
   # 模拟 curl --remove-on-error：失败时清理残留文件
   rm -f "${output}" 2> /dev/null
