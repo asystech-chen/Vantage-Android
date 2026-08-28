@@ -1,0 +1,18 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>Bing</ShortName>
+<Description>Bing 搜索 - 微软必应</Description>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="32" height="32">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAADUklEQVR4nO2WW2gTQRiGn5m0TratKltE0aZQRxAPgi8gPEhB8SD6IEj8IqLgoIif4MHwYVgsBAfPHgwGKBoIggbNG1bNG3TjKZ7sTN00/RNtJ001P3QZZvZ3d2FN4sLCwsvP+AGzCwssLCy/4t5F4A4uLi4uPj/v3fgT4qKioqLi/9ev+6vY+u2bV7p06dKp0+f9r6dQCYUFRUVFf3X/35f7Tz79WpYtWrVp0+fPqs+bF8B8fHx8fHR58+f9L/79s6xsbHx9u3b3fYjHA7VaDQSiUQi8eTJk0wm05kzZ3bu3Lk6nQ6FQqGxsbHh3r17+/btS1hYGO12O3a7vVWrVqV6vVasrCzUajU4HA6bDa7UKlFdXR3dbnfVqlXDwcE6Pj5eXV0dgYGBtm3b9vjx49HR0UVGRr777jvNnDlTX1/fpk2bPPXUU1RUVHz44YfuuOMO58+f7+vXryQmJsb4+Pju3bs3bty4NWvW8Pz8/Pnz5+/atavfvn27ceNG/v7+btiwITp+/Pi6deuwsbHx0Ucf7datW7Zu3fqPP/6wdevWqlWrFhoaml6+fPn48eMlLi7O/Pz8ZGRkDBky5MiRI7fddpvS09Pp9XpTUlL4/f39gwcPdnx8fOfOnfPgwQNlZWWdnZ3dunXrqV69eq5cufLo0aMFBQVZWVm5efPmzZs3z5kzZ/369ePm5jY1NVV4ePjo0aOnT5/u5s2b//jjD8+dO1dGRobw8PA4ceLExYsX+/fvb/ny5YKCglxWVtaVK1f2799/cHCwq6srLS0tEaNG/e67796zZ08vLy8vF69erVt27Y//PADg8HgkSNH/vjjD/Pw8MjLy3v27Fm3bt3cfPPN69ev3+TkZJGRkeHr16/LzMwcmUymUChYt25d8fHxSZMmXRs2bPDll19SU1MzYsSIfv31V+Pj40ej0Uwm05kzZ86ePXuhUIhUKsXg8FArlfT29v70009HR0fXrl37+vXrlStXvnTp0r179zo4OMikSJMqVKjQ29s7MjLSmJiYhIQE+vbty87Ozj///PNqa2tXVFTkcrlWrly5c+fOwcHBHh4e8/f3b968+bvvvltRUVHHjx/fsmXL1dTU1M2bNw0NDSUCgfz22287ODjYvXv35s2b999/vz///PMrKyt7eXn5wYMHhQ8fPvC///3vX7t27e7du/fCCy/YvHnzzp07r7y8/Pnnn//kk08qKytbVFSkUql0ej2rVq3Ky8tr165d0Wi0iIgIURRFJSUlMpk8ceLE6dOn4+XlVX5+ftLT0w1Gg4eHh4sWLbJw4UJZWVlxcnIqMzMzOzsbNzc3HR0dDQ0NMZIkSWxsbGzZsoXlcrnK1jZgwIBAfH28sbHxyMhIoaGhdDodw8PDrK2tFRUVzGYzzWYzUqlUfHy8yspKRUVFfHy86uvr1dbWJicnB61WS2lpKZ1Ox1AohIiICL/fL1dXV3Xq1Cmnp6dXWlraoUOH3n///Y4fP/7gwYMnT548e/bsxMTEBA0NDWfOnPnkk0+effv2+fLLLwsJCfHrr7/Oz8/P3bt3Y2Rk5Mcff9S2bdsOHTrQ3d39ww8/bNu2bUNDAysra7lz5+a0005z+fLl/P39e35+Po1Gw3g87umnn+zt7f34448HDx586tSp586dW1RU9MP9vwHJZSSXZQ0TywAAAABJRU5ErkJggg==</Image>
+<Url type="application/x-suggestions+json" method="GET" template="https://www.bing.com/osjson.aspx">
+  <Param name="query" value="{searchTerms}"/>
+</Url>
+<Url type="text/html" method="GET" template="https://www.bing.com/search">
+  <Param name="q" value="{searchTerms}"/>
+  <Param name="form" value="MOZAN1"/>
+</Url>
+<SearchForm>https://www.bing.com/</SearchForm>
+</SearchPlugin>

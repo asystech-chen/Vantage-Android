@@ -59,7 +59,8 @@ EOF
 # 本机构建环境覆盖配置（不提交，由 scripts/enable-aria2.sh 生成）
 # 用 aria2c 多线程替代 curl 下载（加速大文件）
 # 注意：此处只做普通赋值（env_common.sh 会自行 readonly）
-IRONFOX_CURL="${wrapper}"
+# 用 BASH_SOURCE[0] 动态解析仓库根目录（延迟求值，仓库移动后无需重新生成）
+IRONFOX_CURL="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)/tools/curl-aria2.sh"
 export IRONFOX_CURL
 IRONFOX_CURL_FLAGS=''
 export IRONFOX_CURL_FLAGS

@@ -253,10 +253,10 @@ object IFPrefs {
     // Enable DoH UI settings
     prefs.setDefaultBoolPref(R.string.pref_key_doh_settings_enabled, true)
 
-    // Enable DoH without fallback by default
-    prefs.setDefaultIntPref(R.string.pref_key_doh_settings_mode, 3)
+    // Vantage: Use TRR first with fallback to system DNS (mode 2 = TRR first, fallback on failure)
+    prefs.setDefaultIntPref(R.string.pref_key_doh_settings_mode, 2)
 
-    /// Set the default DoH provider to Mullvad (Base)
+    /// Set the default DoH provider to AliDNS (China-friendly)
     prefs.setStringPref(R.string.pref_key_doh_default_provider_uri, IFConstants.IRONFOX_DEFAULT_DOH_URL)
 
     // Enable ETP Strict

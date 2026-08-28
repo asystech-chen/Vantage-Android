@@ -512,9 +512,9 @@ if [[ -z "${IRONFOX_NAME+x}" ]]; then
   echo_red_text 'Aborting...'
   exit 1
 fi
-if [[ "${IRONFOX_NAME}" != 'IronFox' ]] && [[ "${IRONFOX_NAME}" != 'IronFox Nightly' ]]; then
+if [[ "${IRONFOX_NAME}" != 'Vantage' ]] && [[ "${IRONFOX_NAME}" != 'Vantage Nightly' ]]; then
   echo_red_text "ERROR: IRONFOX_NAME (${IRONFOX_NAME}) is invalid!"
-  echo "Please ensure that IRONFOX_NAME is set to 'IronFox' or 'IronFox Nightly'."
+  echo "Please ensure that IRONFOX_NAME is set to 'Vantage' or 'Vantage Nightly'."
   echo_red_text 'Aborting...'
   exit 1
 fi
@@ -961,11 +961,12 @@ function prep_fenix() {
   "${IRONFOX_CP}" -rf "${IRONFOX_TEMP}/fenix/app/src/main/res/" "${IRONFOX_FENIX}/app/src/main/res/"
 
   if [[ "${IRONFOX_RELEASE}" == 1 ]]; then
-    "${IRONFOX_SED}" -i -e 's|applicationIdSuffix ".firefox"|applicationIdSuffix ".ironfox"|g' "${IRONFOX_FENIX}/app/build.gradle"
-    "${IRONFOX_SED}" -i -e '/android:targetPackage/s/org.mozilla.firefox/org.ironfoxoss.ironfox/' "${IRONFOX_FENIX}/app/src/release/res/xml/shortcuts.xml"
+    "${IRONFOX_SED}" -i -e 's|applicationIdSuffix ".firefox"|applicationIdSuffix ".browser"|g' "${IRONFOX_FENIX}/app/build.gradle"
+    "${IRONFOX_SED}" -i -e '/android:targetPackage/s/org.mozilla.firefox/org.vantage.browser/' "${IRONFOX_FENIX}/app/src/release/res/xml/shortcuts.xml"
   else
-    "${IRONFOX_SED}" -i -e 's|applicationIdSuffix ".firefox"|applicationIdSuffix ".ironfox.nightly"|g' "${IRONFOX_FENIX}/app/build.gradle"
-    "${IRONFOX_SED}" -i -e '/android:targetPackage/s/org.mozilla.firefox/org.ironfoxoss.ironfox.nightly/' "${IRONFOX_FENIX}/app/src/release/res/xml/shortcuts.xml"
+    # Nightly uses the SAME package name as Release for seamless upgrade
+    "${IRONFOX_SED}" -i -e 's|applicationIdSuffix ".firefox"|applicationIdSuffix ".browser"|g' "${IRONFOX_FENIX}/app/build.gradle"
+    "${IRONFOX_SED}" -i -e '/android:targetPackage/s/org.mozilla.firefox/org.vantage.browser/' "${IRONFOX_FENIX}/app/src/release/res/xml/shortcuts.xml"
   fi
 
   "${IRONFOX_SED}" -i "s/{IRONFOX_NAME}/${IRONFOX_NAME}/" ${IRONFOX_FENIX}/app/src/*/res/values*/*strings.xml

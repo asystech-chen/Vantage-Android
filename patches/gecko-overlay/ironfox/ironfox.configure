@@ -137,15 +137,15 @@ project_flag("IRONFOX_REPO_GIT_URL",            nargs=1, help="IronFox repo (Git
 project_flag("IRONFOX_REPO_URL",                nargs=1, help="IronFox repo URL", set_as_define=True)
 project_flag("IRONFOX_URL",                     nargs=1, help="IronFox URL", set_as_define=True)
 
-imply_option("IRONFOX_BUGS_URL",                "https://codeberg.org/ironfox-oss/bugs/issues")
+imply_option("IRONFOX_BUGS_URL",                "https://github.com/asystech-chen/Vantage-Android/issues")
 imply_option("IRONFOX_CHANNEL",                 ironfox_channel)
-imply_option("IRONFOX_DEFAULT_DOH_URL",         "https://base.dns.mullvad.net/dns-query")
+imply_option("IRONFOX_DEFAULT_DOH_URL",         "https://dns.alidns.com/dns-query")
 imply_option("IRONFOX_DEFAULT_UBO_ASSETS_URL",  ironfox_default_ubo_assets_url)
-imply_option("IRONFOX_FAQ_URL",                 "https://ironfoxoss.org/docs/faq/")
-imply_option("IRONFOX_RELEASES_URL",            "https://ironfoxoss.org/releases")
-imply_option("IRONFOX_REPO_GIT_URL",            "gitlab.com:ironfox-oss/IronFox.git")
-imply_option("IRONFOX_REPO_URL",                "https://gitlab.com/ironfox-oss/IronFox")
-imply_option("IRONFOX_URL",                     "https://ironfoxoss.org/")
+imply_option("IRONFOX_FAQ_URL",                 "https://github.com/asystech-chen/Vantage-Android/issues")
+imply_option("IRONFOX_RELEASES_URL",            "https://github.com/asystech-chen/Vantage-Android/releases")
+imply_option("IRONFOX_REPO_GIT_URL",            "github.com:asystech-chen/Vantage-Android.git")
+imply_option("IRONFOX_REPO_URL",                "https://github.com/asystech-chen/Vantage-Android")
+imply_option("IRONFOX_URL",                     "https://asystech.cn/")
 
 # Set version
 option(

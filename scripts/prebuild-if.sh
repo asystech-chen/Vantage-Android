@@ -421,8 +421,8 @@ function prepare_fenix() {
 
   # Set-up the app ID, version name and version code
   "${IRONFOX_SED}" -i \
-    -e 's|applicationId "org.mozilla"|applicationId "org.ironfoxoss"|' \
-    -e 's|"sharedUserId": "org.mozilla.firefox.sharedID"|"sharedUserId": "org.ironfoxoss.ironfox.sharedID"|' \
+    -e 's|applicationId "org.mozilla"|applicationId "org.vantage"|' \
+    -e 's|"sharedUserId": "org.mozilla.firefox.sharedID"|"sharedUserId": "org.vantage.browser.sharedID"|' \
     -e "s/Config.releaseVersionName(project)/'${IRONFOX_VERSION}'/" \
     "${IRONFOX_FENIX}/app/build.gradle"
 

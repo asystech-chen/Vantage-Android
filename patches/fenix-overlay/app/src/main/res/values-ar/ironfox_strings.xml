@@ -2,7 +2,7 @@
 <resources>
   <string name="restart_required_summary">سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل المتصفح</string>
   <string name="unsupported_summary">هذا الإعداد غير موصى به بتاتًا وغير مدعوم. يُرجى المتابعة بحذر.</string>
-  <string name="if_preferences">إعدادات IronFox</string>
+  <string name="if_preferences">إعدادات Vantage</string>
   <string name="if_preferences_misc">متنوّع</string>
   <string name="if_preferences_privacy">الخصوصية</string>
   <string name="if_preferences_privacy_security">الأمن والخصوصية</string>
@@ -23,7 +23,7 @@
   <string name="preference_jit_trusted_principals_enabled">تفعيل خاصية التصريف الفوري للغة JavaScript (JIT) للامتدادات</string>
   <string name="preference_jit_trusted_principals_enabled_summary">عند تعطيل JIT، يتم إعادة تفعيل JIT للامتدادات - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
   <string name="preference_media_autoplay_title">التشغيل التلقائي للوسائط</string>
-  <string name="preference_media_autoplay_description">تحكّم في كيفية قيام IronFox بحظر التشغيل التلقائي للوسائط.</string>
+  <string name="preference_media_autoplay_description">تحكّم في كيفية قيام Vantage بحظر التشغيل التلقائي للوسائط.</string>
   <string name="preference_autoplay_policy_click_to_play">اضغط للتشغيل</string>
   <string name="preference_autoplay_policy_transient">عابر</string>
   <string name="preference_autoplay_policy_sticky">لزج</string>
@@ -36,7 +36,7 @@
   <string name="preference_print_enabled">تفعيل إمكانيات الطباعة</string>
   <string name="preference_safe_browsing_enabled">تفعيل التصفّح الآمن</string>
   <string name="preference_safe_browsing_enabled_caption">احصل على حماية فورية من المواقع الإلكترونية الخطيرة والبرامج الضارة ومحاولات التصيد الاحتيالي.</string>
-  <string name="preference_safe_browsing_enabled_description">تُوفِّر Google حاليًا ميزة التصفح الآمن في IronFox. يقوم IronFox بتحديث قاعدة البيانات دوريًا لضمان حماية المستخدمين من أحدث التهديدات، وعند رصد أي تطابق محتمل، قد يُرسِل IronFox جزءًا من تجزئة عنوان URL المشتبه به إلى Google. الجدير بالذكر أن IronFox يستخدم خادم وكيل لهذه الاتصالات، لمنع ربط عنوان IP العام الخاص بك بهذه الطلبات.</string>
+  <string name="preference_safe_browsing_enabled_description">تُوفِّر Google حاليًا ميزة التصفح الآمن في Vantage. يقوم Vantage بتحديث قاعدة البيانات دوريًا لضمان حماية المستخدمين من أحدث التهديدات، وعند رصد أي تطابق محتمل، قد يُرسِل Vantage جزءًا من تجزئة عنوان URL المشتبه به إلى Google. الجدير بالذكر أن Vantage يستخدم خادم وكيل لهذه الاتصالات، لمنع ربط عنوان IP العام الخاص بك بهذه الطلبات.</string>
   <string name="preference_safe_browsing_enabled_summary">يوفِّر حماية فورية من المواقع الإلكترونية الخطيرة والبرامج الضارة ومحاولات التصيد الاحتيالي - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
   <string name="tor_spoof_english_title">تزوير اللغة إلى الإنجليزية (الأمريكية)</string>
   <string name="tor_spoof_english_caption">عزّز خصوصيتك عن طريق إخفاء لغة جهازك.</string>
@@ -50,17 +50,17 @@
   <string name="wallpaper_collection_fennec_description">خلفيات من متصفح (Fennec F-Droid). %s</string>
   <string name="preference_wasm_enabled">تفعيل WebAssembly (WASM)</string>
   <string name="preference_webgl_disabled">تعطيل WebGL</string>
-  <string name="preference_fpp_overrides_ironfox_webgl_enabled">تفعيل تجاوزات WebGL من IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_webgl_enabled">تفعيل تجاوزات WebGL من Vantage</string>
   <string name="preference_fpp_overrides_ironfox_webgl_summary">عند تعطيل WebGL، يُعاد تفعيله لبعض المواقع لتقليل التعطلّ - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
   <string name="preference_webrtc_enabled">تفعيل WebRTC</string>
-  <string name="extension_failed_to_install_xpinstall_disabled_error">تثبيت الإضافات مُعطَّل حاليًا. إذا رغبت في تثبيتها، على حساب الأمان، يمكنك تفعيله بالانتقال إلى الإعدادات -&gt; IronFox -&gt; إعدادات IronFox -&gt; الأمان -&gt; السماح بتثبيت الإضافات.</string>
+  <string name="extension_failed_to_install_xpinstall_disabled_error">تثبيت الإضافات مُعطَّل حاليًا. إذا رغبت في تثبيتها، على حساب الأمان، يمكنك تفعيله بالانتقال إلى الإعدادات -&gt; Vantage -&gt; إعدادات Vantage -&gt; الأمان -&gt; السماح بتثبيت الإضافات.</string>
   <string name="preference_xpinstall_enabled">اسمح بتثبيت الإضافات</string>
-  <string name="onboarding_if_preferences_title">خصِّص IronFox</string>
-  <string name="onboarding_if_preferences_description">قم بتخصيص IronFox حسب رغبتك</string>
+  <string name="onboarding_if_preferences_title">خصِّص Vantage</string>
+  <string name="onboarding_if_preferences_description">قم بتخصيص Vantage حسب رغبتك</string>
   <string name="onboarding_if_preference_doh_caption">قم بتأمين تصفحك باستخدام تقنية DNS over HTTPS لتعزيز الخصوصية والأمان.</string>
   <string name="onboarding_install_ublock_title">بتثبيت uBlock Origin</string>
   <string name="onboarding_install_ublock_caption">قم بحظر الإعلانات، المتعقبات، والبرامج الضارة لتجربة تصفح أكثر أمانًا ونظافة.</string>
-  <string name="onboarding_install_ublock_description">يعزز uBlock Origin خصوصيتك وأمانك من خلال حجب المحتوى غير المرغوب فيه. يستخدم IronFox إعدادات uBlock Origin مخصصة مع قوائم تصفية مُنسقة لتحقيق الحماية والأداء الأمثل.</string>
+  <string name="onboarding_install_ublock_description">يعزز uBlock Origin خصوصيتك وأمانك من خلال حجب المحتوى غير المرغوب فيه. يستخدم Vantage إعدادات uBlock Origin مخصصة مع قوائم تصفية مُنسقة لتحقيق الحماية والأداء الأمثل.</string>
   <string name="onboarding_state_installing_ublock">جارٍ تثبيت uBlock Origin…</string>
   <string name="onboarding_state_installing_ublock_error">حدث خطأ أثناء تثبيت (uBlock Origin): %1$s</string>
   <string name="onboarding_action_retry">أَعِد المحاولة</string>
@@ -68,12 +68,12 @@
   <string name="preference_referer_policy">سياسية محيلات المصادر عبر النطاقات</string>
   <string name="preference_referer_policy_summary">اضبط سلوك محيلات المصادر عبر النطاقات</string>
   <string name="preference_referer_policy_always">أرسل محيلات المصادر عبر النطاقات دائمًا (المبدئي)</string>
-  <string name="preference_fpp_overrides_ironfox_enabled">تفعيل تجاوزات الحماية من التعقّب عبر البصمة الرقمية من IronFox</string>
-  <string name="preference_fpp_overrides_ironfox_summary">يُرخي مبدئيًا من الحماية من التعقّب عبر البصمة الرقمية لبعض المواقع لتقليل التعطب، بإستخدام قائمة من IronFox - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
+  <string name="preference_fpp_overrides_ironfox_enabled">تفعيل تجاوزات الحماية من التعقّب عبر البصمة الرقمية من Vantage</string>
+  <string name="preference_fpp_overrides_ironfox_summary">يُرخي مبدئيًا من الحماية من التعقّب عبر البصمة الرقمية لبعض المواقع لتقليل التعطب، بإستخدام قائمة من Vantage - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
   <string name="preference_fpp_overrides_mozilla_enabled">تفعيل تجاوزات الحماية من التعقّب عبر البصمة الرقمية من Mozilla</string>
   <string name="preference_fpp_overrides_mozilla_summary">يُرخي مبدئيًا من الحماية من التعقّب عبر البصمة الرقمية لبعض المواقع لتقليل التعطب، بإستخدام قائمة من Mozilla - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
   <string name="tor_spoof_english">طلب النسخ الإنجليزية من صفحات الويب</string>
-  <string name="preference_fpp_overrides_ironfox_timezone_enabled">تفعيل تجاوزات تزوير المنطقة الزمنية من IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_timezone_enabled">تفعيل تجاوزات تزوير المنطقة الزمنية من Vantage</string>
   <string name="preference_fpp_overrides_ironfox_timezone_summary">يُعطل افتراضيًا تزوير المنطقة الزمنية لبعض المواقع لتقليل التعطلّ - سيؤدي تغيير هذا الإعداد إلى إعادة تشغيل متصفحك</string>
   <string name="preference_svg_enabled">تفعيل الرسوميات الموجهة القابلة للتحجيم (SVG)</string>
 </resources>

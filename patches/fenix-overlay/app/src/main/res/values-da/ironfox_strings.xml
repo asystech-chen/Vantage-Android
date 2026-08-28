@@ -2,7 +2,7 @@
 <resources>
   <string name="restart_required_summary">Hvis du ændrer denne indstilling, genstartes din browser</string>
   <string name="unsupported_summary">Denne indstilling anbefales IKKE og understøttes ikke. Fortsæt på eget ansvar.</string>
-  <string name="if_preferences">IronFox indstillinger</string>
+  <string name="if_preferences">Vantage indstillinger</string>
   <string name="if_preferences_misc">Andet</string>
   <string name="if_preferences_privacy">Privatliv</string>
   <string name="if_preferences_privacy_security">Privatliv og sikkerhed</string>
@@ -21,7 +21,7 @@
   <string name="preference_jit_trusted_principals_enabled">Aktivér JavaScript Just-in-time kompilering (JIT) for udvidelser</string>
   <string name="preference_jit_trusted_principals_enabled_summary">Når JIT er deaktiveret, genaktiveres JIT for udvidelser. Hvis du ændrer denne indstilling, genstartes din browser</string>
   <string name="preference_media_autoplay_title">Automatisk afspilning af medier</string>
-  <string name="preference_media_autoplay_description">Kontrollér, hvordan IronFox blokerer automatisk afspilning af medier.</string>
+  <string name="preference_media_autoplay_description">Kontrollér, hvordan Vantage blokerer automatisk afspilning af medier.</string>
   <string name="preference_pdfjs_disabled">Åbn PDF-filer eksternt</string>
   <string name="preference_website_appearance_title">Foretrukket udseende</string>
   <string name="preference_website_appearance_description">Nogle hjemmesider tilpasser deres farveskema ud fra dine præferencer. Vælg det farvetema, du vil bruge til disse hjemmesider. Bemærk, at andre indstillinger end \"Lys\" kan gøre det lettere at identificere dig, da din browser fremstår mere unik.</string>
@@ -30,7 +30,7 @@
   <string name="preference_prefers_dark_color_scheme">Mørk</string>
   <string name="preference_safe_browsing_enabled">Aktivér sikker browsing</string>
   <string name="preference_safe_browsing_enabled_caption">Få realtidsbeskyttelse mod farlige hjemmesider, malware og phishingforsøg.</string>
-  <string name="preference_safe_browsing_enabled_description">IronFox\' sikker browsing-funktion leveres i øjeblikket af Google. IronFox opdaterer regelmæssigt databasen for at sikre, at brugerne er beskyttet mod de nyeste trusler, og når der opdages et potentielt match, kan IronFox sende en delvis hash af den mistænkelige URL til Google. Bemærk, at IronFox proxyer disse forbindelser for at forhindre, at din offentlige IP-adresse bliver forbundet med disse anmodninger.</string>
+  <string name="preference_safe_browsing_enabled_description">Vantage\' sikker browsing-funktion leveres i øjeblikket af Google. Vantage opdaterer regelmæssigt databasen for at sikre, at brugerne er beskyttet mod de nyeste trusler, og når der opdages et potentielt match, kan Vantage sende en delvis hash af den mistænkelige URL til Google. Bemærk, at Vantage proxyer disse forbindelser for at forhindre, at din offentlige IP-adresse bliver forbundet med disse anmodninger.</string>
   <string name="preference_safe_browsing_enabled_summary">Giver realtidsbeskyttelse mod farlige hjemmesider, malware og phishingforsøg. Hvis du ændrer denne indstilling, genstartes din browser</string>
   <string name="tor_spoof_english_title">Spoof sprog til en-US</string>
   <string name="tor_spoof_english_caption">Forbedr din privatlivsbeskyttelse ved at skjule din enheds sprogindstillinger.</string>
@@ -39,7 +39,7 @@
   <string name="tor_spoof_english_summary">Når denne funktion er aktiveret, styrkes beskyttelsen mod fingerprinting</string>
   <string name="spoof_timezone">Spoof tidszone til UTC-0</string>
   <string name="spoof_timezone_summary">Når denne funktion er aktiveret, styrkes beskyttelsen mod fingerprinting</string>
-  <string name="preference_fpp_overrides_ironfox_timezone_enabled">Aktivér overskrivning af tidszone-spoofing fra IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_timezone_enabled">Aktivér overskrivning af tidszone-spoofing fra Vantage</string>
   <string name="preference_fpp_overrides_ironfox_timezone_summary">Deaktiverer som standard tidszonespoofing for bestemte hjemmesider for at reducere fejl. Hvis du ændrer denne indstilling, genstartes din browser</string>
   <string name="preference_svg_enabled">Aktivér skalerbar vektorgrafik (SVG)</string>
   <string name="preferences_debug_settings_unifiedpush">Aktivér UnifiedPush</string>
@@ -48,17 +48,17 @@
   <string name="wallpaper_collection_fennec_description">Baggrundsbilleder fra Fennec F-Droid. %s</string>
   <string name="preference_wasm_enabled">Aktivér WebAssembly (WASM)</string>
   <string name="preference_webgl_disabled">Deaktivér WebGL</string>
-  <string name="preference_fpp_overrides_ironfox_webgl_enabled">Aktivér WebGL-overskrivninger fra IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_webgl_enabled">Aktivér WebGL-overskrivninger fra Vantage</string>
   <string name="preference_fpp_overrides_ironfox_webgl_summary">Når WebGL er deaktiveret, genaktiveres WebGL som standard for visse hjemmesider for at reducere fejl. Hvis du ændrer denne indstilling, genstartes din browser</string>
   <string name="preference_webrtc_enabled">Aktivér WebRTC</string>
-  <string name="extension_failed_to_install_xpinstall_disabled_error">Installation af tilføjelsesprogrammer er i øjeblikket deaktiveret. Hvis du ønsker det, kan du aktivere dem på bekostning af sikkerheden ved at gå til Indstillinger -&gt; IronFox -&gt; IronFox indstillinger -&gt; Sikkerhed -&gt; Tillad installation af tilføjelsesprogrammer.</string>
+  <string name="extension_failed_to_install_xpinstall_disabled_error">Installation af tilføjelsesprogrammer er i øjeblikket deaktiveret. Hvis du ønsker det, kan du aktivere dem på bekostning af sikkerheden ved at gå til Indstillinger -&gt; Vantage -&gt; Vantage indstillinger -&gt; Sikkerhed -&gt; Tillad installation af tilføjelsesprogrammer.</string>
   <string name="preference_xpinstall_enabled">Tillad installation af tilføjelsesprogrammer</string>
-  <string name="onboarding_if_preferences_title">Tilpas IronFox</string>
-  <string name="onboarding_if_preferences_description">Tilpas IronFox efter din smag</string>
+  <string name="onboarding_if_preferences_title">Tilpas Vantage</string>
+  <string name="onboarding_if_preferences_description">Tilpas Vantage efter din smag</string>
   <string name="onboarding_if_preference_doh_caption">Gør din browsing mere sikker med DNS-over-HTTPS for at få forbedret privatliv og sikkerhed.</string>
   <string name="onboarding_install_ublock_title">Installér uBlock Origin</string>
   <string name="onboarding_install_ublock_caption">Blokér annoncer, trackere og malware for en mere sikker og renere browseroplevelse.</string>
-  <string name="onboarding_install_ublock_description">uBlock Origin forbedrer dit privatliv og sikkerhed ved at blokere uønsket indhold. IronFox bruger en tilpasset uBlock Origin-konfiguration med kuraterede filterlister for optimal beskyttelse og ydeevne.</string>
+  <string name="onboarding_install_ublock_description">uBlock Origin forbedrer dit privatliv og sikkerhed ved at blokere uønsket indhold. Vantage bruger en tilpasset uBlock Origin-konfiguration med kuraterede filterlister for optimal beskyttelse og ydeevne.</string>
   <string name="onboarding_state_installing_ublock">Installerer uBlock Origin…</string>
   <string name="onboarding_state_installing_ublock_error">Der opstod en fejl under installationen af uBlock Origin: %1$s</string>
   <string name="onboarding_action_retry">Prøv igen</string>

@@ -22,19 +22,19 @@
     "DisableSetDesktopBackground": true,
     "ExtensionSettings": {
       "*": {
-        "blocked_install_message": "I am Iron Man.",
+        "blocked_install_message": "Vantage Browser.",
         "allowed_types": [
           "extension"
         ]
       }
     },
     "InstallAddonsPermission": {
-      "Default": false
+      "Default": true
     },
     "LegacySameSiteCookieBehaviorEnabled": false,
     "ManualAppUpdateOnly": true,
     "MicrosoftEntraSSO": false,
-    "OfferToSaveLoginsDefault": false,
+    "OfferToSaveLoginsDefault": true,
     "Permissions": {
       "Autoplay": {
         "Default": "block-audio-video",

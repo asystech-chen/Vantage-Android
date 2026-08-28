@@ -1,0 +1,20 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>百度</ShortName>
+<Description>百度搜索</Description>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="32" height="32">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAACoklEQVR4nO2XO2gTQRiGn5nsbNJaWlRtFNEU8SAIoogPgi8IPoiIPoge/AIvBg8WCweChYMHwYHgQIdCIoIBQsWLFi3adtG0SZrdm0yRL9k02Te93sy8H9gswvD//9/f/P92ZoBVIBQINAD0v4K9A2T9B9A/QPUH0A9QvQNkA9AvQvQNkC9A3T9B9A/QPUH0A9QvQNkA9AvQvQNkC9A3Q/QDQ3UA1APQNUD1A9AzQ9AzQNUD0DVAdA9Q3Q9ADU9UD1DdD1A9QvQNk3U4p6ens7k8nlgcDh0Oh2e53kZDAbDZrMhh8MhHA4TuVxeWFiQn5+Pq6urxMfHw+Vy4XA4cDgcUCgUYDAYkJ+fzySJRAEAYDAYSqUSq9VKuVwOSqUSiUQCh8MBgUBAo9FIo9FIo9FIKleLiYlBdnaW4eFhrFYrkUjksmAwUCoVwGAwpFIplJycDq9UKhcJAUjY3N+d4PJ5SqRQajUYulwuJRAIqlQq1Wi1qtRqz2YyiFy4qKuJwuMBiMRsPhcLpfL4qiwOFwmMlkMnMzCa1Wi81mM5Ik8SaHw4FIJpO0Wi0UCoVPnjxBUFAQGRkZrNfrUAgURVFcDgcAIMBgMBg0Go1IJBLk5+cTLBaLwWA4kUj87wBAIpEwmUwsFosAoHA4jNVqJRAI9Ho9AIDZbN5pNBpo9XoURYVYLBaUQCH0er3u9Xrqd7nJ4/EULVuWmpoaAODt7Q0GBgYqirK5XBgMBmQyGXq9HoPBgEajwWQy8Xq9UCgUYrVa2traCAAQBEEYDAYcxwKqqqRSKVqtFqtVSqVS+4iAHDYrVoLBaLtGq1VKvVhEKhQqFQ0Wi0EBcXR2BgoE8//RSNRnPmzBmCIMCiRYt07tw548eP9/jxY+VyuRoaGgDg+vXrMpmM3N3dqaqqun//fq5evRoSiQSPx8PZ2dl4PB6IiIgsX7583bp10Ol03n///fTs2bNoa2szMjIyMjIyKisrS0pK4nQ6cTqdmM1mWltb1dTUNHnyZFasWHHhwoX27dv3xIkTV69e/deuXbp1675gwQJ9fX0lJiYmIyPD7u7uWq1WoaGhuLu7Fy5c2Llz54IFC3A4HEQiESQSCa1Wy8vLy4qLiwV1OQAAAABJRU5ErkJggg==</Image>
+<Url type="application/x-suggestions+json" method="GET" template="https://suggestion.baidu.com/su">
+  <Param name="wd" value="{searchTerms}"/>
+  <Param name="cb" value="callback"/>
+  <Param name="t" value="1"/>
+</Url>
+<Url type="text/html" method="GET" template="https://www.baidu.com/s">
+  <Param name="wd" value="{searchTerms}"/>
+  <Param name="ie" value="UTF-8"/>
+</Url>
+<SearchForm>https://www.baidu.com/</SearchForm>
+</SearchPlugin>

@@ -113,8 +113,8 @@ if [[ "${target}" == 'bundle' ]]; then
 fi
 
 if [[ "${IRONFOX_SIGN_SKIP_ADB}" != 1 ]]; then
-  echo_red_text 'Would you like to install IronFox to a connected device?'
-  read -p "If you'd like to install IronFox, please ensure your device is connected before proceeding. [y/N] " -n 1 -r
+  echo_red_text 'Would you like to install Vantage to a connected device?'
+  read -p "If you'd like to install Vantage, please ensure your device is connected before proceeding. [y/N] " -n 1 -r
   echo
   if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
     "${IRONFOX_ADB}" devices

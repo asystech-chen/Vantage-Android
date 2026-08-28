@@ -2,7 +2,7 @@
 <resources>
   <string name="restart_required_summary">इस सेटिंग को बदलने से आपका ब्राउज़र पुनः आरंभ हो जाएगा</string>
   <string name="unsupported_summary">यह सेटिंग अनुशंसित या समर्थित नहीं है। सावधानी से आगे बढ़ें।</string>
-  <string name="if_preferences">IronFox सेटिंग्स</string>
+  <string name="if_preferences">Vantage सेटिंग्स</string>
   <string name="if_preferences_misc">अधिक</string>
   <string name="if_preferences_privacy">गोपनीयता</string>
   <string name="if_preferences_privacy_security">गोपनीयता और सुरक्षा</string>
@@ -30,7 +30,7 @@
   <string name="preference_print_enabled">मुद्रण क्षमताएँ सक्षम करें</string>
   <string name="preference_safe_browsing_enabled">सेफ ब्राउज़िंग सक्षम करें</string>
   <string name="preference_safe_browsing_enabled_caption">खतरनाक वेबसाइटों, मैलवेयर और फ़िशिंग प्रयासों के विरुद्ध वास्तविक समय सुरक्षा प्राप्त करें।</string>
-  <string name="preference_safe_browsing_enabled_description">IronFox की सेफ ब्राउज़िंग सुविधा वर्तमान में Google द्वारा प्रदान की जाती है। IronFox समय-समय पर डेटाबेस को अपडेट करता रहेगा ताकि उपयोगकर्ताओं को नवीनतम खतरों से सुरक्षित रखा जा सके, और संभावित मिलान मिलने पर, IronFox संदिग्ध URL का आंशिक हैश Google को सबमिट कर सकता है। ध्यान दें कि IronFox इन कनेक्शनों को प्रॉक्सी करता है, ताकि आपके सार्वजनिक IP पते को इन अनुरोधों से जुड़ने से रोका जा सके।</string>
+  <string name="preference_safe_browsing_enabled_description">Vantage की सेफ ब्राउज़िंग सुविधा वर्तमान में Google द्वारा प्रदान की जाती है। Vantage समय-समय पर डेटाबेस को अपडेट करता रहेगा ताकि उपयोगकर्ताओं को नवीनतम खतरों से सुरक्षित रखा जा सके, और संभावित मिलान मिलने पर, Vantage संदिग्ध URL का आंशिक हैश Google को सबमिट कर सकता है। ध्यान दें कि Vantage इन कनेक्शनों को प्रॉक्सी करता है, ताकि आपके सार्वजनिक IP पते को इन अनुरोधों से जुड़ने से रोका जा सके।</string>
   <string name="preference_safe_browsing_enabled_summary">खतरनाक वेबसाइटों, मैलवेयर और फ़िशिंग प्रयासों के विरुद्ध रीयल-टाइम सुरक्षा प्रदान करता है - इस सेटिंग को बदलने से आपका ब्राउज़र पुनः प्रारंभ हो जाएगा</string>
   <string name="tor_spoof_english_title">en-US में भाषा का स्पूफ करें</string>
   <string name="tor_spoof_english_caption">अपने डिवाइस की भाषा सेटिंग को छिपाकर अपनी गोपनीयता बढ़ाएँ।</string>
@@ -48,7 +48,7 @@
   <string name="onboarding_if_preference_doh_caption">बेहतर गोपनीयता और सुरक्षा के लिए DNS-over-HTTPS के साथ अपनी ब्राउज़िंग को सुरक्षित करें।</string>
   <string name="onboarding_install_ublock_title">uBlock Origin स्थापित करें</string>
   <string name="onboarding_install_ublock_caption">सुरक्षित एवं स्वच्छ ब्राउज़िंग अनुभव के लिए विज्ञापनों, ट्रैकर्स और मैलवेयर को ब्लॉक करें।</string>
-  <string name="onboarding_install_ublock_description">uBlock Origin अवांछित सामग्री को ब्लॉक करके आपकी गोपनीयता और सुरक्षा को बढ़ाता है। IronFox, सर्वोत्तम सुरक्षा और प्रदर्शन के लिए क्यूरेटेड फ़िल्टर सूचियों के साथ एक कस्टम uBlock Origin कॉन्फ़िगरेशन का उपयोग करता है।</string>
+  <string name="onboarding_install_ublock_description">uBlock Origin अवांछित सामग्री को ब्लॉक करके आपकी गोपनीयता और सुरक्षा को बढ़ाता है। Vantage, सर्वोत्तम सुरक्षा और प्रदर्शन के लिए क्यूरेटेड फ़िल्टर सूचियों के साथ एक कस्टम uBlock Origin कॉन्फ़िगरेशन का उपयोग करता है।</string>
   <string name="onboarding_state_installing_ublock">uBlock Origin स्थापित हो रहा है…</string>
   <string name="onboarding_state_installing_ublock_error">uBlock Origin इंस्टॉल करते समय एक त्रुटि हुई: %1$s</string>
   <string name="onboarding_action_retry">पुन: प्रयास करें</string>

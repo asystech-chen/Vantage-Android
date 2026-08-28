@@ -1,0 +1,20 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>Google</ShortName>
+<Description>Google 搜索</Description>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="32" height="32">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAD3ElEQVR4nI2XTWgTURSGv9TdqE1bWlaLRVHFRBAPgR8QPghxEfQRPEBR8aFcEP0QX8EicGFwgMBg4MGgwGKBoIggbNK3atGnRtEm02Zps0aR9pu3SaLRF7r1ndu58vJfZCGY49537p2ZM2cC/80IAJv/AsB+AMCd4b9/ADAvw/9fAC4P4EdAvAfw/9cA2F/9sD4LwB8T0G/Yr4LwBf/wr9vAH8TwN8TwN8QwG8RwG8RwG8T4O/1YBA4HA4A+P/7fwPw/38B+P8/BfD/3z8BfD/P/xHAb9/Bf9/Bfz+B/38Bfz+Bf3/Bfz/Bf7/B/x+D/4vAfxfA//rD/8rA/4vAfxfA//rD/4vAv8XAP/6g/8XwH8XwP/6w/+LwH8XwP/6w/+LwH8XwP/6g/8XwH8XAP/6w/+LwH8XAP/6g/8XwH8XwP/6w/+LAP9fAP/6g/8XAP/6w/+LAP9fAP/6g/8XgP8vgP/9wf8LgP8vgP/9wf8rgP8vgP/9wf8LgP8vgP/9wX8LAP9fAP/6g/8XgP8vgP/9wf8LgP8vgP/9wX8LgP8vgP/9wf8LAP9fAP/6g/8XgP8vAP/7Av4vAP9fAP/6g/8XwP9fAP/6g/8XwP8LgP8vAP/7Av4vAP9fAP/6g/8XwP8rgP/9wX8LgP8vgP/9wf8LgP8rgP/9wf8LgP8rgP/9wX8LgP8rgP/9wf8LgP8rgP/9wX8LgP8vAP/7Av4vAP9fAP/6g/8XwP9fAP/6g/8XwP8rgP/9wX8LgP8vgP/9wf8LgP8vAP/7Av4vAP9fAP/6g/8XwP8rgP/9wX8LgP8vAP/7Av4vAP9fAP/6g/8XwP9fAP/6g/8XwP9fAP/6g/8XwP8LgP8rgP/9wf8LgP8vgP/9wf8LgP8vgP/9wf8LgP8vAP/7Av4vAP9fAP/6g/8XwP8LgP8rgP/9wX8LgP8rgP/9wX8LgP8vAP/7Av4vAP9fAP/6g/8XwP8LgP8rgP/9wf8LgP8vgP/9wf8LgP8vAP/7Av4vAP9fAP/6g/8XwP9fAP/6g/8XwP8LgP8vgP/9wf8LgP8vgP/9wf8LgP8vAP/7Av4vAP9fAP/6g/8XwP8LgP8rgP/9wX8LgP8rgP/9wX8LgP8vAP/7Av4vAP9fAP/6g/8XwP9fAP/6g/8XwP8LgP8rgP/9wf8LgP8vgP/9wf8LgP8vAP/7Av4vAP9fAP/6g/8XwP9fAP/6g/8XwP8LgP8vgP/9wf8LgP8vAP/7Av4vAP9fAP/6g/8XwP8LgP8rgP/9wf8LAAAAElFTkSuQmCC</Image>
+<Url type="application/x-suggestions+json" method="GET" template="https://suggestqueries.google.com/complete/search">
+  <Param name="client" value="firefox"/>
+  <Param name="q" value="{searchTerms}"/>
+</Url>
+<Url type="text/html" method="GET" template="https://www.google.com/search">
+  <Param name="q" value="{searchTerms}"/>
+  <Param name="ie" value="utf-8"/>
+  <Param name="oe" value="utf-8"/>
+</Url>
+<SearchForm>https://www.google.com/</SearchForm>
+</SearchPlugin>

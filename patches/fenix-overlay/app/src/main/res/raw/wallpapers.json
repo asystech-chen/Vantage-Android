@@ -3,11 +3,11 @@
   "collections": [
     {
       "id": "classic-firefox",
-      "heading": "Classic IronFox",
-      "description": "Wallpapers from IronFox.",
+      "heading": "Classic Vantage",
+      "description": "Wallpapers from Vantage.",
       "available-locales": null,
       "availability-range": null,
-      "learn-more-url": "https://gitlab.com/ironfox-oss/IronFox",
+      "learn-more-url": "https://github.com/asystech-chen/Vantage-Android",
       "wallpapers": [
         {
           "id": "black",

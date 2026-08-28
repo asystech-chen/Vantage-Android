@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="restart_required_summary">Selle seadistuse muutmine käivitab veebibrauseri uuesti</string>
-  <string name="if_title" translatable="false">IronFox</string>
-  <string name="if_preferences">IronFoxi seadistused</string>
+  <string name="if_title" translatable="false">Vantage</string>
+  <string name="if_preferences">Vantagei seadistused</string>
   <string name="if_preferences_misc">Varia</string>
   <string name="if_preferences_privacy">Privaatsus</string>
   <string name="if_preferences_privacy_security">Privaatsus ja turvalisus</string>
@@ -12,7 +12,7 @@
   <string name="preference_prefers_dark_color_scheme">Tume kujundus</string>
   <string name="onboarding_install_ublock_title">Paigalda uBlock Origin</string>
   <string name="onboarding_install_ublock_caption">Blokeerib reklaame, jälitajaid ja pahavara ning tagab turvalisema ja müravabama kasutajakogemuse.</string>
-  <string name="onboarding_install_ublock_description">Blokeerides mittesoovitud sisu parandab uBlock Origin sinu privaatsust ja turvalisust. IronFox kasutab oma uBlock Origini seadistusi optimaalset kaitset ja jõudlust arvestavate eelvalitud soovitustega.</string>
+  <string name="onboarding_install_ublock_description">Blokeerides mittesoovitud sisu parandab uBlock Origin sinu privaatsust ja turvalisust. Vantage kasutab oma uBlock Origini seadistusi optimaalset kaitset ja jõudlust arvestavate eelvalitud soovitustega.</string>
   <string name="onboarding_state_installing_ublock">uBlock Origin on paigaldamisel…</string>
   <string name="onboarding_state_installing_ublock_error">uBlock Origini paigaldamisel tekkis viga: %1$s</string>
   <string name="onboarding_action_retry">Proovi uuesti</string>
@@ -24,8 +24,8 @@
   <string name="preference_wasm_enabled">Kasuta WebAssembly-t (WASM)</string>
   <string name="preference_webrtc_enabled">Kasuta WebRTC-d</string>
   <string name="preference_xpinstall_enabled">Luba lisamoodulite paigaldamine</string>
-  <string name="onboarding_if_preferences_title">Kohanda IronFoxi</string>
-  <string name="onboarding_if_preferences_description">Kohanada IronFoxi vastavalt oma eelistustele</string>
+  <string name="onboarding_if_preferences_title">Kohanda Vantagei</string>
+  <string name="onboarding_if_preferences_description">Kohanada Vantagei vastavalt oma eelistustele</string>
   <string name="onboarding_if_preference_doh_caption">Paranda oma veebisirvimise privaatsust ja turvalisust kasutades nimelahendust üle HTTPS-i (DOH ehk DNS-over-HTTPS).</string>
   <string name="preference_jit_enabled">Kasuta JavaScripti dünaamilist kompileerimist (Just-in-time Compilation ehk JIT)</string>
   <string name="preference_jit_enabled_caption">Paranda JavaScripti jõudlust dünaamilise kompileerimise abil. (pole soovitatav kõikidele kasutajatele)</string>
@@ -53,25 +53,25 @@
   <string name="preference_safe_browsing_enabled">Kasuta ohutut veebisirvimist</string>
   <string name="preference_safe_browsing_enabled_caption">Reaalajas kaitse ohtlike veebisaitide, pahavara ja õngitsuskatsete vastu.</string>
   <string name="preference_safe_browsing_enabled_summary">Tagab Google\'i teenuste abil reaalajas kaitse ohtlike veebisaitide, pahavara ja õngitsuskatsete vastu. Selle seadistuse muutmine käivitab sinu veebibrauseri uuesti</string>
-  <string name="preference_safe_browsing_enabled_description">IronFoxi ohutu veebisirvimise funktsionaalsus põhineb hetkel Google\'i teenustel. IronFox uuendab vahetevahel vastavat andmekogu ja tagab, et kasutajad on viimaste veebiohtude vastu kaitstud. Võimaliku ohu tuvastamisel võib IronFox saata kahtlase võrguaadressi fragmendi räsiväärtuse Google\'i serveritesse. Tagamaks, et sinu nutiseadme IP-aadress poleks seotud antud päringutega, kasutab IronFox eraldi puhverserverit.</string>
+  <string name="preference_safe_browsing_enabled_description">Vantagei ohutu veebisirvimise funktsionaalsus põhineb hetkel Google\'i teenustel. Vantage uuendab vahetevahel vastavat andmekogu ja tagab, et kasutajad on viimaste veebiohtude vastu kaitstud. Võimaliku ohu tuvastamisel võib Vantage saata kahtlase võrguaadressi fragmendi räsiväärtuse Google\'i serveritesse. Tagamaks, et sinu nutiseadme IP-aadress poleks seotud antud päringutega, kasutab Vantage eraldi puhverserverit.</string>
   <string name="preference_translations_enabled">Kasuta Firefoxi tõlkelahendust</string>
   <string name="preference_collections_enabled">Luba kollektsioonide kasutamine</string>
-  <string name="extension_failed_to_install_xpinstall_disabled_error">Lisamoodulite paigaldamine on hetkel keelatud. Kui seda siiski soovid, siis arvesta turvalisuse riskiga ning lülita see võimalus sisse valikust: Seadistused (Sätted) -&gt; IronFox -&gt; IronFoxi seadistused -&gt; Turvalisus -&gt; Luba lisamoodulite paigaldamine.</string>
+  <string name="extension_failed_to_install_xpinstall_disabled_error">Lisamoodulite paigaldamine on hetkel keelatud. Kui seda siiski soovid, siis arvesta turvalisuse riskiga ning lülita see võimalus sisse valikust: Seadistused (Sätted) -&gt; Vantage -&gt; Vantagei seadistused -&gt; Turvalisus -&gt; Luba lisamoodulite paigaldamine.</string>
   <string name="spoof_timezone">Häma ajavöönd Greenwichi ajaks (UTC-0)</string>
   <string name="spoof_timezone_summary">Kui see valik on kasutusel, siis parandab see kaitset sinu täpsema tuvastamise vastu</string>
-  <string name="preference_fpp_overrides_ironfox_enabled">Lõdvenda sinu täpsema tuvastamise vastaseid meetmeid, mille on koostanud IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_enabled">Lõdvenda sinu täpsema tuvastamise vastaseid meetmeid, mille on koostanud Vantage</string>
   <string name="preference_fpp_overrides_mozilla_enabled">Lõdvenda sinu täpsema tuvastamise vastaseid meetmeid, mille on koostanud Mozilla Foundation</string>
   <string name="preference_fpp_overrides_mozilla_summary">Vältimaks veebisaitide mittetoimimist, ära kasuta tuvastusvastaseid meetmeid Mozilla Foundationi koostatud loendi alusel. Eeldab brauseri uuesti käivitamist</string>
-  <string name="preference_fpp_overrides_ironfox_summary">Vältimaks veebisaitide mittetoimimist, ära kasuta tuvastusvastaseid meetmeid IronFoxi tiimi koostatud loendi alusel. Eeldab brauseri uuesti käivitamist</string>
+  <string name="preference_fpp_overrides_ironfox_summary">Vältimaks veebisaitide mittetoimimist, ära kasuta tuvastusvastaseid meetmeid Vantagei tiimi koostatud loendi alusel. Eeldab brauseri uuesti käivitamist</string>
   <string name="preference_jit_trusted_principals_enabled">Kasuta JavaScripti dünaamilist kompileerimist (Just-in-time Compilation ehk JIT) brauseri lisamoodulite puhul</string>
   <string name="preference_jit_trusted_principals_enabled_summary">Kui JIT muidu on keelatud, siis see eelistus võimaldab JavaScripti dünaamilise kompileerimise lülitada brauseri lisamoodulite jaoks sisse siis. Eeldab sinu veebibrauseri uuesti käivitamist</string>
-  <string name="preference_fpp_overrides_ironfox_timezone_enabled">Lõdvenda ajavööndi hämamise võtteid loendi alusel, mille on koostanud IronFox</string>
-  <string name="preference_fpp_overrides_ironfox_timezone_summary">Vältimaks veebisaitide mittetoimimist, ära kasuta ajavööndi hämamist IronFoxi tiimi koostatud loendi alusel. Eeldab brauseri uuesti käivitamist</string>
-  <string name="preference_fpp_overrides_ironfox_webgl_enabled">Lõdvenda sinu täpsema tuvastamise vastaseid meetmeid WebGL-i lubamise kontekstis, mille on koostanud IronFox</string>
-  <string name="preference_fpp_overrides_ironfox_webgl_summary">Kui WebGL on lülitatud välja, siis vältimaks veebisaitide mittetoimimist, luba mõnedes valitud saitides WebGL-i kasutamist IronFoxi koostatud loendi alusel. Eeldab sinu veebibrauseri uuesti käivitamist</string>
+  <string name="preference_fpp_overrides_ironfox_timezone_enabled">Lõdvenda ajavööndi hämamise võtteid loendi alusel, mille on koostanud Vantage</string>
+  <string name="preference_fpp_overrides_ironfox_timezone_summary">Vältimaks veebisaitide mittetoimimist, ära kasuta ajavööndi hämamist Vantagei tiimi koostatud loendi alusel. Eeldab brauseri uuesti käivitamist</string>
+  <string name="preference_fpp_overrides_ironfox_webgl_enabled">Lõdvenda sinu täpsema tuvastamise vastaseid meetmeid WebGL-i lubamise kontekstis, mille on koostanud Vantage</string>
+  <string name="preference_fpp_overrides_ironfox_webgl_summary">Kui WebGL on lülitatud välja, siis vältimaks veebisaitide mittetoimimist, luba mõnedes valitud saitides WebGL-i kasutamist Vantagei koostatud loendi alusel. Eeldab sinu veebibrauseri uuesti käivitamist</string>
   <string name="preference_webgl_disabled">Lülita WebGL välja</string>
   <string name="preference_media_autoplay_title">Meediafailide automaatne esitamine</string>
-  <string name="preference_media_autoplay_description">Halda meediafailide automaatse esitamise viisi IronFoxis.</string>
+  <string name="preference_media_autoplay_description">Halda meediafailide automaatse esitamise viisi Vantageis.</string>
   <string name="preference_autoplay_policy_sticky">Kleepuv</string>
   <string name="preference_autoplay_policy_transient">Põgus (vaikimisi)</string>
   <string name="preference_autoplay_policy_click_to_play">Esitamine eeldab klõpsimist</string>

@@ -7,9 +7,9 @@
   <!-- Warn users that this setting is not recommended or supported -->
   <string name="unsupported_summary">This setting is NOT recommended or supported. Proceed with caution.</string>
 
-  <!-- IronFox Settings -->
-  <string name="if_title" translatable="false">IronFox</string>
-  <string name="if_preferences">IronFox settings</string>
+  <!-- Vantage Settings -->
+  <string name="if_title" translatable="false">Vantage</string>
+  <string name="if_preferences">Vantage settings</string>
   <string name="if_preferences_misc">Miscellaneous</string>
   <string name="if_preferences_privacy">Privacy</string>
   <string name="if_preferences_privacy_security">Privacy and security</string>
@@ -39,8 +39,8 @@
   <string name="preference_translations_enabled">Enable Firefox Translations</string>
 
   <!-- FPP overrides -->
-  <string name="preference_fpp_overrides_ironfox_enabled">Enable fingerprinting protection overrides from IronFox</string>
-  <string name="preference_fpp_overrides_ironfox_summary">Relaxes fingerprinting protections for certain websites by default to reduce breakage, using a list from IronFox - Changing this setting will restart your browser</string>
+  <string name="preference_fpp_overrides_ironfox_enabled">Enable fingerprinting protection overrides from Vantage</string>
+  <string name="preference_fpp_overrides_ironfox_summary">Relaxes fingerprinting protections for certain websites by default to reduce breakage, using a list from Vantage - Changing this setting will restart your browser</string>
   <string name="preference_fpp_overrides_mozilla_enabled">Enable fingerprinting protection overrides from Mozilla</string>
   <string name="preference_fpp_overrides_mozilla_summary">Relaxes fingerprinting protections for certain websites by default to reduce breakage, using a list from Mozilla - Changing this setting will restart your browser</string>
 
@@ -60,7 +60,7 @@
 
   <!-- Media autoplay-->
   <string name="preference_media_autoplay_title">Media autoplay</string>
-  <string name="preference_media_autoplay_description">Control how IronFox blocks media autoplay.</string>
+  <string name="preference_media_autoplay_description">Control how Vantage blocks media autoplay.</string>
   <string name="preference_autoplay_policy_sticky">Sticky</string>
   <string name="preference_autoplay_policy_transient">Transient (Default)</string>
   <string name="preference_autoplay_policy_click_to_play">Click-to-play</string>
@@ -82,7 +82,7 @@
   <!-- Safe Browsing -->
   <string name="preference_safe_browsing_enabled">Enable Safe Browsing</string>
   <string name="preference_safe_browsing_enabled_caption">Get real-time protection against dangerous websites, malware, and phishing attempts.</string>
-  <string name="preference_safe_browsing_enabled_description">IronFox’s Safe Browsing functionality is currently provided by Google. IronFox will periodically update the database to ensure users are protected against the latest threats, and upon encountering a potential match, IronFox might submit a partial hash of the suspected URL to Google. Note that IronFox proxies these connections, to prevent your public IP address from being associated with these requests.</string>
+  <string name="preference_safe_browsing_enabled_description">Vantage’s Safe Browsing functionality is currently provided by Google. Vantage will periodically update the database to ensure users are protected against the latest threats, and upon encountering a potential match, Vantage might submit a partial hash of the suspected URL to Google. Note that Vantage proxies these connections, to prevent your public IP address from being associated with these requests.</string>
   <string name="preference_safe_browsing_enabled_summary">Provides real-time protection against dangerous websites, malware, and phishing attempts - Changing this setting will restart your browser</string>
 
   <!-- Spoof locale to English -->
@@ -95,7 +95,7 @@
   <!-- Spoof timezone to UTC-0 -->
   <string name="spoof_timezone">Spoof timezone to UTC-0</string>
   <string name="spoof_timezone_summary">When enabled, strengthens fingerprinting protection</string>
-  <string name="preference_fpp_overrides_ironfox_timezone_enabled">Enable timezone spoofing overrides from IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_timezone_enabled">Enable timezone spoofing overrides from Vantage</string>
   <string name="preference_fpp_overrides_ironfox_timezone_summary">Disables timezone spoofing for certain websites by default to reduce breakage - Changing this setting will restart your browser</string>
 
   <!-- SVG -->
@@ -104,7 +104,7 @@
   <!-- UnifiedPush -->
   <!-- Label for enabling UnifiedPush -->
   <string name="preferences_debug_settings_unifiedpush">Enable UnifiedPush</string>
-  <!-- Label for using UnifiedPush. UnifiedPush is a decentralized push notification system, so users can benefit from mobile push notifications without relying on Google Services. Users choose the application (and server) they wish to use to manage webpush for other applications. If enabled, the browser (e.g. IronFox) will receive webpush messages via the chosen app. -->
+  <!-- Label for using UnifiedPush. UnifiedPush is a decentralized push notification system, so users can benefit from mobile push notifications without relying on Google Services. Users choose the application (and server) they wish to use to manage webpush for other applications. If enabled, the browser (e.g. Vantage) will receive webpush messages via the chosen app. -->
   <string name="preferences_unifiedpush">Use UnifiedPush</string>
   <!-- Toast shown after confirming the UnifiedPush configuration -->
   <string name="toast_change_unifiedpush_done">UnifiedPush setting modified. Quitting the application to apply changes…</string>
@@ -118,19 +118,19 @@
 
   <!-- WebGL -->
   <string name="preference_webgl_disabled">Disable WebGL</string>
-  <string name="preference_fpp_overrides_ironfox_webgl_enabled">Enable WebGL overrides from IronFox</string>
+  <string name="preference_fpp_overrides_ironfox_webgl_enabled">Enable WebGL overrides from Vantage</string>
   <string name="preference_fpp_overrides_ironfox_webgl_summary">When WebGL is disabled, re-enables WebGL for certain websites by default to reduce breakage - Changing this setting will restart your browser</string>
 
   <!-- WebRTC -->
   <string name="preference_webrtc_enabled">Enable WebRTC</string>
 
   <!-- XPInstall -->
-  <string name="extension_failed_to_install_xpinstall_disabled_error">Installation of add-ons is currently disabled. If desired, at the cost of security, you can enable it by navigating to Settings -> IronFox -> IronFox settings -> Security -> Allow installation of add-ons.</string>
+  <string name="extension_failed_to_install_xpinstall_disabled_error">Installation of add-ons is currently disabled. If desired, at the cost of security, you can enable it by navigating to Settings -> Vantage -> Vantage settings -> Security -> Allow installation of add-ons.</string>
   <string name="preference_xpinstall_enabled">Allow installation of add-ons</string>
 
   <!-- Onboarding - Title and description -->
-  <string name="onboarding_if_preferences_title">Customize IronFox</string>
-  <string name="onboarding_if_preferences_description">Customize IronFox to suit your liking</string>
+  <string name="onboarding_if_preferences_title">Customize Vantage</string>
+  <string name="onboarding_if_preferences_description">Customize Vantage to suit your liking</string>
 
   <!-- Onboarding - DoH -->
   <string name="onboarding_if_preference_doh_caption">Secure your browsing with DNS-over-HTTPS for enhanced privacy and security.</string>
@@ -139,7 +139,7 @@
   <!-- Onboarding - uBlock Origin -->
   <string name="onboarding_install_ublock_title">Install uBlock Origin</string>
   <string name="onboarding_install_ublock_caption">Block ads, trackers, and malware for a safer, cleaner browsing experience.</string>
-  <string name="onboarding_install_ublock_description">uBlock Origin enhances your privacy and security by blocking unwanted content. IronFox uses a custom uBlock Origin configuration with curated filter lists for optimal protection and performance.</string>
+  <string name="onboarding_install_ublock_description">uBlock Origin enhances your privacy and security by blocking unwanted content. Vantage uses a custom uBlock Origin configuration with curated filter lists for optimal protection and performance.</string>
 
   <!-- Onboarding - States -->
   <string name="onboarding_state_installing_ublock">Installing uBlock Origin…</string>
