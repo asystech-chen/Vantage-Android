@@ -5,6 +5,7 @@ set -euo pipefail
 
 # Make it Vantage
 ac_add_options --with-distribution-id='org.vantage'
-export MOZ_APP_VENDOR='Vantage'
+# MOZ_APP_VENDOR 只能由 implied 设置（ironfox.configure 里 imply_option），不能放 mozconfig
+# （project_flag 只接受 implied，mozconfig export 会报 InvalidOptionError）
 export MOZ_SOURCE_CHANGESET="${IRONFOX_REVISION}"
 export MOZ_SOURCE_REPO='https://github.com/asystech-chen/Vantage-Android'

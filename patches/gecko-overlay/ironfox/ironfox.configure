@@ -53,9 +53,9 @@ imply_option("MOZ_APP_UA_NAME", "Firefox")
 ## Improves compatibility and helps ensure that users have a common set of fonts
 imply_option("MOZ_ANDROID_EXCLUDE_FONTS", False)
 
-# Make it IronFox...
+# Make it Vantage...
 ## See the note at the top, we also set this with our prebuild script
-imply_option("MOZ_APP_VENDOR", "IronFox OSS")
+imply_option("MOZ_APP_VENDOR", "Vantage")
 
 # Set flag for "official" builds
 ## Ensures we're not enabling functionality/settings meant for debugging/development
