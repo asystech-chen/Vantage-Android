@@ -140,6 +140,7 @@
 **修复**（external/gecko/build/mach_initialize.py）：
 - 非 Windows 分支 `driver._telemetry_future = None`（不提交 telemetry future；main.py 的 `if self._telemetry_future is not None:` 会跳过 Event 创建与 wait）
 - **保留 ThreadPoolExecutor 定义**（下方 `telemetry_executor.shutdown(wait=False)` 是 if/else 外共用语句，删了会 NameError）
+- **已持久化**：`patches/gecko-disable-telemetry-init.patch`（2026-08-28 注册进 patches.yaml）——⚠️ 教训：早期修复只改工作树，get_sources 重下 gecko 后丢失，configure 再次死锁 22 分钟；凡改下载源码的修复必须做成 patch 或 prebuild 步骤
 
 **验证**：mach configure 从"40 分钟卡死"变为"13 秒 Configure complete"。
 
@@ -158,6 +159,7 @@
 **根因**：Debian/Ubuntu 的 `/bin/sh` 是 **dash**（不支持 `[[`），而 IronFox 的 mozconfig 全部使用 bash 语法（`[[ -z "${VAR+x}" ]]`、`set -euo pipefail`）。Fedora CI 的 /bin/sh 是 bash，因此上游从未暴露此问题。dash 解析 `[[` 报错 → 条件分支错乱。
 
 **修复**：`python/mozbuild/mozbuild/mozconfig.py` 中 `shell = "sh"` → `shell = "bash"`（mozconfig_loader 的 shebang 同步改为 bash 双保险）。
+**已持久化**：`patches/gecko-mozconfig-bash.patch`（2026-08-28 注册进 patches.yaml，同样因重下丢失复发过一次）。
 
 **验证**：完整 mozconfig 环境 configure 5 秒 Configure complete，且 `GRADLE_MAVEN_REPOSITORIES` 等 subst 正确读入。
 
@@ -234,7 +236,7 @@ sha256sum gradle-9.7.0-bin.zip   # 与 build/gradle/cache/gradle_checksums.json 
 
 **修复**：
 - fly.sh 两处确认改为检测 `PHOENIX_ASSUME_YES` 环境变量（=1 时自动 `REPLY='y'`；未设置时保持原交互行为）
-- 本地 `env_override.sh`（gitignore，不提交）默认 `PHOENIX_ASSUME_YES=1`，构建进程树自动继承
+- **已持久化**（2026-08-28）：get_sources-if.sh `get_phoenix()` clone 后自动 python 替换 fly.sh（幂等）+ build-if.sh `build_phoenix()` 强制 `export PHOENIX_ASSUME_YES=1`；原 env_override.sh 方案已不需要
 
 **教训**：第三方子项目脚本的交互确认要环境变量化（保留手动使用时的确认）。注：build.sh/build-if.sh 本身没有 read -p（各类提示均为 `REPLY='y'` 自动继续），真正的交互确认点逐一排查即可。
 
@@ -259,6 +261,40 @@ sha256sum gradle-9.7.0-bin.zip   # 与 build/gradle/cache/gradle_checksums.json 
 
 ---
 
+## 13. MOZ_APP_VENDOR 不能从 mozconfig 设置（品牌化残留连锁坑）
+
+**现象**：configure 依次报 `InvalidOptionError: MOZ_APP_VENDOR=Vantage can not be set by mozconfig. Values are accepted from: implied`，修掉后又报 `ConflictingOptionError: Cannot add 'MOZ_APP_VENDOR=Vantage' ... conflicts with 'MOZ_APP_VENDOR=IronFox OSS'`。
+
+**根因链**：
+1. gecko 的 `MOZ_APP_VENDOR` 是 `project_flag`（toolkit/moz.configure），**只接受 implied**（代码层 imply_option），mozconfig 里 `export` 直接拒绝
+2. 正确姿势是 `ironfox.configure` 里 `imply_option("MOZ_APP_VENDOR", ...)`（overlay，prebuild 复制到 external/gecko/ironfox/）
+3. 但 prebuild-if.sh 另有一个品牌化 sed 把 `mobile/android/moz.configure` 的 MOZ_APP_VENDOR 强制改成 `IronFox OSS` → 与 overlay 的 Vantage 冲突（**压缩包合并时漏改的残留**）
+
+**修复**（2026-08-28）：
+- `configs/mozconfigs/branding/common.mozconfig`：删除 `export MOZ_APP_VENDOR`
+- `patches/gecko-overlay/ironfox/ironfox.configure`：`imply_option("MOZ_APP_VENDOR", "Vantage")`
+- `scripts/prebuild-if.sh`：品牌化 sed `IronFox OSS → Vantage`
+- 顺手清残留：overlay `android/core/build.gradle` organization、`branding/*/brand.ftl` vendor-short-name、about_content 文案
+
+**教训**：合并第三方品牌化改动时，用 `grep -rn "IronFox OSS"` 全仓库扫残留（含脚本 sed 字符串、overlay 文件），不能只改表面文案。
+
+---
+
+## 14. A-S 依赖仓库被改坏：mavenLocal() 指向空 ~/.m2，回落官方源被掐
+
+**现象**：gradle 报 `:nimbus:compileReleaseKotlin` 依赖解析失败：`Could not HEAD repo.maven.apache.org/...`、`dl.google.com/dl/android/maven2/... Remote host terminated the handshake`（Java TLS 被节点拒）。
+
+**根因**：
+- `a-s-localize-maven.patch`（IronFox 为绕 Mozilla 官方 maven 不可达）把 A-S 仓库改成裸 `mavenLocal()`
+- `mavenLocal()` 默认指向 `~/.m2`（**空的**），而真实本地仓库是 `build/.m2/repository`（IRONFOX_MAVEN_LOCAL）→ 依赖全部回落官方 central/google → CN 网络被掐
+- 我们的 `GRADLE_MAVEN_REPOSITORIES` 已改 aliyun 优先，patch 反而帮倒忙
+
+**修复**（2026-08-28）：`a-s-localize-maven.patch` 只保留无 mozconfig 分支的 `mavenLocal()`；mozconfig 分支**恢复 `GRADLE_MAVEN_REPOSITORIES` 循环**（aliyun google/central + file://本地 + 兜底）。
+
+**教训**：第三方 patch 的"离线化"假设（本地仓库已填充）在本仓库不一定成立；改仓库源之前先确认本地 maven 仓库实际内容和 subst 列表。
+
+---
+
 ## 附：诊断工具速查
 
 - **python 死锁**：`py-spy dump --pid <PID>`（`pip install py-spy`，定位到具体 .py 行）
@@ -268,3 +304,5 @@ sha256sum gradle-9.7.0-bin.zip   # 与 build/gradle/cache/gradle_checksums.json 
 - **yq 实现确认**：`yq --version`（3.x = Python 版，解析要加 `-r`）
 - **gradle 缓存**：CACHEDIR=`build/gradle/cache`（gradlew.py），官方 sha256 查 `services.gradle.org/distributions/<file>.sha256`
 - **GitHub 镜像探测**：`curl -sIL <mirror-url> -o /dev/null -w "%{http_code}"`（200 且产物 sha512 匹配官方）
+- **Java/gradle 下载被掐（TLS handshake）**：curl 同 URL 通但 Java 失败 = 节点/服务对 Java 客户端指纹拦截，改走镜像（aliyun maven）或换节点；`curl -sI https://maven.aliyun.com/repository/google/<path>` 先验证镜像有货
+- **A-S 依赖仓库**：`external/application-services/settings.gradle` 的 mozconfig 分支应使用 `GRADLE_MAVEN_REPOSITORIES` 循环（勿改回裸 mavenLocal）
