@@ -13,9 +13,11 @@ ac_add_options --enable-compile-environment
 # Allow replacing the malloc implementation
 ac_add_options --enable-replace-malloc
 
-# Disable build cache
-ac_add_options --without-ccache
-export CCACHE=
+# Enable build cache (ccache) for faster rebuilds
+# Vantage: 原为 --without-ccache（禁用），启用后全量/增量重编大幅提速（首次编译会填充缓存）
+ac_add_options --with-ccache
+# shellcheck disable=SC2154
+export CCACHE=/usr/bin/ccache
 
 # Disable misc. debugging/development/test features
 ac_add_options --disable-debug-symbols
