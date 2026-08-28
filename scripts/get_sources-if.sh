@@ -695,7 +695,11 @@ function download_and_extract() {
   fi
 
   if [[ -d "${path}" ]] && [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
-    if [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
+    # Vantage: 空目录残留检测——下载中断可能留下空目录，导致后续永远跳过。空目录视为残留，自动移除重下
+    if [[ -z "$(ls -A "${path}" 2> /dev/null)" ]]; then
+      echo_yellow_text "'${path}' exists but is empty (stale from an interrupted download). Removing and re-downloading..."
+      backup_dir "${path}"
+    elif [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]]; then
       echo_red_text "'${path}' already exists. IRONFOX_FORCE_DOWNLOAD is set, re-downloading..."
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
       echo_red_text "Removing ${path}..."
@@ -813,17 +817,23 @@ function get_android_sdk() {
   # This is typically covered by "download_and_extract", but the Android SDK is a special case - we don't download it to IRONFOX_ANDROID_SDK directly
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
     if [[ -d "${IRONFOX_ANDROID_SDK}" ]]; then
-      echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}"
-      echo 'Continuing will remove this installation and related data'
-      REPLY='n'
-      [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
-      echo
-      if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-        # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
-        echo_red_text "Removing ${IRONFOX_ANDROID_SDK}..."
+      # Vantage: 残留检测——目录存在但缺 sdkmanager（下载中断残留）时自动重装，不再询问
+      if [[ ! -f "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}/bin/sdkmanager" ]]; then
+        echo_yellow_text "Found incomplete Android SDK at ${IRONFOX_ANDROID_SDK} (missing sdkmanager). Re-downloading..."
         backup_dir "${IRONFOX_ANDROID_SDK}"
       else
-        return 0
+        echo_red_text "Found existing installation at ${IRONFOX_ANDROID_SDK}"
+        echo 'Continuing will remove this installation and related data'
+        REPLY='n'
+        [[ -n "${IRONFOX_FORCE_DOWNLOAD+x}" ]] && REPLY='y'
+        echo
+        if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
+          # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
+          echo_red_text "Removing ${IRONFOX_ANDROID_SDK}..."
+          backup_dir "${IRONFOX_ANDROID_SDK}"
+        else
+          return 0
+        fi
       fi
     fi
     "${IRONFOX_MKDIR}" -p "${IRONFOX_ANDROID_SDK}/cmdline-tools"
