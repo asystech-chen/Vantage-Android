@@ -34,3 +34,12 @@ __pycache__/
 # WIP
 /wip/
 
+
+# IDE
+/.idea/
+
+# Signing keys & build artifacts (safety net)
+*.keystore
+*.jks
+*.apk
+*.aab

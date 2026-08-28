@@ -215,6 +215,28 @@ if [[ ${#github_candidates[@]} -gt 0 ]]; then
   exit 1
 fi
 
+# dl.google.com（Android SDK 等）→ 优先 curl 走代理直连 → 失败回退腾讯云镜像
+# 背景：aria2c 的 TLS 指纹会被 Google CDN 拒绝（SSL handshake failure）；代理断线时腾讯云镜像兜底
+# 确保任何网络环境下都能下载 Android SDK 组件
+if [[ "${url}" == "https://dl.google.com/android/repository/"* ]]; then
+  dl_file="${url##*/}"
+  dl_candidates=(
+    "${url}"                                                                 # 1. 代理直连（curl 走 TUN，实测香港节点 ~38MiB/s）
+    "https://mirrors.cloud.tencent.com/AndroidSDK/${dl_file}"                 # 2. 腾讯云镜像兜底（国内直连可达）
+  )
+  for cand in "${dl_candidates[@]}"; do
+    if "${curl_real}" -sSL --fail --retry 3 --retry-delay 3 --retry-all-errors --connect-timeout 30 \
+      -o "${output}" "${cand}"; then
+      echo "OK: ${dl_file} from ${cand} (curl)" >&2
+      exit 0
+    fi
+    rm -f "${output}" 2> /dev/null
+    echo "dl.google.com mirror failed, trying next: ${dl_file}" >&2
+  done
+  echo "curl-aria2 wrapper: all dl.google.com mirrors failed for ${dl_file}" >&2
+  exit 1
+fi
+
 if ! "${aria2c_cmd}" "${aria2_args[@]}" "${url}"; then
   # 模拟 curl --remove-on-error：失败时清理残留文件
   rm -f "${output}" 2> /dev/null
