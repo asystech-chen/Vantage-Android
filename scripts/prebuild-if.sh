@@ -571,7 +571,7 @@ function prepare_fenix() {
     -e 's/Use your default DNS resolver if there is a problem with the secure DNS provider/Use your default DNS resolver/' \
     -e 's/You control when to use secure DNS and choose your provider/IronFox will use secure DNS with your chosen provider by default, but might fallback to your system’s DNS resolver if secure DNS is unavailable/' \
     -e 's/You don’t have any tabs open in Firefox on your other devices/You don’t have any tabs open on your other devices/' \
-    -e '/about_content/s/Mozilla/IronFox OSS/' \
+    -e '/about_content/s/Mozilla/Vantage/' \
     -e '/preference_doh_off_summary/s/Use your default DNS resolver/Never use secure DNS, even if supported by your system’s DNS resolver/' \
     -e 's/search?client=firefox&amp;q=%s/search?q=%s/' \
     -e 's/to sync Firefox/to sync your browsing data/' \
@@ -700,7 +700,7 @@ function prepare_firefox() {
   localize_gradle
 
   # Let it be IronFox (part 2...)
-  "${IRONFOX_SED}" -i -e 's|"MOZ_APP_VENDOR", ".*"|"MOZ_APP_VENDOR", "IronFox OSS"|g' "${IRONFOX_GECKO}/mobile/android/moz.configure"
+  "${IRONFOX_SED}" -i -e 's|"MOZ_APP_VENDOR", ".*"|"MOZ_APP_VENDOR", "Vantage"|g' "${IRONFOX_GECKO}/mobile/android/moz.configure"
 
   # Replace instances of "Firefox" with "IronFox" or "IronFox Nightly"
   "${IRONFOX_SED}" -i -e 's/Firefox/{IRONFOX_NAME}/' "${IRONFOX_GECKO}/toolkit/content/neterror/supportpages/connection-not-secure.html"

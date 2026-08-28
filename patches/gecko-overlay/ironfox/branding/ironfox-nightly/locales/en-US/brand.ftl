@@ -3,4 +3,4 @@
 -brand-short-name = IronFox Nightly
 -brand-shortcut-name = IronFox Nightly
 -brand-shorter-name = IronFox Nightly
--vendor-short-name = IronFox OSS
+-vendor-short-name = Vantage

@@ -92,9 +92,9 @@ afterEvaluate {
           url = gradle.mozconfig.defines.IRONFOX_URL
           developers {
             developer {
-              name = 'IronFox OSS'
+              name = 'Vantage'
               email = 'contact@ironfoxoss.org'
-              organization = 'IronFox OSS'
+              organization = 'Vantage'
               organizationUrl = gradle.mozconfig.defines.IRONFOX_URL
             }
           }

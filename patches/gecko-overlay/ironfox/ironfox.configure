@@ -1,7 +1,7 @@
 # ironfox.configure
 
 # NOTE: Unfortunately, we can't redefine options here that were implied to a different value at `mobile/android/moz.configure` here.
-## (Ex. we can't set `MOZ_SERVICES_HEALTHREPORT` to `False` and `MOZ_APP_VENDOR` to `IronFox OSS` here) - We'll still need to drirectly modify the configure file directly for changes like this.
+## (Ex. we can't set `MOZ_SERVICES_HEALTHREPORT` to `False` and `MOZ_APP_VENDOR` to `Vantage` here) - We'll still need to drirectly modify the configure file directly for changes like this.
 ## BUT we can use this as a form of validation, to ensure that our changes are properly applied/working as expected - ex. if we set `MOZ_SERVICES_HEALTHREPORT` to `False` here, and the build fails - we'll know something went wrong with the`gecko-disable-telemetry` patch.
 
 # Disable artifact builds
