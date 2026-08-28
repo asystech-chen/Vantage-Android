@@ -3,7 +3,14 @@ From: celenity <celenity@celenity.dev>
 Date: Sun, 05 Jul 2026 20:19:20 +0000
 Subject: [PATCH] Application Services - Localize Maven
 
-Replaces Mozilla Maven repositories with local maven repositories.
+Adds mavenLocal() for standalone app-services builds (no mozconfig).
+
+Note (Vantage): the mozconfig branch intentionally keeps using
+GRADLE_MAVEN_REPOSITORIES (aliyun mirrors + local file repo) instead of
+bare mavenLocal(), because mavenLocal() points at ~/.m2 which is empty
+while the real local repo is build/.m2/repository. Using the subst list
+avoids hitting repo.maven.apache.org / dl.google.com directly (blocked
+in CN networks).
 
 Signed-off-by: celenity <celenity@celenity.dev>
 ---
@@ -19,20 +26,5 @@ index c891c8ac1..44df67926 100644
              mavenCentral()
          }
      } else {
-@@ -22,14 +23,7 @@ buildscript {
-         gradle.ext.mozconfig = gradle.root.mozconfig
- 
-         repositories {
--            gradle.mozconfig.substs.GRADLE_MAVEN_REPOSITORIES.each { repository ->
--                maven {
--                    url = repository
--                    if (gradle.mozconfig.substs.ALLOW_INSECURE_GRADLE_REPOSITORIES) {
--                        allowInsecureProtocol = true
--                    }
--                }
--            }
-+            mavenLocal()
-         }
-     }
- }
 -- 
+2.39.2
