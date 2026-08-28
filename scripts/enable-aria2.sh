@@ -17,7 +17,7 @@ root_dir="$(dirname "${script_dir}")"
 wrapper="${root_dir}/tools/curl-aria2.sh"
 
 find_aria2c() {
-  for candidate in /usr/bin/aria2c /usr/local/bin/aria2c /bin/aria2c "$(command -v aria2c 2>/dev/null || true)"; do
+  for candidate in /usr/bin/aria2c /usr/local/bin/aria2c /bin/aria2c "$(command -v aria2c 2> /dev/null || true)"; do
     if [[ -n "${candidate}" && -x "${candidate}" ]]; then
       echo "${candidate}"
       return 0
@@ -60,7 +60,8 @@ EOF
 # 用 aria2c 多线程替代 curl 下载（加速大文件）
 # 注意：此处只做普通赋值（env_common.sh 会自行 readonly）
 # 用 BASH_SOURCE[0] 动态解析仓库根目录（延迟求值，仓库移动后无需重新生成）
-IRONFOX_CURL="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)/tools/curl-aria2.sh"
+# %/* 是 bash 内置参数扩展，不依赖外部 dirname（PATH 被清空的环境也能用）
+IRONFOX_CURL="\$(cd "\${BASH_SOURCE[0]%/*}" && pwd)/tools/curl-aria2.sh"
 export IRONFOX_CURL
 IRONFOX_CURL_FLAGS=''
 export IRONFOX_CURL_FLAGS
