@@ -1,6 +1,6 @@
-# IronFox 定制化指南（v154.0.0.1）
+# Vantage 定制化指南（基于 IronFox v154）
 
-本文档详细说明如何基于 IronFox v154.0.0.1 源码进行品牌定制和功能调整，适用于 Vantage 安卓版等衍生项目。
+本文档说明如何基于本仓库源码进行**品牌定制**和**功能调整**。方法学与桌面版 Vantage 一致（patch / overlay / 配置文件），只是 Android 版有多个源码层（gecko / fenix / A-S）需要分别处理。
 
 > 本指南基于 **IronFox v154.0.0.1**（2026-08-21 上游发布）整理。150 → 154 期间 patch 体系经过重构（35 新增 / 33 删除），旧版（150）指南中的部分 patch 名称已失效，请以本文档为准。
 
@@ -9,12 +9,13 @@
 ## 目录
 
 1. [快速开始](#快速开始)
-2. [品牌定制](#品牌定制)
-3. [功能定制](#功能定制)
-4. [搜索引擎配置](#搜索引擎配置)
-5. [隐私与安全设置](#隐私与安全设置)
-6. [构建配置](#构建配置)
-7. [常见问题](#常见问题)
+2. [改功能工作流（先读）](#改功能工作流先读)
+3. [品牌定制](#品牌定制)
+4. [功能定制](#功能定制)
+5. [搜索引擎配置](#搜索引擎配置)
+6. [隐私与安全设置](#隐私与安全设置)
+7. [构建配置](#构建配置)
+8. [常见问题](#常见问题)
 
 ---
 
@@ -72,6 +73,42 @@ vantage-android/
 | `microg-*` | microG 依赖 |
 
 ---
+
+## 改功能工作流（先读）
+
+改任何功能前，按下面顺序定位「改哪里」，**优先选最上层、最不依赖源码结构的手段**：
+
+### 第 1 步：定位功能所在层
+
+| 你想改的东西 | 所在层 | 主要位置 |
+|-------------|--------|----------|
+| 搜索引擎 / 默认搜索 | 引擎数据 | `patches/a-c-overlay/.../search/`（list.json + searchplugins/*.xml） |
+| 品牌名 / 图标 / 颜色 / 引导页 | UI | `patches/fenix-overlay/` + `configs/mozconfigs/branding/` |
+| 隐私 / 网络 / 行为 pref | 运行时配置 | `configs/phoenix/ironfox.cfg` + `policies.json`（**优先改这里**） |
+| DoH / 时区伪装等硬编码默认值 | 引擎 | `patches/gecko-overlay/ironfox/ironfox.configure` |
+| 界面文案 | UI 字符串 | `patches/fenix-overlay/.../res/values*/ironfox_strings.xml` |
+| 引擎级逻辑（WebGL、扩展、遥测） | 引擎 | gecko/fenix 的 `*.patch`（patches.yaml 注册） |
+
+### 第 2 步：选手段（从稳到不稳）
+
+1. **配置文件**（`ironfox.cfg` / `policies.json`）：改 pref 首选，零编译，改完打包即生效
+2. **overlay 整文件覆盖**（`patches/*-overlay/`）：改文件内容/资源，prebuild 直接覆盖到源码树，不受上游代码结构影响
+3. **diff patch**（`patches/*.patch` + `scripts/patches.yaml` 注册）：改逻辑，受上游代码结构影响（大版本升级需重新生成）
+4. **prebuild sed**（`scripts/prebuild-if.sh`）：品牌/包名类字符串替换
+
+### 第 3 步：改 + 验证
+
+```sh
+./scripts/prebuild.sh          # 重打补丁（自动检查 *.rej，冲突会红字列出）
+find . -name "*.rej"           # 确认无残留（prebuild 已自动检查，可跳过）
+./scripts/build.sh arm64       # 重新构建
+```
+
+### 常见误区
+
+- ❌ 直接改 `external/` 下的源码 → **会被 prebuild 覆盖**，必须改 `patches/` 下的源
+- ❌ 改完不重跑 `prebuild.sh` → 改动不生效（构建用的是 external/ 里的源码）
+- ❌ 上游大版本升级后 patch 直接硬打 → 先跑 `check_patch` 看 dry-run，冲突先重新生成 patch
 
 ## 品牌定制
 

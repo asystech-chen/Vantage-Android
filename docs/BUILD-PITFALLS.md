@@ -1,8 +1,30 @@
 # Vantage Android 构建踩坑记录（Pitfalls）
 
 > 适用：vantage-android 仓库（IronFox 154 基线）在 Debian/Ubuntu 类系统 + 国内网络下的构建。
-> 记录格式：现象 → 排查 → 根因 → 修复 → 教训。按现象关键词检索。
+> 记录格式：现象 → 排查 → 根因 → 修复 → 教训。**构建出问题先看下方速查表，再翻对应章节。**
 > 首次记录：2026-08-25 首轮构建测试（get_sources → prebuild → build 全流程）。
+
+---
+
+## 现象速查表
+
+| 现象 | 章节 | 一句话解法 |
+|------|------|-----------|
+| 下载报 `不可识别的 URI` / 包装器递归 | [#1](#1-下载包装器curl-aria2sh-无限递归不可识别的-uri-或不支持的协议30) | 已修：绝对路径 + 递归保护 |
+| 镜像下载成功但 checksum 失败（879B HTML） | [#2](#2-ustc-镜像按客户端指纹拦截-aria2c-checksum-失败-879b-html) | 已修：GitHub release 走 curl 镜像降级 |
+| GitLab archive checksum 必挂 | [#3](#3-gitlab-archive-产物-sha512-与官方不一致-checksum-必挂) | 已修：git 浅克隆 |
+| nvm 装 node 报错 / 下载包装器不兼容 | [#4](#4-nvm-内部-command-curl-与下载包装器不兼容) / [#5](#5-npmrc-的-prefix-导致-nvm-全家桶-exit-11-杀脚本) | 已修：透传 + 临时移走 ~/.npmrc |
+| prebuild 报 patch 路径带引号 | [#6](#6-prebuild-报-patch-路径带引号-yq-版本差异) | 已修：yq -r |
+| **configure 卡死 0% CPU / 日志不动** | [#7](#7-mach-configure-死锁-40-分钟glean-遥测初始化) | 已做 patch 自动修复（Glean 禁用） |
+| **`[[: not found` / 走错 mozconfig 分支** | [#8](#8-mozconfig--not-founddebian-dash-vs-bash) | 已做 patch 自动修复（强制 bash） |
+| gradle 下载失败 / checksum mismatch | [#9](#9-gradle-下载失败--缓存损坏813-与-961) | 镜像预下载 + sha256 校验 |
+| **gradle 停 `> IDLE` / maven.google.com 卡死** | [#10](#10-agp-921-解析失败mavengooglecom-超时initgradle-无效) | TUN 透明代理（必需） |
+| **卡在 `Are you sure? [y/N]`** | [#11](#11-phoenix-flysh-交互确认卡构建) | 已修：PHOENIX_ASSUME_YES=1 自动 |
+| configure 报 repeated registration / Item already in manifest | [#12](#12-geckoview-构建-moz_build_appbrowser-引发的系列重复注册) | 修 patch 去重（工作树 + patch 源同步） |
+| `MOZ_APP_VENDOR ... can not be set by mozconfig` | [#13](#13-moz_app_vendor-不能从-mozconfig-设置品牌化残留连锁坑) | 只能 implied 设置；扫 IronFox OSS 残留 |
+| 依赖下载 `Remote host terminated the handshake`（Java） | [#14](#14-a-s-依赖仓库被改坏mavenlocal-指向空-m2-回落官方源被掐) | A-S 用 GRADLE_MAVEN_REPOSITORIES（aliyun） |
+| aria2c TLS 握手失败（GitHub/codeload/dl.google.com） | 仓库 curl-aria2.sh | 已修：这些源走 curl |
+| SDK 残留空目录导致跳过 | 仓库 get_sources-if.sh | 已修：自动检测重下 |
 
 ---
 

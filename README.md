@@ -140,17 +140,41 @@ _获取源文件后必须运行一次。_
 
 Vantage 当前构建验证目标为 `arm64`（主流手机全覆盖）。
 
-### 国内网络构建提示
+### 环境要求
 
-构建过程需要大量访问海外资源（GitHub / GitLab / Google maven / Mozilla 等），国内网络下推荐以下措施：
+- **系统**：Debian / Ubuntu / Fedora / macOS（详见上文 bootstrap 说明）
+- **硬件**：实测 8 vCPU / 16GB 内存可完成 arm64 全链路（GeckoView C++/Rust 编译数小时，gradle 约 10 分钟）；磁盘建议 ≥ 100GB
+- **依赖**：`bootstrap.sh` 自动安装（cmake / clang / ninja / nasm / yq / zlib 等）；也可以手动装
+- **代理**（国内网络必读）：见下节
 
-1. **保持代理在线（重要）**：gradle 依赖解析会访问 `maven.google.com`，即使已配置阿里云镜像，个别依赖仍会回落直连 Google 并卡死（TCP 握手无限重试，表现为构建停在 `> IDLE`）。**必须使用 TUN/透明代理模式**（如 clash 的 TUN 开关），仅设置系统代理（GNOME/gsettings）对 Java/gradle 无效。代理断开后最典型症状：`ss -tn state syn-sent` 看到大量指向 `142.251.x.x`（Google）的连接。
-2. **aria2c 多线程下载**：执行 `./scripts/enable-aria2.sh --env` 并 eval 输出（或直接跑 `./scripts/enable-aria2.sh` 生成 `env_override.sh`），将 curl 下载替换为 aria2c 16 线程，实测 NDK 783MB 28s（约 26MiB/s）。
-3. **Gradle 二进制预下载**：gradlew.py 缓存目录为 `build/gradle/cache/`，网络不稳时可用国内镜像（腾讯云 `mirrors.cloud.tencent.com/gradle/`、华为云 `mirrors.huaweicloud.com/gradle/`）或 aria2c 预先下载对应版本 zip 放入缓存目录，脚本命中缓存后校验 sha256 通过即跳过联网。
-4. **GitLab 源**：curl-aria2 包装器已自动处理 GitLab 的 Cloudflare 拦截（raw/archive 重写为 API 路径、archive 优先走 GitHub 镜像）；对打包产物与官方 SHA512 不一致的仓库（Phoenix/prebuilds/unifiedpush-ac）已改为 git 浅克隆指定 commit。
-5. **编译机配置**：实测 8 vCPU / 16GB 内存即可完成 arm64 全链路构建（gradle 阶段约 10 分钟；GeckoView C++/Rust 编译耗时数小时）。
+### 网络与下载方案（国内）
+
+构建需要大量访问海外资源（GitHub / GitLab / Google maven / Mozilla）。仓库已内置镜像降级 + 下载加速，网络问题按以下层次解决：
+
+1. **TUN 透明代理（推荐，最省心）**：gradle/Java 等不认系统代理，必须网络层透明代理。mihomo 示例规则：`DOMAIN-SUFFIX,dl.google.com,<节点组>`（详见 `docs/BUILD-PITFALLS.md` #10）。典型症状——构建停在 `> IDLE`、`ss -tn state syn-sent` 看到 `142.251.x.x`。
+2. **下载加速**：`./scripts/enable-aria2.sh` 生成 `env_override.sh`，curl 下载替换为 aria2c 16 线程（NDK 783MB 实测 28s）。
+3. **内置镜像降级**（curl-aria2.sh 自动处理，无需手动）：
+   - GitHub release → USTC/TUNA/SJTU 镜像 → GitHub 直连
+   - GitHub archive（codeload）→ curl 走代理直连
+   - `dl.google.com/android/repository/*`（Android SDK 组件）→ curl 代理直连 → 腾讯云 `mirrors.cloud.tencent.com/AndroidSDK/` 兜底
+   - GitLab archive → GitHub 镜像 / git 浅克隆（Phoenix/prebuilds/unifiedpush-ac）
+   - gradle 依赖 → 阿里云 maven 镜像（mozconfig `GRADLE_MAVEN_REPOSITORIES`）
+4. **Gradle 二进制预下载**：`build/gradle/cache/` 缺版本时用腾讯云 `mirrors.cloud.tencent.com/gradle/` 或 aria2c 预下载，校验 sha256（对照 `gradle_checksums.json`）。
 
 构建成功验证：`build/outputs/apk/` 下应出现对应 ABI 的已签名 APK。
+
+### 常见问题速查
+
+| 现象 | 解法 | 详见 |
+|------|------|------|
+| configure 卡死 0% CPU / 日志不动 | Glean 遥测死锁，已做 patch 自动修复 | PITFALL #7 |
+| `[[: not found`（Debian） | dash vs bash，已做 patch 自动修复 | PITFALL #8 |
+| gradle 停 `> IDLE` / maven.google.com 卡死 | 开 TUN 代理 | PITFALL #10 |
+| 下载中断残留目录导致跳过 | 已自动检测重下 | PITFALL（SDK 残留） |
+| 卡在 `Are you sure? [y/N]` | Phoenix 交互，已自动 `PHOENIX_ASSUME_YES=1` | PITFALL #11 |
+| aria2c TLS 握手失败（GitHub/dl.google.com） | 已自动改走 curl | 仓库 curl-aria2.sh |
+| 依赖下载 TLS 被掐（Java/gradle） | 走阿里云镜像 / 换节点 | PITFALL #14 |
+| 重编慢 | 已启用 ccache；Rust 增量被上游禁用（权衡） | build.mozconfig |
 
 更多构建踩坑记录见 [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md)。
 
@@ -166,13 +190,14 @@ Linter 配置位于 `.shellcheckrc` _（检查）_ 和 `.editorconfig` _（格�
 
 ## 文档
 
-- [`docs/CUSTOMIZATION-GUIDE.md`](docs/CUSTOMIZATION-GUIDE.md) — 定制化指南（154 版）
-- [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md) — 构建踩坑记录
+- [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md) — **构建踩坑记录**（现象速查表 + 14 条详细根因/修复；构建出问题先看这里）
+- [`docs/CUSTOMIZATION-GUIDE.md`](docs/CUSTOMIZATION-GUIDE.md) — **定制化指南**（品牌 / 功能 / 搜索引擎怎么改，改哪里）
+- [`docs/FAQ.md`](docs/FAQ.md) — 常见问题
 - [`docs/Features.md`](docs/Features.md) — 功能特性
 - [`docs/Limitations.md`](docs/Limitations.md) — 限制说明
-- [`docs/FAQ.md`](docs/FAQ.md) — 常见问题
 - [`docs/Network-Connections.md`](docs/Network-Connections.md) — 网络连接说明
 - [`docs/NightlyVsRelease.md`](docs/NightlyVsRelease.md) — Nightly 与 Release 差异
+- [`docs/Safe-Browsing.md`](docs/Safe-Browsing.md) — 安全浏览说明
 
 ## 许可
 
