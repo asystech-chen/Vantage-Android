@@ -41,5 +41,8 @@ __pycache__/
 # Signing keys & build artifacts (safety net)
 *.keystore
 *.jks
+
+# Debug keystore 例外：统一开发签名（非正式，密码为 Android 标准 android）
+!keystores/debug.keystore
 *.apk
 *.aab
