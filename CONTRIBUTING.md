@@ -28,8 +28,8 @@ The main repository is on
 [GitLab](https://gitlab.com/ironfox-oss/IronFox). It is mirrored to
 [Codeberg](https://codeberg.org/ironfox-oss/IronFox) and
 [GitHub](https://github.com/ironfox-oss/IronFox). Send merge requests to
-GitLab. See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a map of the
-repository and a glossary of the project's terms.
+GitLab. See [README.md](README.md) and [docs/](docs/) for an overview of the
+project and its documentation.
 
 ## Setting up a build
 

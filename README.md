@@ -1,143 +1,222 @@
-# IronFox
+# Vantage（Android）
 
 <div align="center">
 
 <img src="assets/ironfox.png"
-  alt="IronFox"
+  alt="Vantage"
   height="200">
 
 </div>
 
-<div align="center">
+> ⚠️ 上方为 IronFox 占位图标，Vantage 品牌图标制作中，后续替换。
 
-[<img src="assets/accrescent.png"
-  alt="Get it on Accrescent"
-  height="80">](https://accrescent.app/app/org.ironfoxoss.ironfox)
-[<img src="assets/f-droid.png"
-  alt="Get it on F-Droid"
-  height="80">](fdroidrepos://fdroid.ironfoxoss.org/fdroid/repo?fingerprint=C5E291B5A571F9C8CD9A9799C2C94E02EC9703948893F2CA756D67B94204F904)
-[<img src="assets/obtainium.png"
-  alt="Get it on Obtainium"
-  height="80">](obtainium://app/%7B%22id%22%3A%22org.ironfoxoss.ironfox%22%2C%22url%22%3A%22https%3A%2F%2Freleases.ironfoxoss.org%2Fironfox%2Freleases%2Fupdates.json%22%2C%22author%22%3A%22releases.ironfoxoss.org%22%2C%22name%22%3A%22App%22%2C%22preferredApkIndex%22%3A0%2C%22additionalSettings%22%3A%22%7B%5C%22intermediateLink%5C%22%3A%5B%5D%2C%5C%22customLinkFilterRegex%5C%22%3A%5C%22%5C%22%2C%5C%22filterByLinkText%5C%22%3Afalse%2C%5C%22matchLinksOutsideATags%5C%22%3Afalse%2C%5C%22skipSort%5C%22%3Afalse%2C%5C%22reverseSort%5C%22%3Afalse%2C%5C%22sortByLastLinkSegment%5C%22%3Afalse%2C%5C%22versionExtractWholePage%5C%22%3Atrue%2C%5C%22requestHeader%5C%22%3A%5B%7B%5C%22requestHeader%5C%22%3A%5C%22User-Agent%3A%20Mozilla%2F5.0%20(Linux%3B%20Android%2010%3B%20K)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F114.0.0.0%20Mobile%20Safari%2F537.36%5C%22%7D%5D%2C%5C%22defaultPseudoVersioningMethod%5C%22%3A%5C%22partialAPKHash%5C%22%2C%5C%22trackOnly%5C%22%3Afalse%2C%5C%22versionExtractionRegEx%5C%22%3A%5C%22%5C%5C%5C%22org%5C%5C%5C%5C.ironfoxoss%5C%5C%5C%5C.ironfox%5C%5C%5C%22%5C%5C%5C%5Cs*%3A%5C%5C%5C%5Cs*%5C%5C%5C%5C%7B.*%3F%5C%5C%5C%22version%5C%5C%5C%22%5C%5C%5C%5Cs*%3A%5C%5C%5C%5Cs*%5C%5C%5C%22(%5B%5E%5C%5C%5C%22%5D%2B)%5C%5C%5C%22%5C%22%2C%5C%22matchGroupToUse%5C%22%3A%5C%221%5C%22%2C%5C%22versionDetection%5C%22%3Atrue%2C%5C%22useVersionCodeAsOSVersion%5C%22%3Afalse%2C%5C%22apkFilterRegEx%5C%22%3A%5C%22universal%5C%22%2C%5C%22invertAPKFilter%5C%22%3Afalse%2C%5C%22autoApkFilterByArch%5C%22%3Atrue%2C%5C%22appName%5C%22%3A%5C%22IronFox%5C%22%2C%5C%22appAuthor%5C%22%3A%5C%22IronFox%20OSS%5C%22%2C%5C%22shizukuPretendToBeGooglePlay%5C%22%3Afalse%2C%5C%22allowInsecure%5C%22%3Afalse%2C%5C%22exemptFromBackgroundUpdates%5C%22%3Afalse%2C%5C%22skipUpdateNotifications%5C%22%3Afalse%2C%5C%22about%5C%22%3A%5C%22Private%2C%20secure%2C%20user%20first%20web%20browser%20for%20Android.%5C%22%2C%5C%22refreshBeforeDownload%5C%22%3Atrue%7D%22%2C%22overrideSource%22%3A%22HTML%22%7D)
+**Vantage** 是一款面向 Android 的 Firefox 浏览器。我们的目标是做「**更好用的 Firefox**」——
+保留 Firefox 完整生态（扩展、账号同步、全语言支持），融合桌面版 Vantage 的隐私理念与品牌风格，
+为中文用户提供开箱即用的体验。
 
-</div>
+- **引擎**：GeckoView（Firefox 154）
+- **基线**：[IronFox](https://gitlab.com/ironfox-oss/IronFox)（[Mull](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull) 的继任者，Firefox Android 的隐私分支）
+- **姊妹项目**：[桌面版 Vantage](https://github.com/asystech-chen/Vantage)（基于 Firefox ESR / LibreWolf）
 
-<div align="center"><b>F-Droid QR Code:</b></div>
+## 项目方向
 
-<div align="center">
+**更好用的 Firefox，不是魔改的隐私浏览器。**
 
-[<img src="assets/f-droid_qr.png"
-  alt="Get it on F-Droid"
-  height="300">](fdroidrepos://fdroid.ironfoxoss.org/fdroid/repo?fingerprint=C5E291B5A571F9C8CD9A9799C2C94E02EC9703948893F2CA756D67B94204F904)
+**好用优先：**
+- 开放扩展安装（Firefox 生态核心，uBlock Origin 等开箱即用）
+- 权限请求采用询问制（通知/定位/相机/麦克风）
+- 保留密码保存与自动填充
+- 默认不清理浏览数据（退出清理作为可选项保留）
 
-</div>
+**隐私不缺席**（对齐桌面版 Vantage）：
+- 遥测 / 崩溃报告 / Nimbus 实验全部禁用
+- uBlock Origin 内置
+- HTTPS-Only、DoH（阿里 DNS + DNSPod）
+- Canvas 指纹随机化、网络 ID 隐藏、推测连接禁用
+- 移除 Mozilla 服务（Pocket / Suggest / Relay / AI 控制等）
 
----
+**品牌与体验对齐桌面版：**
+- 蓝绿主题色、Vantage 图标（基于桌面版资产修改）
+- **zh-MS 巨硬中文**语言包（全量硬翻，桌面版特色）
+- 全语言支持；Vantage 自定义文案仅维护 en-US / zh-CN / zh-TW
 
-IronFox is a fork of [Divested Computing Group](https://divested.dev/)'s [Mull
-Browser][mull], based on [Mozilla Firefox](https://www.firefox.com/). **Our goal
-is to continue the legacy of Mull by providing a free and open source, privacy
-and security-oriented web browser for daily use.**
+## 状态
 
-> [!TIP]
-> Find a bug? Encounter an annoying problem? Have a tip, idea, or suggestion
-> you'd like to share? **Please file any issues, bug reports, and suggestions
-> over at [our unified issue
-> tracker](https://codeberg.org/ironfox-oss/bugs/issues)!**
+- 当前：**Nightly 阶段**（Firefox 154 基线，arm64）
+- 规划：迁移 **Release** 通道（同包名同签名，无缝升级）
+- 包名：`org.vantage.browser`
+- 分发：GitHub Releases + 官网；F-Droid 后置
+- 更新机制：暂未启用（保留上游检查框架，后续接入）
 
-> [!IMPORTANT]
-> **All users are HIGHLY recommended to take a look at our
-> [documentation](https://ironfoxoss.org/docs/), ESPECIALLY the
-> [Limitations](https://ironfoxoss.org/docs/limitations/) and [Frequently Asked
-> Questions](https://ironfoxoss.org/docs/faq/) pages!**
+## 构建
 
-## Features
+Vantage 继承 IronFox 的构建体系：使用预构建的 wasi-sdk sysroot 和 llvm-project，而不是在本地构建它们，让本地构建项目变得更容易。
 
-IronFox hardens Firefox for Android and removes parts of it that work against
-privacy. Highlights:
+### 不使用 Docker 构建
 
-- **Privacy:** clears history, cache, downloads and open tabs on exit, uses
-  DNS over HTTPS (Quad9, max protection), enables Strict Enhanced Tracking
-  Protection, bundles uBlock Origin, and blocks geolocation, local network and
-  external-app prompts by default.
-- **Fingerprinting resistance:** enables Suspected Fingerprinters Protection,
-  defaults to the light theme, and requests English (`en-US`) pages by default.
-- **Security:** HTTPS-Only Mode, per-site process isolation (Fission), memory
-  tagging on supported devices, a hardened PDF viewer, and JavaScript JIT,
-  add-on installation, autofill and the built-in password manager off by
-  default.
-- **User control:** toggles for JavaScript, WebGL, WebRTC, WebAssembly, SVG,
-  IPv6 and the referer policy, plus `about:config`.
-- **Less Mozilla:** no sponsored tiles, Firefox Suggest, surveys or crash
-  reporting, and no Adjust, Sentry or Google Play libraries. Push
-  notifications use UnifiedPush.
-- **Sensible defaults:** DuckDuckGo as the default search engine, and media
-  autoplay and web notifications blocked.
+**注意**：目前支持在最新版本的 **`Fedora`**、**`macOS`**、**`secureblue`**、**`Ubuntu`** 和 **`Debian`** 系统上构建。其他操作系统/环境可能有效，效果因人而异。
 
-See the full list on the
-[features page](https://ironfoxoss.org/docs/features/), and read the
-[limitations](https://ironfoxoss.org/docs/limitations/) to understand what
-IronFox can and can't protect against.
+**注意**：**`macOS`** 用户必须先安装 [Homebrew](https://brew.sh/) _（如果尚未安装）_，然后再执行以下步骤。
 
-## Install and Verify
+首先，如果尚未安装 `git`，请为你的平台安装：
 
-For details and step-by-step instructions on how to install IronFox, see our
-[Download](https://ironfoxoss.org/download/) page.
+**`Fedora`**：
 
-IronFox supports the same minimum Android version as Firefox for Android, on
-`arm64`, `arm` and `x86_64` devices, including Android TV and Fire TV.
-
-**Release** builds are the stable channel. **Nightly** builds come from CI, use
-a different package ID, and differ slightly in branding and developer options.
-See [Nightly vs. Release](https://ironfoxoss.org/docs/nightly-vs-release/).
-
-The [changelog](CHANGELOG.md) has the notes for the latest release. Notes for
-every release are on the
-[releases page](https://gitlab.com/ironfox-oss/IronFox/-/releases).
-
-**Package ID**: `org.ironfoxoss.ironfox`
-
-**Package ID (Nightly)**: `org.ironfoxoss.ironfox.nightly`
-
-**SHA-256 Hash of Signing Certificate**:
-
-```text
-C5:E2:91:B5:A5:71:F9:C8:CD:9A:97:99:C2:C9:4E:02:EC:97:03:94:88:93:F2:CA:75:6D:67:B9:42:04:F9:04
+```sh
+sudo dnf install git
 ```
 
-## Get Involved
+**`macOS`**：
 
-Want to join the IronFox Community? We'd love to see you over on
-[Matrix](https://matrix.to/#/#ironfox:unredacted.org) _(Recommended)_ and
-[Discord](https://discord.gg/zbdzfRVyVh)!
+```sh
+brew install git
+```
 
-Report bugs and suggestions on the
-[issue tracker](https://codeberg.org/ironfox-oss/bugs/issues). Code and merge
-requests go to [GitLab](https://gitlab.com/ironfox-oss/IronFox), which is
-IronFox's home. The repository is also mirrored to
-[Codeberg](https://codeberg.org/ironfox-oss/IronFox) and
-[GitHub](https://github.com/ironfox-oss/IronFox).
+**`secureblue`**：
 
-Bug reports, translations, and code changes are welcome. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for how to build IronFox, run the linters,
-and submit changes, and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a map
-of the repository.
+`secureblue` 默认已安装 `git`，无需任何操作。
 
-## Licensing
+**`Ubuntu`** / **`Debian`**：
 
-The scripts are licensed under the [GNU Affero General Public License, version 3
-or later](COPYING.txt). Patches follow the license of the files they modify. See
-[LICENSES.md](LICENSES.md) for details and attributions.
+```sh
+sudo apt install git
+```
 
-## Notices
+成功安装 `git` 后，你需要做的第一件事是克隆 Vantage 的源代码仓库：
 
-- Mozilla Firefox is a trademark of The Mozilla Foundation.
-- This is not an officially supported Mozilla product. IronFox is in no way
-  affiliated with Mozilla.
-- IronFox is not sponsored or endorsed by Mozilla.
-- IronFox is not associated with DivestOS, Divested Computing Group, or Mull in
-  any manner.
-- Firefox source code is available at
-  <https://github.com/mozilla-firefox/firefox>.
+_（下面指定了 `--depth=1` 以减少克隆仓库的大小，如果愿意可以移除）_
 
-[mull]: https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull
+```sh
+git clone --depth=1 git@github.com:asystech-chen/Vantage-Android.git
+```
+
+现在，你应该导航到 Vantage 源目录的根目录，并运行 `bootstrap` 脚本：
+
+_（`bootstrap` 脚本将设置并安装构建 Vantage 所需的依赖）_
+
+```sh
+cd Vantage-Android
+./scripts/bootstrap.sh
+```
+
+#### 获取源文件
+
+仍然在 Vantage 源目录的根目录，现在你应该运行 `get_sources` 脚本下载构建 Vantage 所需的外部源（Firefox / Fenix / Application Services 等）：
+
+**注意**：如果需要获取与 Vantage 当前使用的不同版本的依赖源，你需要在运行 `get_sources` 脚本**之前**修改 `scripts/versions.sh`。
+
+_这可能需要一些时间，取决于你的网络速度……_
+
+```sh
+./scripts/get_sources.sh
+```
+
+#### 准备源文件
+
+现在你需要使用 `prebuild` 脚本对新下载的源进行打补丁/准备：
+
+_获取源文件后必须运行一次。_
+
+```sh
+./scripts/prebuild.sh
+```
+
+#### 构建
+
+最后，你可以开始构建过程：
+
+```sh
+./scripts/build.sh <构建变体>
+```
+
+其中 `<构建变体>` 指定要构建的变体，是以下**之一**：
+
+- `arm` - 32 位 ARM（`armeabi-v7a`）
+- `arm64` - 64 位 ARM（`arm64-v8a`）
+- `x86_64` - 64 位 x86
+- `bundle` - 包含所有受支持 ABI 的 Android App Bundle（AAB）
+
+除了 `AAB` 之外，`bundle` 目标还会为每个架构生成 APK _（`arm`、`arm64` 和 `x86_64`）_，以及包含所有架构的 universal APK。
+
+Vantage 当前构建验证目标为 `arm64`（主流手机全覆盖）。
+
+### 环境要求
+
+- **系统**：Debian / Ubuntu / Fedora / macOS（详见上文 bootstrap 说明）
+- **硬件**：实测 8 vCPU / 16GB 内存可完成 arm64 全链路（GeckoView C++/Rust 编译数小时，gradle 约 10 分钟）；磁盘建议 ≥ 100GB
+- **依赖**：`bootstrap.sh` 自动安装（cmake / clang / ninja / nasm / yq / zlib 等）；也可以手动装
+- **代理**（国内网络必读）：见下节
+
+### 网络与下载方案（国内）
+
+构建需要大量访问海外资源（GitHub / GitLab / Google maven / Mozilla）。仓库已内置镜像降级 + 下载加速，网络问题按以下层次解决：
+
+1. **TUN 透明代理（推荐，最省心）**：gradle/Java 等不认系统代理，必须网络层透明代理。mihomo 示例规则：`DOMAIN-SUFFIX,dl.google.com,<节点组>`（详见 `docs/BUILD-PITFALLS.md` #10）。典型症状——构建停在 `> IDLE`、`ss -tn state syn-sent` 看到 `142.251.x.x`。
+2. **下载加速**：`./scripts/enable-aria2.sh` 生成 `env_override.sh`，curl 下载替换为 aria2c 16 线程（NDK 783MB 实测 28s）。
+3. **内置镜像降级**（curl-aria2.sh 自动处理，无需手动）：
+   - GitHub release → USTC/TUNA/SJTU 镜像 → GitHub 直连
+   - GitHub archive（codeload）→ curl 走代理直连
+   - `dl.google.com/android/repository/*`（Android SDK 组件）→ curl 代理直连 → 腾讯云 `mirrors.cloud.tencent.com/AndroidSDK/` 兜底
+   - GitLab archive → GitHub 镜像 / git 浅克隆（Phoenix/prebuilds/unifiedpush-ac）
+   - gradle 依赖 → 阿里云 maven 镜像（mozconfig `GRADLE_MAVEN_REPOSITORIES`）
+4. **Gradle 二进制预下载**：`build/gradle/cache/` 缺版本时用腾讯云 `mirrors.cloud.tencent.com/gradle/` 或 aria2c 预下载，校验 sha256（对照 `gradle_checksums.json`）。
+
+构建成功验证：`build/outputs/apk/` 下应出现对应 ABI 的已签名 APK。
+
+### 常见问题速查
+
+| 现象 | 解法 | 详见 |
+|------|------|------|
+| configure 卡死 0% CPU / 日志不动 | Glean 遥测死锁，已做 patch 自动修复 | PITFALL #7 |
+| `[[: not found`（Debian） | dash vs bash，已做 patch 自动修复 | PITFALL #8 |
+| gradle 停 `> IDLE` / maven.google.com 卡死 | 开 TUN 代理 | PITFALL #10 |
+| 下载中断残留目录导致跳过 | 已自动检测重下 | PITFALL（SDK 残留） |
+| 卡在 `Are you sure? [y/N]` | Phoenix 交互，已自动 `PHOENIX_ASSUME_YES=1` | PITFALL #11 |
+| aria2c TLS 握手失败（GitHub/dl.google.com） | 已自动改走 curl | 仓库 curl-aria2.sh |
+| 依赖下载 TLS 被掐（Java/gradle） | 走阿里云镜像 / 换节点 | PITFALL #14 |
+| 重编慢 | 已启用 ccache；Rust 增量被上游禁用（权衡） | build.mozconfig |
+
+更多构建踩坑记录见 [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md)。
+
+### Linting
+
+项目主要由 shell 脚本驱动，使用 [`shellcheck`](https://www.shellcheck.net/) _（静态分析）_ 和 [`shfmt`](https://github.com/mvdan/sh) _（格式化）_ 检查。这些在 CI _（`lint-scripts` 作业）_ 中自动运行并强制执行——lint 失败会在任何构建开始前停止流水线。
+
+Linter 配置位于 `.shellcheckrc` _（检查）_ 和 `.editorconfig` _（格式化）_ 中。
+
+## 贡献
+
+欢迎社区参与：提交 Issue、Pull Request、翻译、测试反馈。贡献指南（CONTRIBUTING.md）整理中。
+
+## 文档
+
+- [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md) — **构建踩坑记录**（现象速查表 + 14 条详细根因/修复；构建出问题先看这里）
+- [`docs/CUSTOMIZATION-GUIDE.md`](docs/CUSTOMIZATION-GUIDE.md) — **定制化指南**（品牌 / 功能 / 搜索引擎怎么改，改哪里）
+- [`docs/FAQ.md`](docs/FAQ.md) — 常见问题
+- [`docs/Features.md`](docs/Features.md) — 功能特性
+- [`docs/Limitations.md`](docs/Limitations.md) — 限制说明
+- [`docs/Network-Connections.md`](docs/Network-Connections.md) — 网络连接说明
+- [`docs/NightlyVsRelease.md`](docs/NightlyVsRelease.md) — Nightly 与 Release 差异
+- [`docs/Safe-Browsing.md`](docs/Safe-Browsing.md) — 安全浏览说明
+
+## 许可
+
+- **构建脚本**：根据 [GNU Affero General Public License, version 3 or later](COPYING) 许可（继承自 IronFox）
+- **补丁**：根据补丁添加或修改的文件头中的许可 _（[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) 或 [MPL 2.0](https://www.mozilla.org/MPL/)）_ 许可（继承自上游 Firefox/Fenix）
+- [Phoenix](https://phoenix.celenity.dev/) 在适用情况下根据 [GNU General Public License v3.0 or later](https://spdx.org/licenses/GPL-3.0-or-later.html) _（`GPL-3.0-or-later`）_ 许可。参见 [`COPYING`](https://phoenix.celenity.dev/COPYING.txt)
+- `a-c-liberate.patch`、`a-s-localize-maven.patch` 和 `fenix-liberate.patch` 改编自 [Fennec F-Droid](https://gitlab.com/relan/fennecbuild)。参见 [`COPYING`](https://gitlab.com/relan/fennecbuild/-/blob/master/COPYING)
+- `gecko-configure-ublock-origin.patch`、`gecko-devtools-bypass.patch`、`gecko-prevent-exposing-name-and-vendor-to-extensions.patch` 和 `gecko-rs-blocker.patch` 改编自 [LibreWolf](https://librewolf.net/)。参见 [LibreWolf License and Disclaimers](https://librewolf.net/license-disclaimers/)
+- `fenix-disable-network-connectivity-monitoring.patch`、`gecko-disable-network-id.patch`、`gecko-prevent-fingerprinting-via-chrome-resources.patch`、`geckoview-ironfox-settings-support-spoof-english.patch` 和 `glean-noop.patch` 改编自 [Tor Project](https://www.torproject.org/)。参见 [`LICENSE`](https://gitlab.torproject.org/tpo/core/tor/-/raw/HEAD/LICENSE)
+- 壁纸集取自 [Fennec F-Droid](https://gitlab.com/relan/fennecmedia)，可在 [Unsplash license](https://gitlab.com/relan/fennecmedia#licenses) 下使用
+
+## 声明
+
+Mozilla Firefox 是 Mozilla 基金会的商标。
+
+这不是 Mozilla 官方支持的产品。Vantage 与 Mozilla 没有任何关联。
+
+Vantage 不受 Mozilla 赞助或认可。
+
+Vantage 与 DivestOS、Divested Computing Group、Mull 或 IronFox 没有任何关联。
+
+Firefox 源代码可在 [https://github.com/mozilla-firefox/firefox](https://github.com/mozilla-firefox/firefox) 获取。
