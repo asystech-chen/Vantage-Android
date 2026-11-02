@@ -581,6 +581,9 @@ function prepare_fenix() {
   "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/fox_ai_on_state.xml" || return 1
   "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_launcher_foreground.xml" || return 1
   "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_launcher_monochrome.xml" || return 1
+  ## Our overlay replaces the splash logo with a PNG of the same name, so the
+  ## upstream vector has to go or AAPT2 fails with a duplicate resource error
+  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_splash_logo.xml" || return 1
   "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_onboarding_search_widget.xml" || return 1
   "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_onboarding_sync.xml" || return 1
   "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/microsurvey_success.xml" || return 1
@@ -703,16 +706,16 @@ function prepare_fenix() {
     -e 's/Learn more about Firefox Suggest/Learn more about search suggestions/' \
     -e 's/Notifications help you stay safer with Firefox/Enable notifications/' \
     -e 's/Notifications for tabs received from other Firefox devices/Notifications for tabs received from other devices/' \
-    -e 's/Securely send tabs between your devices and discover other privacy features in Firefox/IronFox can remind you when private tabs are open and show you the progress of file downloads/' \
+    -e 's/Securely send tabs between your devices and discover other privacy features in Firefox/Vantage can remind you when private tabs are open and show you the progress of file downloads/' \
     -e 's/Suggestions from %1$s/Suggestions from Mozilla/' \
     -e 's/Use your default DNS resolver if there is a problem with the secure DNS provider/Use your default DNS resolver/' \
-    -e 's/You control when to use secure DNS and choose your provider/IronFox will use secure DNS with your chosen provider by default, but might fallback to your system’s DNS resolver if secure DNS is unavailable/' \
+    -e 's/You control when to use secure DNS and choose your provider/Vantage will use secure DNS with your chosen provider by default, but might fallback to your system’s DNS resolver if secure DNS is unavailable/' \
     -e 's/You don’t have any tabs open in Firefox on your other devices/You don’t have any tabs open on your other devices/' \
-    -e '/about_content/s/Mozilla/IronFox OSS/' \
+    -e '/about_content/s/Mozilla/Vantage/' \
     -e '/preference_doh_off_summary/s/Use your default DNS resolver/Never use secure DNS, even if supported by your system’s DNS resolver/' \
     -e 's/search?client=firefox&amp;q=%s/search?q=%s/' \
     -e 's/to sync Firefox/to sync your browsing data/' \
-    -e 's/%1$s decides when to use secure DNS to protect your privacy/IronFox will use your system’s DNS resolver/' \
+    -e 's/%1$s decides when to use secure DNS to protect your privacy/Vantage will use your system’s DNS resolver/' \
     "${IRONFOX_FENIX}"/app/src/*/res/values*/*strings.xml || return 1
 
   # Replace instances of "Firefox" with "IronFox" or "IronFox Nightly"
@@ -763,6 +766,16 @@ function prepare_fenix() {
 
   # Apply UnifiedPush-AC overlay (for Fenix)
   apply_overlay "${IRONFOX_UP_AC}/fenix-overlay/" || return 1
+
+  # Our overlay ships PNG branding artwork. Upstream may also provide a WebP
+  ## file with the same resource name in the same directory, which AAPT2
+  ## rejects as a duplicate resource. Ensure only one format remains.
+  verify_exec "${IRONFOX_FIND}" 'IRONFOX_FIND' || return 1
+  "${IRONFOX_FIND}" "${IRONFOX_FENIX}/app/src" -name '*.webp' -type f | while read -r webp_file; do
+    if [[ -f "${webp_file%.webp}.png" ]]; then
+      "${IRONFOX_RM}" -fv "${webp_file}" || return 1
+    fi
+  done
 
   ## The following are for the build script, so that it can update the environment variables if needed
   ### (ex. if the user changes them)
@@ -848,10 +861,10 @@ function prepare_firefox() {
   # Always use our Gradle wrapper with our Gradle flags/configuration
   localize_gradle || return 1
 
-  # Let it be IronFox (part 2...)
-  "${IRONFOX_SED}" -i -e 's|"MOZ_APP_VENDOR", ".*"|"MOZ_APP_VENDOR", "IronFox OSS"|g' "${IRONFOX_GECKO}/mobile/android/moz.configure" || return 1
+  # Let it be Vantage (part 2...)
+  "${IRONFOX_SED}" -i -e 's|"MOZ_APP_VENDOR", ".*"|"MOZ_APP_VENDOR", "Vantage"|g' "${IRONFOX_GECKO}/mobile/android/moz.configure" || return 1
 
-  # Replace instances of "Firefox" with "IronFox" or "IronFox Nightly"
+  # Replace instances of "Firefox" with "Vantage" or "Vantage Nightly"
   "${IRONFOX_SED}" -i -e 's/Firefox/{IRONFOX_NAME}/g' "${IRONFOX_GECKO}/toolkit/content/neterror/supportpages/connection-not-secure.html" || return 1
   "${IRONFOX_SED}" -i -e 's/Firefox/{IRONFOX_NAME}/g' "${IRONFOX_GECKO}/toolkit/content/neterror/supportpages/time-errors.html" || return 1
 

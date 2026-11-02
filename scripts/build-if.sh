@@ -54,6 +54,15 @@ case "${build_target}" in
     readonly IRONFOX_TARGET_PRETTY='ARM64'
     readonly IRONFOX_TARGET_RUST='arm64'
     ;;
+  arm64-nolto)
+    # arm64-v8a, built without LTO (much faster build)
+    readonly IRONFOX_TARGET_ARCH='arm64'
+    readonly IRONFOX_TARGET_ABI='arm64-v8a'
+    readonly IRONFOX_TARGET_PRETTY='ARM64 (no LTO)'
+    readonly IRONFOX_TARGET_RUST='arm64'
+    readonly IRONFOX_DISABLE_LTO=1
+    readonly IRONFOX_OBJDIR_SUFFIX='-nolto'
+    ;;
   arm)
     # armeabi-v7a
     readonly IRONFOX_TARGET_ARCH='arm'
@@ -85,6 +94,12 @@ export IRONFOX_TARGET_ARCH
 # shellcheck disable=SC2090
 export IRONFOX_TARGET_ABI
 export IRONFOX_TARGET_PRETTY
+if [[ -n "${IRONFOX_DISABLE_LTO+x}" ]]; then
+  export IRONFOX_DISABLE_LTO
+fi
+if [[ -n "${IRONFOX_OBJDIR_SUFFIX+x}" ]]; then
+  export IRONFOX_OBJDIR_SUFFIX
+fi
 
 # Handle project-specific arguments
 IRONFOX_BUILD_AC_CORE=0
@@ -492,9 +507,9 @@ if [[ "${IRONFOX_RELEASE}" != 1 ]] && [[ "${IRONFOX_RELEASE}" != 0 ]]; then
 fi
 
 verify_env "${IRONFOX_NAME}" 'IRONFOX_NAME' || return 1
-if [[ "${IRONFOX_NAME}" != 'IronFox' ]] && [[ "${IRONFOX_NAME}" != 'IronFox Nightly' ]]; then
+if [[ "${IRONFOX_NAME}" != 'Vantage' ]] && [[ "${IRONFOX_NAME}" != 'Vantage Nightly' ]]; then
   echo_red_text "ERROR: IRONFOX_NAME (${IRONFOX_NAME}) is invalid!"
-  echo "Please ensure that IRONFOX_NAME is set to 'IronFox' or 'IronFox Nightly'."
+  echo "Please ensure that IRONFOX_NAME is set to 'Vantage' or 'Vantage Nightly'."
   echo_red_text 'Aborting...'
   return 1
 fi
@@ -979,17 +994,17 @@ function prep_fenix() {
 
   # Set-up the app ID, version name and version code
   if [[ "${IRONFOX_RELEASE}" == 1 ]]; then
-    local -r fenix_app_id_suffix='ironfox'
+    local -r fenix_app_id_suffix='vantage'
   else
-    local -r fenix_app_id_suffix='ironfox.nightly'
+    local -r fenix_app_id_suffix='vantage.nightly'
   fi
-  local -r fenix_app_id="org.ironfoxoss.${fenix_app_id_suffix}"
+  local -r fenix_app_id="asys.${fenix_app_id_suffix}"
 
   # shellcheck disable=SC2140
   "${IRONFOX_SED}" -i \
-    -e 's|applicationId "org.mozilla"|applicationId "org.ironfoxoss"|g' \
+    -e 's|applicationId "org.mozilla"|applicationId "asys"|g' \
     -e "s|applicationIdSuffix \"".firefox\""|applicationIdSuffix \"".${fenix_app_id_suffix}\""|g" \
-    -e 's|"sharedUserId": "org.mozilla.firefox.sharedID"|"sharedUserId": "org.ironfoxoss.ironfox.sharedID"|g' \
+    -e 's|"sharedUserId": "org.mozilla.firefox.sharedID"|"sharedUserId": "asys.vantage.sharedID"|g' \
     -e "s/Config.releaseVersionName(project)/'${IRONFOX_IF_VERSION}'/" \
     "${IRONFOX_FENIX}/app/build.gradle" || return 1
 
@@ -1774,12 +1789,12 @@ function build_fenix() {
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_ARM64_UNSIGNED}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-arm64-v8a-release-unsigned.apk" "${IRONFOX_OUTPUTS_ARM64_UNSIGNED}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-arm64-v8a-release-unsigned.apk" "${IRONFOX_OUTPUTS_ARM64_UNSIGNED}" || return 1
     else
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_ARM64}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-arm64-v8a-release.apk" "${IRONFOX_OUTPUTS_ARM64}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-arm64-v8a-release.apk" "${IRONFOX_OUTPUTS_ARM64}" || return 1
     fi
   fi
 
@@ -1789,12 +1804,12 @@ function build_fenix() {
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_ARM_UNSIGNED}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-armeabi-v7a-release-unsigned.apk" "${IRONFOX_OUTPUTS_ARM_UNSIGNED}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-armeabi-v7a-release-unsigned.apk" "${IRONFOX_OUTPUTS_ARM_UNSIGNED}" || return 1
     else
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_ARM}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-armeabi-v7a-release.apk" "${IRONFOX_OUTPUTS_ARM}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-armeabi-v7a-release.apk" "${IRONFOX_OUTPUTS_ARM}" || return 1
     fi
   fi
 
@@ -1804,12 +1819,12 @@ function build_fenix() {
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_X86_64_UNSIGNED}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-x86_64-release-unsigned.apk" "${IRONFOX_OUTPUTS_X86_64_UNSIGNED}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-x86_64-release-unsigned.apk" "${IRONFOX_OUTPUTS_X86_64_UNSIGNED}" || return 1
     else
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_X86_64}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-x86_64-release.apk" "${IRONFOX_OUTPUTS_X86_64}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-x86_64-release.apk" "${IRONFOX_OUTPUTS_X86_64}" || return 1
     fi
   fi
 
@@ -1820,12 +1835,12 @@ function build_fenix() {
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_UNIVERSAL_UNSIGNED}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-universal-release-unsigned.apk" "${IRONFOX_OUTPUTS_UNIVERSAL_UNSIGNED}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-universal-release-unsigned.apk" "${IRONFOX_OUTPUTS_UNIVERSAL_UNSIGNED}" || return 1
     else
       # Create our output directory
       "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_UNIVERSAL}")
 
-      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-universal-release.apk" "${IRONFOX_OUTPUTS_UNIVERSAL}" || return 1
+      "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-universal-release.apk" "${IRONFOX_OUTPUTS_UNIVERSAL}" || return 1
     fi
 
     # 5. Finally, build and export our AAB
@@ -1834,7 +1849,7 @@ function build_fenix() {
     # Create our output directory
     "${IRONFOX_MKDIR}" -p $("${IRONFOX_DIRNAME}" "${IRONFOX_OUTPUTS_BUNDLE_AAB}")
 
-    "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/gradle/build/mobile/android/fenix/app/outputs/bundle/release/app-release.aab" "${IRONFOX_OUTPUTS_BUNDLE_AAB}" || return 1
+    "${IRONFOX_CP}" -v "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/build/mobile/android/fenix/app/outputs/bundle/release/app-release.aab" "${IRONFOX_OUTPUTS_BUNDLE_AAB}" || return 1
   fi
   popd || return 1
 

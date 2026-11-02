@@ -1,8 +1,8 @@
-# Vantage 定制化指南（基于 IronFox v154）
+# Vantage 定制化指南（基于 IronFox v159）
 
 本文档说明如何基于本仓库源码进行**品牌定制**和**功能调整**。方法学与桌面版 Vantage 一致（patch / overlay / 配置文件），只是 Android 版有多个源码层（gecko / fenix / A-S）需要分别处理。
 
-> 本指南基于 **IronFox v154.0.0.1**（2026-08-21 上游发布）整理。150 → 154 期间 patch 体系经过重构（35 新增 / 33 删除），旧版（150）指南中的部分 patch 名称已失效，请以本文档为准。
+> 本指南基于 **IronFox v159**（Firefox Gecko `159.0` / Application Services `159.0.1`）整理。154 → 159 期间 patch 体系有调整，旧版（154）指南中的部分 patch 名称可能已失效，请以本文档与 `scripts/patches.yaml` 为准。
 
 ---
 
@@ -128,7 +128,7 @@ export MOZ_APP_REMOTINGNAME='ironfox'
 
 Vantage 定制时改为 `--with-app-basename='Vantage'`、`--with-app-name='vantage'`，并同步修改 `--with-branding` 指向新品牌目录。
 
-### 2. 品牌常量（154 机制）
+### 2. 品牌常量（159 机制）
 
 **修改位置**: `patches/gecko-overlay/ironfox/prefs/ironfox.js`
 
@@ -210,7 +210,7 @@ about-vantage-description = Vantage 是一个基于 Firefox 的隐私浏览器�
 
 **修改位置**: `patches/fenix-ironfox-onboarding.patch`
 
-变更文件（154）：
+变更文件（159）：
 - `mobile/android/fenix/app/onboarding.fml.yaml` - 引导卡片配置
 - `.../onboarding/OnboardingFragment.kt`、`OnboardingMapper.kt`、`OnboardingPageState.kt`、`OnboardingPageUiData.kt`、`OnboardingScreen.kt`
 - `.../settings/doh/root/DohSettingsScreen.kt` - DoH 配置页
@@ -272,7 +272,7 @@ pref("general.config.obscure_value", 0, locked);
 
 8 大分类：**Build System** / **Dependency** / **Mozilla** / **Privacy** / **Security** / **User Control** / **User Experience** / **User Interface**
 
-### 2. 常用功能 patch 一览（154 有效）
+### 2. 常用功能 patch 一览（159 有效）
 
 **🔒 隐私**
 
@@ -313,7 +313,7 @@ pref("general.config.obscure_value", 0, locked);
 | `fenix-disable-gms-fonts.patch` | 禁用 GMS 字体 |
 | `gecko-remove-aboutrestricted.patch` / `gecko-remove-abouttelemetry.patch` | 移除敏感 about 页面 |
 
-**⚙️ 默认行为（154 合并进 core patch）**
+**⚙️ 默认行为（159 合并进 core patch）**
 
 | Patch | 功能 |
 |-------|------|
@@ -325,7 +325,7 @@ pref("general.config.obscure_value", 0, locked);
 | `fenix-increase-update-frequency.patch` | 更新检查频率 24h → 1h |
 | `fenix-disable-profiling.patch` | 禁用性能分析 |
 | `fenix-disable-firefox-suggest.patch` | 见上 |
-| `fenix-remove-ai-controls.patch` | 移除 Firefox 154 AI 功能入口 |
+| `fenix-remove-ai-controls.patch` | 移除 Firefox 159 AI 功能入口 |
 | `gecko-remove-openai.patch` | 移除 OpenAI 相关代码 |
 | `gecko-rs-preview-mode.patch` / `gecko-rs-blocker.patch` | Rust 组件相关 |
 
@@ -460,7 +460,7 @@ pref("extensions.webextensions.restrictedDomains", "", locked);
 
 **修改位置**: `patches/fenix-configure-doh-providers.patch`
 
-154 内置提供商：**Mullvad (Base)**（默认）/ **Cloudflare** / **Cloudflare (Malware Protection)** / **DNS4EU (Ad Blocking / Protective / Unfiltered)** / **NextDNS** 等，每个带国家/地区 emoji 标签。默认值通过 `IRONFOX_DEFAULT_DOH_URL` 品牌常量注入。
+159 内置提供商：**Mullvad (Base)**（默认）/ **Cloudflare** / **Cloudflare (Malware Protection)** / **DNS4EU (Ad Blocking / Protective / Unfiltered)** / **NextDNS** 等，每个带国家/地区 emoji 标签。默认值通过 `IRONFOX_DEFAULT_DOH_URL` 品牌常量注入。
 
 Vantage 定制时可改为阿里 DNS / DNSPod 等（参考桌面版 DoH 方案）：
 
@@ -520,21 +520,21 @@ val blockedPermissions = setOf(
 
 **修改位置**: `scripts/versions.sh`
 
-154 关键版本（2026-08-21）：
+159 关键版本（2026-10-27）：
 
 ```bash
-readonly IRONFOX_GECKO_VERSION='154.0'          # Firefox Gecko 版本
-readonly IRONFOX_VERSION="${IRONFOX_GECKO_VERSION}.0.1"  # IronFox 版本
-readonly IRONFOX_AS_VERSION='154.0'             # Application Services
-readonly IRONFOX_GLEAN_VERSION='68.0.1'         # Glean
-readonly IRONFOX_ANDROID_NDK_VERSION='r29'
-readonly IRONFOX_ANDROID_SDK_VERSION='21.0'
+readonly IRONFOX_GECKO_VERSION='159.0'          # Firefox Gecko 版本
+readonly IRONFOX_VERSION="${IRONFOX_GECKO_VERSION}"  # IronFox 版本
+readonly IRONFOX_AS_VERSION='159.0.1'           # Application Services
+readonly IRONFOX_GLEAN_VERSION='70.2.1'         # Glean
+readonly IRONFOX_ANDROID_NDK_VERSION='r30'
+readonly IRONFOX_ANDROID_SDK_VERSION='23.0'
 readonly IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION='r37'   # 37.0.0
-readonly IRONFOX_ANDROID_SDK_PLATFORM_VERSION='37.1'
-readonly IRONFOX_JDK_17_VERSION='17.0.20'       # 另有 21 / 25
-readonly IRONFOX_RUST_VERSION='1.97.1'
-readonly IRONFOX_NODE_VERSION='26.7.0'
-readonly IRONFOX_PYTHON_VERSION='3.14.7'
+readonly IRONFOX_ANDROID_SDK_PLATFORM_VERSION='37.2'
+readonly IRONFOX_JDK_17_VERSION='17.0.21'       # 另有 21 / 25
+readonly IRONFOX_RUST_VERSION='1.99.1'
+readonly IRONFOX_NODE_VERSION='26.12.1'
+readonly IRONFOX_PYTHON_VERSION='3.15.1'
 ```
 
 ### 2. Mozconfig 结构
@@ -692,4 +692,4 @@ adb logcat | grep -i vantage
 
 ---
 
-_最后更新：2026-08-24（基于 IronFox v154.0.0.1）_
+_最后更新：2026-11-02（基于 IronFox v159，arm64-nolto 全链路构建验证通过）_

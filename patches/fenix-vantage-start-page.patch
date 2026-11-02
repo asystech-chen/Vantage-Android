@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sat, 01 Nov 2026 00:00:00 +0000
+Subject: [PATCH] Fenix - Vantage start page
+
+Automatically loads the Vantage start page (https://asystech.cn/start/index.html)
+when a homepage ("about:home") tab is displayed, so that new tabs open the start page.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/HomeFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/HomeFragment.kt
+index 1312a62fa3be..9f8e7d6c5b4a 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/HomeFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/HomeFragment.kt
+@@ -61,6 +61,9 @@ import kotlin.math.roundToInt
+ import kotlinx.coroutines.Dispatchers.IO
+ import kotlinx.coroutines.flow.distinctUntilChanged
++import kotlinx.coroutines.flow.firstOrNull
++import kotlinx.coroutines.flow.map
+ import kotlinx.coroutines.launch
++import mozilla.components.browser.state.selector.selectedTab
+ import mozilla.components.browser.state.state.TabSessionState
+ import mozilla.components.browser.state.store.BrowserStore
+ import mozilla.components.compose.base.modifier.thenConditional
+@@ -566,6 +566,23 @@ class HomeFragment : Fragment() {
+ 
+         super.onViewCreated(view, savedInstanceState)
+ 
++        // Vantage: automatically load the start page in homepage ("about:home") tabs
++        if (requireComponents.settings.enableHomepageAsNewTab && !args.focusOnAddressBar) {
++            viewLifecycleOwner.lifecycleScope.launch {
++                requireComponents.core.store.flow()
++                    .map { state -> state.selectedTab?.content?.url }
++                    .distinctUntilChanged()
++                    .firstOrNull { it == ABOUT_HOME_URL }
++                    ?.let {
++                        requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
++                            searchTermOrURL = "https://asystech.cn/start/index.html",
++                            newTab = false,
++                        )
++                        (requireActivity() as HomeActivity).openToBrowser(BrowserDirection.FromHome)
++                    }
++            }
++        }
++
+         recordHomepageTelemetry()
+ 
+         observePrivateModeLock {
+-- 

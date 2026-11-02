@@ -1,5 +1,5 @@
 about-attribution-title = Dankjewel.
-about-attribution-subtitle = IronFox zou niet zijn wat het is zonder de tijd en inzet van de volgende personen:
+about-attribution-subtitle = Vantage zou niet zijn wat het is zonder de tijd en inzet van de volgende personen:
 about-attribution-closing = We waarderen jullie inspanningen enorm.
 about-ironfox-title = The Book of Iron, 1:2
 about-ironfox-quote =

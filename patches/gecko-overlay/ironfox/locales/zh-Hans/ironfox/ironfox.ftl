@@ -1,5 +1,5 @@
 about-attribution-title = 谢谢。
-about-attribution-subtitle = 如果没有以下个人付出的时间和努力，IronFox 就不会有今天的成就：
+about-attribution-subtitle = 如果没有以下个人付出的时间和努力，Vantage 就不会有今天的成就：
 about-attribution-closing = 我们重视并感谢你们的努力。
 about-ironfox-title = The Book of Iron, 1:2
 about-ironfox-quote =

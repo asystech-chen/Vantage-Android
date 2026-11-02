@@ -1,5 +1,5 @@
 about-attribution-title = Gracias.
-about-attribution-subtitle = IronFox no sería lo que es sin el esfuerzo de nuestros colaboradores:
+about-attribution-subtitle = Vantage no sería lo que es sin el esfuerzo de nuestros colaboradores:
 about-attribution-closing = Tus esfuerzos son valorados y apreciados.
 about-ironfox-title = "The Book of Iron" - 1:2
 about-ironfox-from = de <strong>The Book of Iron,</strong> 1:2

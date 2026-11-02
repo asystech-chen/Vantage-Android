@@ -63,7 +63,7 @@ fi
 
 # Set-up target parameters
 if [[ -z "${1+x}" ]]; then
-  echo_red_text "Usage: $0 arm|arm64|x86_64|bundle" >&1
+  echo_red_text "Usage: $0 arm|arm64|arm64-nolto|x86_64|bundle" >&1
   exit 1
 fi
 

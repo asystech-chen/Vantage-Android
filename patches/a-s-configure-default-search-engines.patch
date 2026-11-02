@@ -44,7 +44,7 @@ index 047c6f126..e21a98e41 100644
              "a83f24e4-602c-47bd-930c-ad0947ee1adf",
              "b50c3e3d-7bd0-4118-856f-19b26b21d01f",
              "b64f09fd-52d1-c48e-af23-4ce918e7bf3b",
-@@ -188,11 +188,11 @@ impl<C: ApiClient> RemoteSettingsClient<C> {
+@@ -188,11 +188,13 @@ impl<C: ApiClient> RemoteSettingsClient<C> {
              "e7547f62-187b-b641-d462-e54a3f813d9a",
              "eb62e768-151b-45d1-9fe5-9e1d2a5991c5",
              "f312610a-ebfb-a106-ea92-fd643c5d3636",
@@ -58,6 +58,8 @@ index 047c6f126..e21a98e41 100644
 +            "7cd086c7-43f6-42fe-a240-17deeeef034b",
 +            "b71f7782-aaa7-40de-9407-9fd505059b61",
 +            "be7ba9bc-d68f-4ba3-ad3b-4fc0aaea5f3c",
++            "b9424309-f601-4a69-98ca-ca68e65633e6",
++            "cbf9e891-d079-2b28-5617-283450d463dd",
          ],
          ("main", "translations-wasm") => [
              "4fd32605-9889-4dd9-9fc7-577ad1136746",

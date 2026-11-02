@@ -1,5 +1,5 @@
 about-attribution-title = Obrigado.
-about-attribution-subtitle = O IronFox não seria o que é sem o trabalho e dedicação dos seguintes indivíduos:
+about-attribution-subtitle = O Vantage não seria o que é sem o trabalho e dedicação dos seguintes indivíduos:
 about-attribution-closing = Os seus esforços são valorizados e apreciados.
 about-ironfox-title = O Livro do Ferro, 1:2
 about-ironfox-quote =

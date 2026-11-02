@@ -1,5 +1,5 @@
 about-attribution-title = ありがとうございます。
-about-attribution-subtitle = IronFox は、以下の開発者・貢献者の皆様の尽力と貢献によって支えられています。
+about-attribution-subtitle = Vantage は、以下の開発者・貢献者の皆様の尽力と貢献によって支えられています。
 about-attribution-closing = 皆様の尽力と貢献に、心より感謝申し上げます。
 about-ironfox-title = The Book of Iron, 1:2
 about-ironfox-quote =

@@ -2,8 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
  xmlns:moz="http://mozac.org/tools">
   <!-- Onboarding - Title and description -->
-  <string name="ironfox_onboarding_preferences_title">Customize IronFox</string>
-  <string name="ironfox_onboarding_preferences_description">Customize IronFox to suit your liking</string>
+  <string name="ironfox_onboarding_preferences_title">Customize Vantage</string>
+  <string name="ironfox_onboarding_preferences_description">Customize Vantage to suit your liking</string>
 
   <!-- Onboarding - DoH -->
   <string name="ironfox_onboarding_doh_caption">Secure your browsing with DNS-over-HTTPS for enhanced privacy and security.</string>
@@ -16,7 +16,7 @@
   <!-- Onboarding - Safe Browsing -->
   <string name="ironfox_onboarding_safe_browsing_enabled">Enable Safe Browsing</string>
   <string name="ironfox_onboarding_safe_browsing_enabled_caption">Get real-time protection against dangerous websites, malware, and phishing attempts.</string>
-  <string name="ironfox_onboarding_safe_browsing_enabled_description">IronFox’s Safe Browsing functionality is currently provided by Google. IronFox will periodically update the database to ensure users are protected against the latest threats, and upon encountering a potential match, IronFox might submit a partial hash of the suspected URL to Google. Note that IronFox proxies these connections, to prevent your public IP address from being associated with these requests.</string>
+  <string name="ironfox_onboarding_safe_browsing_enabled_description">Vantage’s Safe Browsing functionality is currently provided by Google. Vantage will periodically update the database to ensure users are protected against the latest threats, and upon encountering a potential match, Vantage might submit a partial hash of the suspected URL to Google. Note that Vantage proxies these connections, to prevent your public IP address from being associated with these requests.</string>
 
   <!-- Onboarding - Spoof locale to English -->
   <string name="ironfox_onboarding_spoof_english">Spoof language to en-US</string>
@@ -26,10 +26,10 @@
   <!-- Onboarding - uBlock Origin -->
   <string name="ironfox_onboarding_install_ublock">Install uBlock Origin</string>
   <string name="ironfox_onboarding_install_ublock_caption">Block ads, trackers, and malware for a safer, cleaner browsing experience.</string>
-  <string name="ironfox_onboarding_install_ublock_description">uBlock Origin enhances your privacy and security by blocking unwanted content. IronFox uses a custom uBlock Origin configuration with curated filter lists for optimal protection and performance.</string>
+  <string name="ironfox_onboarding_install_ublock_description">uBlock Origin enhances your privacy and security by blocking unwanted content. Vantage uses a custom uBlock Origin configuration with curated filter lists for optimal protection and performance.</string>
 
   <!-- Onboarding - Updater -->
   <string name="ironfox_onboarding_updater_title">Stay up to date</string>
-  <string name="ironfox_onboarding_updater_description">IronFox checks for new versions and asks before installing them. You can turn this off at any time in IronFox settings.</string>
+  <string name="ironfox_onboarding_updater_description">Vantage checks for new versions and asks before installing them. You can turn this off at any time in Vantage settings.</string>
   <string name="ironfox_onboarding_updater_switch">Check for updates automatically</string>
 </resources>

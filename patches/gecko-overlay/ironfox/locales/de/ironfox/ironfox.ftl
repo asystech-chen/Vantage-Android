@@ -5,7 +5,7 @@ about-ironfox-quote =
     entfachte ein <em>Fuchs</em> einen <em class="f">Funken</em>. Von seinem <em class="f">Licht</em> angezogen, verband sich ein <em>Phönix</em>
     mit dem <em>Fuchs</em> und bildete einen besonderen Mantel aus <em>Eisen</em>. Mit seiner neu gewonnenen <em class="f">Kraft</em>
     erhob sich das Wesen, um den <em>Maulwurf</em> und den <em>Osten</em>, der vor ihm gefallen war, zu <em class="f">rächen</em>.
-about-attribution-subtitle = Ohne die Zeit und Arbeit der folgenden Personen wäre IronFox nicht das, was es heute ist:
+about-attribution-subtitle = Ohne die Zeit und Arbeit der folgenden Personen wäre Vantage nicht das, was es heute ist:
 about-attribution-title = Danke.
 about-attribution-closing = Ihre Bemühungen werden geschätzt und gewürdigt.
 about-ironfox-from = aus <strong>The Book of Iron,</strong> 1:2
