@@ -15,7 +15,7 @@
 为中文用户提供开箱即用的体验。
 
 - **引擎**：GeckoView（Firefox 159）
-- **基线**：[IronFox](https://gitlab.com/ironfox-oss/IronFox)（[Mull](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull) 的继任者，Firefox Android 的隐私分支）
+- **基线**：[IronFox](https://ironfoxoss.org/)（[Mull](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull) 的继任者，Firefox Android 的隐私分支）
 - **姊妹项目**：[桌面版 Vantage](https://github.com/asystech-chen/Vantage)（基于 Firefox ESR / LibreWolf）
 
 ## 项目方向

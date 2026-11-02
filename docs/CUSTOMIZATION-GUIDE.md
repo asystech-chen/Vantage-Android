@@ -600,7 +600,7 @@ configs/mozconfigs/
 
 ### 4. 签名配置
 
-**环境变量**（`scripts/env_common.sh` 默认 `null`，CI 在 `env_ci.sh` 配置）：
+**环境变量**（`scripts/env_common.sh` 默认 `null`，构建前需手动导出或写入 shell 配置）：
 
 ```bash
 export IRONFOX_ANDROID_KEYSTORE='/path/to/keystore.jks'
