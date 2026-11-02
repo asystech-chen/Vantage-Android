@@ -41,9 +41,22 @@ ac_add_options --enable-stl-hardening
 export MOZ_SECURITY_HARDENING=1
 
 # Enable performance optimizations
-ac_add_options --enable-lto='full'
+if [[ "${IRONFOX_DISABLE_LTO:-0}" == '1' ]]; then
+  # LTO is disabled for this build variant (the full-LTO link of libxul.so is
+  # extremely memory hungry and slow; this trades some runtime performance for
+  # a much faster build)
+  ## Strip -flto from the default compiler flags, otherwise every object file would
+  ## still be emitted as LLVM bitcode and the link would effectively be a full LTO link again
+  ac_add_options --disable-lto
+  unset MOZ_LTO
+  export MOZ_LTO=
+  readonly IRONFOX_BUILD_COMPILER_FLAGS="${IRONFOX_COMPILER_FLAGS//-flto=full/}"
+else
+  ac_add_options --enable-lto='full'
+  export MOZ_LTO='full'
+  readonly IRONFOX_BUILD_COMPILER_FLAGS="${IRONFOX_COMPILER_FLAGS}"
+fi
 ac_add_options --enable-optimize='-O3 -ftree-vectorize'
-export MOZ_LTO='full'
 export MOZ_OPTIMIZE_FLAGS='-O3 -ftree-vectorize'
 export RUSTC_OPT_LEVEL=3
 
@@ -68,19 +81,26 @@ ac_add_options WASM_CC="${IRONFOX_WASI}/bin/clang"
 ac_add_options WASM_CXX="${IRONFOX_WASI}/bin/clang++"
 
 # Set compiler (toolchain) flags
-export ASFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export CFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export CPPFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export CXXFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export HOST_CFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export HOST_CPPFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export HOST_CXXFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export HOST_LDFLAGS="${IRONFOX_COMPILER_FLAGS}"
-export LDFLAGS="${IRONFOX_COMPILER_FLAGS}"
+export ASFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export CFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export CPPFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export CXXFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export HOST_CFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export HOST_CPPFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export HOST_CXXFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export HOST_LDFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
+export LDFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
 
 # Set Rust flags
 export RUSTDOCFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
 export RUSTFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
+
+if [[ "${IRONFOX_DISABLE_LTO:-0}" == '1' ]]; then
+  # Also disable Rust's LTO for this build variant (configs/cargo/config.toml enables it,
+  ## and env vars take priority over that file)
+  export CARGO_PROFILE_DEV_LTO=false
+  export CARGO_PROFILE_RELEASE_LTO=false
+fi
 
 # Set WASI sysroot path
 ac_add_options --with-wasi-sysroot="${IRONFOX_WASI}/share/wasi-sysroot"

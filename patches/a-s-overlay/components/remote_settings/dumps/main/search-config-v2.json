@@ -113,12 +113,91 @@
       "schema": 1745887776020
     },
     {
-      "globalDefault": "ddg",
-      "globalDefaultPrivate": "ddg",
+      "globalDefault": "bing",
+      "globalDefaultPrivate": "bing",
       "id": "f3891684-2348-4e7a-9765-0c5d2d0ab1b9",
       "last_modified": 1702906502241,
       "recordType": "defaultEngines",
       "schema": 1702901837584
+    },
+    {
+      "base": {
+        "aliases": [
+          "bing"
+        ],
+        "classification": "general",
+        "name": "Bing",
+        "urls": {
+          "search": {
+            "base": "https://www.bing.com/search",
+            "searchTermParamName": "q"
+          },
+          "suggestions": {
+            "base": "https://www.bing.com/osjson.aspx",
+            "searchTermParamName": "query"
+          }
+        }
+      },
+      "id": "05645095-d26e-4f20-9137-f24a14a23f28",
+      "identifier": "bing",
+      "last_modified": 1793500000000,
+      "recordType": "engine",
+      "schema": 1718698362015,
+      "variants": [
+        {
+          "environment": {
+            "allRegionsAndLocales": true
+          }
+        }
+      ]
+    },
+    {
+      "base": {
+        "aliases": [
+          "baidu",
+          "百度"
+        ],
+        "classification": "general",
+        "name": "百度",
+        "urls": {
+          "search": {
+            "base": "https://m.baidu.com/s",
+            "params": [
+              {
+                "name": "ie",
+                "value": "utf-8"
+              }
+            ],
+            "searchTermParamName": "word"
+          },
+          "suggestions": {
+            "base": "https://www.baidu.com/su",
+            "params": [
+              {
+                "name": "action",
+                "value": "opensearch"
+              },
+              {
+                "name": "ie",
+                "value": "utf-8"
+              }
+            ],
+            "searchTermParamName": "wd"
+          }
+        }
+      },
+      "id": "ad58537f-f397-46ec-a1a8-935e12f0aab6",
+      "identifier": "baidu",
+      "last_modified": 1793500000000,
+      "recordType": "engine",
+      "schema": 1718698362015,
+      "variants": [
+        {
+          "environment": {
+            "allRegionsAndLocales": true
+          }
+        }
+      ]
     },
     {
       "base": {
@@ -4214,6 +4293,8 @@
             "allRegionsAndLocales": true
           },
           "order": [
+            "bing",
+            "baidu",
             "ddg",
             "ddgnoai",
             "ddghtml",

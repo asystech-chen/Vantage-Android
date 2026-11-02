@@ -1,6 +1,6 @@
--brand-full-name = IronFox Nightly
--brand-product-name = IronFox
--brand-short-name = IronFox Nightly
--brand-shortcut-name = IronFox Nightly
--brand-shorter-name = IronFox Nightly
--vendor-short-name = IronFox OSS
+-brand-full-name = Vantage Nightly
+-brand-product-name = Vantage
+-brand-short-name = Vantage Nightly
+-brand-shortcut-name = Vantage Nightly
+-brand-shorter-name = Vantage Nightly
+-vendor-short-name = Vantage

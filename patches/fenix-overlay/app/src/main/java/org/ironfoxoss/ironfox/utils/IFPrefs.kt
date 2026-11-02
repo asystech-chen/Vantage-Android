@@ -72,6 +72,10 @@ object IFPrefs {
     prefs.setDefaultBoolPref(R.string.pref_key_enable_homepage_weather_widget, true) // UI
     prefs.setDefaultBoolPref(R.string.pref_key_show_homepage_weather_widget, false)
 
+    // Open new tabs as homepage tabs by default
+    /// Combined with our HomeFragment start page, this ensures new tabs load the Vantage start page
+    prefs.setDefaultBoolPref(R.string.pref_key_enable_homepage_as_new_tab, true)
+
     // Disable AI Controls
     prefs.setBoolPref(R.string.pref_key_enable_ai_controls, false)
 

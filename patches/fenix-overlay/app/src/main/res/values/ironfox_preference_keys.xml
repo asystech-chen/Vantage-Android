@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:moz="http://schemas.android.com/apk/res-auto"
  xmlns:tools="http://schemas.android.com/tools">
-  <!-- IronFox Settings -->
+  <!-- Vantage Settings -->
   <string name="pref_key_if_preferences" translatable="false">pref_key_if_preferences</string>
   <string name="pref_key_if_secret" translatable="false">pref_key_if_secret</string>
 
-  <!-- IronFox onboarding -->
+  <!-- Vantage onboarding -->
   <string name="pref_key_if_onboarding_completed" translatable="false">pref_key_if_onboarding_completed</string>
 
   <!-- Accessibility services -->

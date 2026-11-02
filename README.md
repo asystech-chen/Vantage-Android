@@ -14,7 +14,7 @@
 保留 Firefox 完整生态（扩展、账号同步、全语言支持），融合桌面版 Vantage 的隐私理念与品牌风格，
 为中文用户提供开箱即用的体验。
 
-- **引擎**：GeckoView（Firefox 154）
+- **引擎**：GeckoView（Firefox 159）
 - **基线**：[IronFox](https://gitlab.com/ironfox-oss/IronFox)（[Mull](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull) 的继任者，Firefox Android 的隐私分支）
 - **姊妹项目**：[桌面版 Vantage](https://github.com/asystech-chen/Vantage)（基于 Firefox ESR / LibreWolf）
 
@@ -42,11 +42,13 @@
 
 ## 状态
 
-- 当前：**Nightly 阶段**（Firefox 154 基线，arm64）
+- 当前版本：**159.0**（Firefox 159 基线，IronFox 159 上游）
+- 当前阶段：**Nightly 阶段**（`arm64-nolto` 变体已全链路构建成功）
 - 规划：迁移 **Release** 通道（同包名同签名，无缝升级）
-- 包名：`org.vantage.browser`
+- 包名：`asys.vantage.nightly`（Nightly 通道；Release 通道对齐后统一下发）
 - 分发：GitHub Releases + 官网；F-Droid 后置
 - 更新机制：暂未启用（保留上游检查框架，后续接入）
+- 产物（arm64）：约 161 MB，未配置正式 keystore 时为 Android Debug 签名（仅内测）
 
 ## 构建
 
@@ -132,13 +134,14 @@ _获取源文件后必须运行一次。_
 其中 `<构建变体>` 指定要构建的变体，是以下**之一**：
 
 - `arm` - 32 位 ARM（`armeabi-v7a`）
-- `arm64` - 64 位 ARM（`arm64-v8a`）
+- `arm64` - 64 位 ARM（`arm64-v8a`，启用 LTO）
+- `arm64-nolto` - 64 位 ARM（`arm64-v8a`，**不启用 LTO**，编译明显更快，适合日常验证；产物与 `arm64` 等价）
 - `x86_64` - 64 位 x86
 - `bundle` - 包含所有受支持 ABI 的 Android App Bundle（AAB）
 
 除了 `AAB` 之外，`bundle` 目标还会为每个架构生成 APK _（`arm`、`arm64` 和 `x86_64`）_，以及包含所有架构的 universal APK。
 
-Vantage 当前构建验证目标为 `arm64`（主流手机全覆盖）。
+Vantage 当前构建验证目标为 `arm64-nolto`（主流手机全覆盖，且迭代最快）。
 
 ### 环境要求
 
@@ -161,7 +164,7 @@ Vantage 当前构建验证目标为 `arm64`（主流手机全覆盖）。
    - gradle 依赖 → 阿里云 maven 镜像（mozconfig `GRADLE_MAVEN_REPOSITORIES`）
 4. **Gradle 二进制预下载**：`build/gradle/cache/` 缺版本时用腾讯云 `mirrors.cloud.tencent.com/gradle/` 或 aria2c 预下载，校验 sha256（对照 `gradle_checksums.json`）。
 
-构建成功验证：`build/outputs/apk/` 下应出现对应 ABI 的已签名 APK。
+构建成功验证：`outputs/apk/`（或 `external/gecko/obj/ironfox-<channel>-<arch><suffix>/gradle/build/mobile/android/fenix/app/outputs/apk/release/`）下应出现对应 ABI 的 APK。注意 `BUILD SUCCESSFUL` 不等于产物已导出，务必确认文件存在。
 
 ### 常见问题速查
 
@@ -171,9 +174,14 @@ Vantage 当前构建验证目标为 `arm64`（主流手机全覆盖）。
 | `[[: not found`（Debian） | dash vs bash，已做 patch 自动修复 | PITFALL #8 |
 | gradle 停 `> IDLE` / maven.google.com 卡死 | 开 TUN 代理 | PITFALL #10 |
 | 下载中断残留目录导致跳过 | 已自动检测重下 | PITFALL（SDK 残留） |
-| 卡在 `Are you sure? [y/N]` | Phoenix 交互，已自动 `PHOENIX_ASSUME_YES=1` | PITFALL #11 |
+| 卡在 `Are you sure? [y/N]` | Phoenix 交互，已自动 `PHOENIX_ASSUME_YES=1` / 预删 outputs | PITFALL #11、#17 |
 | aria2c TLS 握手失败（GitHub/dl.google.com） | 已自动改走 curl | 仓库 curl-aria2.sh |
 | 依赖下载 TLS 被掐（Java/gradle） | 走阿里云镜像 / 换节点 | PITFALL #14 |
+| AAPT2 `duplicate value for resource`（png 与 webp 同名） | 已做 prebuild 自动清理同名 webp | PITFALL #15 |
+| `Unresolved reference: IronFox_OLEDTheme` | 资源名改品牌后漏改 Kotlin 引用 | PITFALL #16 |
+| `BUILD SUCCESSFUL` 但找不到 APK / `cp: cannot stat` | `arm64-nolto` 打包路径缺 `OBJDIR_SUFFIX`，已修 | PITFALL #18 |
+| `99% EXECUTING` 长时间不动 | R8/lint/package 正常重活，看 CPU% 与日志 mtime，别 kill | PITFALL #18 |
+| `apksigner: exec: java: not found` | 显式导出 `JAVA_HOME`/`PATH` | PITFALL #19 |
 | 重编慢 | 已启用 ccache；Rust 增量被上游禁用（权衡） | build.mozconfig |
 
 更多构建踩坑记录见 [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md)。
@@ -190,7 +198,7 @@ Linter 配置位于 `.shellcheckrc` _（检查）_ 和 `.editorconfig` _（格�
 
 ## 文档
 
-- [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md) — **构建踩坑记录**（现象速查表 + 14 条详细根因/修复；构建出问题先看这里）
+- [`docs/BUILD-PITFALLS.md`](docs/BUILD-PITFALLS.md) — **构建踩坑记录**（现象速查表 + 19 条详细根因/修复；构建出问题先看这里）
 - [`docs/CUSTOMIZATION-GUIDE.md`](docs/CUSTOMIZATION-GUIDE.md) — **定制化指南**（品牌 / 功能 / 搜索引擎怎么改，改哪里）
 - [`docs/FAQ.md`](docs/FAQ.md) — 常见问题
 - [`docs/Features.md`](docs/Features.md) — 功能特性

@@ -1,8 +1,9 @@
 # Vantage Android 构建踩坑记录（Pitfalls）
 
-> 适用：vantage-android 仓库（IronFox 154 基线）在 Debian/Ubuntu 类系统 + 国内网络下的构建。
+> 适用：vantage-android 仓库（当前 **IronFox 159 基线**）在 Debian/Ubuntu 类系统 + 国内网络下的构建。
 > 记录格式：现象 → 排查 → 根因 → 修复 → 教训。**构建出问题先看下方速查表，再翻对应章节。**
 > 首次记录：2026-08-25 首轮构建测试（get_sources → prebuild → build 全流程）。
+> 最近更新：2026-11-02 IronFox 159 `arm64-nolto` 首次全量构建成功（含品牌化 + 打包路径修复）。
 
 ---
 
@@ -25,6 +26,11 @@
 | 依赖下载 `Remote host terminated the handshake`（Java） | [#14](#14-a-s-依赖仓库被改坏mavenlocal-指向空-m2-回落官方源被掐) | A-S 用 GRADLE_MAVEN_REPOSITORIES（aliyun） |
 | aria2c TLS 握手失败（GitHub/codeload/dl.google.com） | 仓库 curl-aria2.sh | 已修：这些源走 curl |
 | SDK 残留空目录导致跳过 | 仓库 get_sources-if.sh | 已修：自动检测重下 |
+| **AAPT2 `duplicate value for resource`（png/webp 同名）** | [#15](#15-品牌-overlay-的-png-与上游-webp-同名aapt2-duplicate-resource) | 已修：prebuild 自动删除同名 webp |
+| **`Unresolved reference: IronFox_OLEDTheme`** | [#16](#16-kotlin-找不到-rstyleironfox_oledtheme资源名与-overlay-定义不一致) | 已修：改指 `Vantage_OLEDTheme` |
+| commands.sh 卡在 Phoenix `Are you sure?` | [#17](#17-phoenix-flysh-的-read--n1-被-yes-y-的残留换行吃掉) | 已修：先删 outputs 或改用 expect |
+| **`BUILD SUCCESSFUL` 却没有 APK / `cp: cannot stat ...arm64...apk`** | [#18](#18-arm64-nolto-变体打包路径缺少-objdir-suffixbuild-successful-但无-apk) | 已修：路径补 `${IRONFOX_OBJDIR_SUFFIX}` |
+| `apksigner: exec: java: not found` | [#19](#19-apksigner-找不到-java--未配置-keystore-时输出-debug-签名) | 显式 `JAVA_HOME` + `PATH` |
 
 ---
 
@@ -317,6 +323,141 @@ sha256sum gradle-9.7.0-bin.zip   # 与 build/gradle/cache/gradle_checksums.json 
 
 ---
 
+## 15. 品牌 overlay 的 PNG 与上游 WebP 同名（AAPT2 duplicate resource）
+
+**现象**：`:app:mergeReleaseResources` / `processReleaseResources` 失败：
+
+```
+AAPT2 error: duplicate value for resource 'drawable/ic_logo_wordmark_normal' with config ''.
+AAPT2 error: resource ... has already been defined
+```
+
+一次报 15+ 个资源（`ic_logo_wordmark_*`、`ic_wordmark_*`、`ic_launcher_round` 等）。
+
+**排查**：
+- 报错同名资源来自 `patches/fenix-overlay/app/src/release/`（Vantage 品牌 PNG）与上游 Fenix 的 `app/src/release/res/drawable-*/`（`.webp`）
+- overlay 机制把两者合并到 `external/gecko/obj/.../gradle/build/mobile/android/fenix/app/src/release/res/`
+- AAPT2 只按**资源名 + 配置**判重，**不看扩展名** → `.png` 与 `.webp` 同名即冲突
+
+**根因**：品牌化时新增/替换了 PNG，却没有删除同名的上游 WebP。Git 里看到的是"删除 webp + 新增 png"，但 prebuild 重新打补丁时会把上游 webp 复原。
+
+**修复**（两层）：
+1. `patches/fenix-overlay/` 内删除对应的 `.webp`（保持仓库状态干净）
+2. `scripts/prebuild-if.sh` 在打完全部补丁后加清理循环，**自动删除"存在同名 .png 的 .webp"**：
+
+```bash
+while IFS= read -r -d '' webp; do
+  png="${webp%.webp}.png"
+  [[ -f "${png}" ]] && rm -f "${webp}"
+done < <(find "${IRONFOX_GECKO}/mobile/android/fenix/app/src" -name '*.webp' -print0)
+```
+
+**教训**：Android 资源判重只看名字和配置，与后缀无关；品牌化替换图片时，"新格式 + 旧格式共存"是典型冲突源。补丁型仓库要在 prebuild 阶段兜底清理，不能只依赖仓库里删过。
+
+---
+
+## 16. Kotlin 找不到 `R.style.IronFox_OLEDTheme`（资源名与 overlay 定义不一致）
+
+**现象**：`:app:compileReleaseKotlin` 报：
+
+```
+e: .../ThemeManager.kt: Unresolved reference: IronFox_OLEDTheme
+```
+
+**排查**：
+- `ThemeManager.kt`（`patches/fenix-ironfox-oled-theme.patch` 引入）引用 `R.style.IronFox_OLEDTheme`
+- overlay 里实际定义的样式名是 `Vantage.OLEDTheme`（`patches/fenix-overlay/app/src/main/res/values/ironfox_styles.xml`）
+- 资源名 `Vantage.OLEDTheme` 编译后对应 `R.style.Vantage_OLEDTheme`（点号转下划线）
+
+**根因**：改名品牌时只改了 XML 里的 `name="Vantage.OLEDTheme"`，漏改 Kotlin 侧的 `R.style.IronFox_OLEDTheme` 引用。
+
+**修复**：把 patch 与工作树中的引用统一改为 `R.style.Vantage_OLEDTheme`。
+
+**教训**：改资源 `name` 是**跨语言**改动——XML、Kotlin/Java 的 `R.*` 引用、`android:theme=` 属性三处都要同步。改名后先全文搜旧名（含下划线形式），再编译。
+
+---
+
+## 17. Phoenix fly.sh 的 `read -n1` 被 `yes y` 的残留换行吃掉
+
+**现象**：用 `yes y | ./scripts/build.sh arm64-nolto` 无人值守构建，卡在 Phoenix 输出目录的确认提示，或提示一闪而过直接退出。
+
+**排查**：
+- 上游 `phoenix/fly.sh` 用 `read -p "Are you sure?" -n1`（**只读 1 个字符**）
+- `yes y` 每次输出 `y\n`；第一次 `read -n1` 吃掉 `y`，剩下的 `\n` 留在输入流
+- 下一次提示的 `read -n1` 立刻读到这个残留 `\n`（空字符）→ 判定为"非 y" → 直接走取消分支
+
+**修复**（任选其一，本仓库用方案 1）：
+1. **预删除目标目录**，让脚本跳过"目录已存在"的确认分支：
+   ```bash
+   rm -rf external/phoenix/outputs/android
+   yes y | ./scripts/build.sh arm64-nolto
+   ```
+2. 用 `expect` 精确应答，不要用 `yes` 管道
+3. 给脚本加 `PHOENIX_ASSUME_YES=1`（见 #11）
+
+**教训**：`read -n1` 与 `yes` 管道天然不兼容（换行符残留会污染后续提示）。无人值守时优先消除"需要确认"这个前提，而不是想办法喂输入。
+
+---
+
+## 18. `arm64-nolto` 变体打包路径缺少 `OBJDIR_SUFFIX`（BUILD SUCCESSFUL 但无 APK）
+
+**现象**：Gradle 明确 `BUILD SUCCESSFUL in 15m 31s`（5119 tasks），但 `build/outputs/` 下空空如也，日志末尾是：
+
+```
+cp: cannot stat '/root/Vantage-Android/external/gecko/obj/ironfox-nightly-arm64/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-arm64-v8a-release.apk': No such file or directory
+```
+
+**排查**：
+- `ls external/gecko/obj/` → 实际存在的是 `ironfox-nightly-arm64-nolto/`，不是 `ironfox-nightly-arm64/`
+- `scripts/build-if.sh` 的四个导出分支（arm64 / arm / x86_64 / universal + AAB）全部硬编码
+  `${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}/...`
+- 而 `arm64-nolto` 在 target 解析时设置了 `IRONFOX_OBJDIR_SUFFIX='-nolto'`，obj 目录因此带后缀
+
+**根因**：`IRONFOX_TARGET_ARCH` 对 `arm64` 和 `arm64-nolto` 都等于 `arm64`，区分只靠 `IRONFOX_OBJDIR_SUFFIX`；打包代码沿用了老路径拼法，没把后缀代入。**构建阶段成功，失败只发生在最后的 copy，所以容易被"BUILD SUCCESSFUL"误导以为全部完成。**
+
+**修复**：`scripts/build-if.sh` 中全部 9 处路径补上 `${IRONFOX_OBJDIR_SUFFIX}`：
+
+```bash
+"${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX}/gradle/..."
+```
+
+验证：`grep -c 'IRONFOX_OBJDIR_SUFFIX}/gradle' scripts/build-if.sh` 应为 9。
+
+**教训**：
+- 新增构建变体（尤其"同 arch + 不同后缀"的变体）时，**所有拼 obj 路径的地方都要走同一个变量**，不能散落硬编码。
+- 判断构建是否真正完成，不能只看 `BUILD SUCCESSFUL`，要**看最后产物是否存在**（本仓库正确产物：`external/gecko/obj/ironfox-<channel>-<arch><suffix>/gradle/build/mobile/android/fenix/app/outputs/apk/release/app-<abi>-release.apk`）。
+- **`99% EXECUTING` 长时间不动不等于卡死**：R8（minifyReleaseWithR8）、lintVitalAnalyzeRelease、packageRelease 都是安静的重活，日志 mtime 仍在前进就说明在跑（本次 R8 约 8 分钟、package 约 6 分钟，全程 `99%`）。用 `ps aux | grep gradle` 看 CPU%（本次 daemon 391%、Kotlin daemon 203%）判断活性，别急着 kill。
+
+---
+
+## 19. `apksigner` 找不到 Java / 未配置 keystore 时输出 debug 签名
+
+**现象**：
+- `apksigner verify` 报 `line 97: exec: java: not found`
+- 或验证发现 APK 是 `CN=Android Debug` 签名
+
+**排查**：
+- `apksigner` 是 shell 包装，内部 `exec java`，依赖 `PATH` 里有 `java`
+- IronFox 脚本把 JDK 放在 `external/jdk-17`，**没有**加入全局 `PATH`；直接调用 `build-tools/*/apksigner` 必然失败
+- 另外 `scripts/env_common.sh` 只有在 keystore / pass / alias / key-pass **四个变量都不是 `null`** 时才置 `IRONFOX_SIGN=1`，否则 `IRONFOX_SIGN=0` → 产出 debug 签名的 release APK（可安装，但不能覆盖同包名的正式签名版本）
+
+**修复 / 用法**：
+
+```bash
+export JAVA_HOME=/root/Vantage-Android/external/jdk-17
+export PATH="$JAVA_HOME/bin:$PATH"
+"$SDK/build-tools/36.0.0/apksigner" verify --print-certs app-arm64-v8a-release.apk
+```
+
+要出正式签名，需在 `configs/` 品牌配置里填好 keystore 路径与三个密码文件路径。
+
+**教训**：
+- 校验 APK 必须先导出 `JAVA_HOME` 与 `PATH`；用脚本封装，避免每次手写引号被 shell/PowerShell 二次解析吃掉（本次踩到 `bash -c "..."` 中的 `$()` 被外层 shell 提前展开）。
+- `BUILD SUCCESSFUL` ≠ 可发布：确认签名主体，debug 签名只能用于内测。
+- 包名实测为 `asys.vantage.nightly`（nightly 通道），与文档里写的 release 包名不同，发布前要对齐。
+
+---
+
 ## 附：诊断工具速查
 
 - **python 死锁**：`py-spy dump --pid <PID>`（`pip install py-spy`，定位到具体 .py 行）
@@ -328,3 +469,8 @@ sha256sum gradle-9.7.0-bin.zip   # 与 build/gradle/cache/gradle_checksums.json 
 - **GitHub 镜像探测**：`curl -sIL <mirror-url> -o /dev/null -w "%{http_code}"`（200 且产物 sha512 匹配官方）
 - **Java/gradle 下载被掐（TLS handshake）**：curl 同 URL 通但 Java 失败 = 节点/服务对 Java 客户端指纹拦截，改走镜像（aliyun maven）或换节点；`curl -sI https://maven.aliyun.com/repository/google/<path>` 先验证镜像有货
 - **A-S 依赖仓库**：`external/application-services/settings.gradle` 的 mozconfig 分支应使用 `GRADLE_MAVEN_REPOSITORIES` 循环（勿改回裸 mavenLocal）
+- **判断 Fenix 真在跑还是卡死**：`stat -c '%y %s' /root/build-nolto.log`（mtime 在变 = 活着）+ `ps aux | grep gradle | grep -v grep`（看 CPU%）
+- **找产物 APK**：`find external/gecko/obj -name '*-release.apk'`（注意 `<channel>-<arch><suffix>` 目录名）
+- **看包名/版本/应用名**：`build-tools/<ver>/aapt dump badging <apk> | grep -E 'package:|application-label:'`
+- **验签**：先 `export JAVA_HOME=$IRONFOX_JDK17; export PATH="$JAVA_HOME/bin:$PATH"`，再 `apksigner verify --print-certs <apk>`
+- **检查 PNG/WebP 同名冲突**：`find external/gecko/mobile/android/fenix/app/src -name '*.png' -o -name '*.webp' | sed 's/\.[a-z]*$//' | sort | uniq -d`

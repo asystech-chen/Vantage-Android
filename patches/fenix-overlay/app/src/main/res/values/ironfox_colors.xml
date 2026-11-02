@@ -3,4 +3,9 @@
   <color name="fx_mobile_surface_oled">@color/photonBlack</color>
   <color name="fx_mobile_surface_2_oled">@color/photonDarkGrey90</color>
   <color name="fx_mobile_action_color_secondary_oled">#ff25242b</color>
+  <!-- Vantage brand palette (blue -> teal, matches the launcher mark) -->
+  <color name="vantage_layer1">#0b1220</color>
+  <color name="vantage_layer2">#111c33</color>
+  <color name="vantage_accent">#2f6bff</color>
+  <color name="vantage_accent_secondary">#22d3ee</color>
 </resources>

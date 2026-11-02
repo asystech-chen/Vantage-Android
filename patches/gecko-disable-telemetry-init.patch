@@ -1,0 +1,25 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vantage <asystech-chen@users.noreply.github.com>
+Date: Sun, 01 Nov 2026 10:00:00 +0800
+Subject: [PATCH] Gecko - Disable mach telemetry initialization
+
+Disables the background Glean telemetry initialization in mach_initialize.py,
+which can deadlock (futex) and hang `mach configure` indefinitely.
+
+Signed-off-by: Vantage <asystech-chen@users.noreply.github.com>
+---
+--- a/build/mach_initialize.py
++++ b/build/mach_initialize.py
+@@ -399,7 +399,11 @@
+         )
+     else:
+         telemetry_executor = ThreadPoolExecutor(max_workers=1)
+-        driver._telemetry_future = telemetry_executor.submit(_create_telemetry)
++        # Vantage: Glean SDK initialization can deadlock (futex) on some
++        # systems, which makes `mach` hang forever in _run() while waiting on
++        # the telemetry future. Leave the future as None so that _run() skips
++        # the wait entirely.
++        driver._telemetry_future = None
+ 
+         class _LazyResult:
+             def result(self):

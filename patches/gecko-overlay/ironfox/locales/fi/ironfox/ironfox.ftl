@@ -1,5 +1,5 @@
 about-attribution-title = Kiitos.
-about-attribution-subtitle = IronFox ei olisi sitä mitä se on nyt ilman seuraavien henkilöiden aikaa ja työtä:
+about-attribution-subtitle = Vantage ei olisi sitä mitä se on nyt ilman seuraavien henkilöiden aikaa ja työtä:
 about-attribution-closing = Sinun panostasi arvostetaan.
 about-ironfox-title = The Book of Iron - 1:2
 about-ironfox-from = Lähde: <strong>The Book of Iron,</strong> 1:2

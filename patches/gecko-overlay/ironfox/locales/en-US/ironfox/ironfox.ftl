@@ -1,7 +1,7 @@
 # Localizations for about:attribution
 
 about-attribution-title = Thank you.
-about-attribution-subtitle = IronFox wouldn't be what it is without the time and work of the following individuals:
+about-attribution-subtitle = Vantage wouldn't be what it is without the time and work of the following individuals:
 about-attribution-closing = Your efforts are valued and appreciated.
 
 # Localizations for about:ironfox

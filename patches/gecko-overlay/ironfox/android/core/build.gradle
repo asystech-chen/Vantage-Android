@@ -90,13 +90,12 @@ afterEvaluate {
       release(MavenPublication) {
         pom {
           name = "${releaseGroupId}:${releaseArtifactId}"
-          description = 'IronFox Core'
+          description = 'Vantage Core'
           url = gradle.mozconfig.defines.IRONFOX_URL
           developers {
             developer {
-              name = 'IronFox OSS'
-              email = 'contact@ironfoxoss.org'
-              organization = 'IronFox OSS'
+              name = 'Vantage'
+              organization = 'Vantage'
               organizationUrl = gradle.mozconfig.defines.IRONFOX_URL
             }
           }

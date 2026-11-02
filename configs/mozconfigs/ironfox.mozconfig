@@ -138,7 +138,7 @@ fi
 . "${IRONFOX_MOZCONFIGS}/targets/${IRONFOX_MACH_TARGET_ARCH}.mozconfig" || return 1
 
 # Set the destination object (output) directory
-readonly IRONFOX_OBJDIR="${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_MACH_TARGET_ARCH}"
+readonly IRONFOX_OBJDIR="${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_MACH_TARGET_ARCH}${IRONFOX_OBJDIR_SUFFIX:-}"
 readonly MOZ_OBJDIR="${IRONFOX_OBJDIR}"
 export MOZ_OBJDIR
 mk_add_options MOZ_OBJDIR="${IRONFOX_OBJDIR}"

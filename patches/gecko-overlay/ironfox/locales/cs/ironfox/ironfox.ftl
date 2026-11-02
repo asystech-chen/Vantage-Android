@@ -1,5 +1,5 @@
 about-attribution-title = Děkujeme.
-about-attribution-subtitle = IronFox by nebyl tam, kde je teď, bez času a práce následujících osob:
+about-attribution-subtitle = Vantage by nebyl tam, kde je teď, bez času a práce následujících osob:
 about-attribution-closing = Vážíme si vašeho úsilí.
 about-ironfox-quote =
     A tak <em>krtek</em> padl. Jelikož <em>šelma</em> již sešla z cesty, věřící začali ztrácet

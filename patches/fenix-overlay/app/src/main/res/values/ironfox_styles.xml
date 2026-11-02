@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <style name="IronFox.OLEDTheme" parent="NormalTheme">
+  <style name="Vantage.OLEDTheme" parent="NormalTheme">
     <item name="colorSurface">@color/fx_mobile_surface_oled</item>
     <item name="layer2">@color/fx_mobile_surface_2_oled</item>
     <item name="android:windowBackground">?attr/colorSurface</item>

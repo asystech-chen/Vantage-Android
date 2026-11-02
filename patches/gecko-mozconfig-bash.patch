@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Vantage <asystech-chen@users.noreply.github.com>
+Date: Sun, 01 Nov 2026 10:00:00 +0800
+Subject: [PATCH] Gecko - Use bash to run mozconfig_loader
+
+Debian/Ubuntu use dash for /bin/sh, which does not understand the bash-only
+syntax used by the IronFox mozconfigs. This forces bash when evaluating them.
+
+Signed-off-by: Vantage <asystech-chen@users.noreply.github.com>
+---
+--- a/python/mozbuild/mozbuild/mozconfig.py
++++ b/python/mozbuild/mozbuild/mozconfig.py
+@@ -132,7 +132,11 @@
+         # Since mozconfig_loader is a shell script, running it "normally"
+         # actually leads to two shell executions on Windows. Avoid this by
+         # directly calling sh mozconfig_loader.
+-        shell = "sh"
++        #
++        # Vantage: Debian/Ubuntu ship dash as /bin/sh, which does not support
++        # the bash-only syntax used by the IronFox mozconfigs (e.g. `[[`).
++        # Use bash on non-Windows platforms.
++        shell = "bash" if sys.platform != "win32" else "sh"
+         env = sanitize_shell_env(os.environ)
+         env["PYTHONIOENCODING"] = "utf-8"
+ 
+--- a/python/mozbuild/mozbuild/mozconfig_loader
++++ b/python/mozbuild/mozbuild/mozconfig_loader
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.

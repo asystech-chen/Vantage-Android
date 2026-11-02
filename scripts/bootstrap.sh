@@ -200,6 +200,7 @@ elif [[ "${IRONFOX_OS}" == 'ubuntu' ]]; then
     curl \
     git \
     gpg \
+    g++ \
     make \
     nasm \
     ninja-build \

@@ -95,7 +95,7 @@ index 904191f39554..89462cad381f 100644
              when (currentTheme) {
 -                BrowsingMode.Normal -> R.style.NormalTheme
 +                BrowsingMode.Normal -> if (IronFoxPreferences.shouldUseOledTheme(activity)) {
-+                    R.style.IronFox_OLEDTheme
++                    R.style.Vantage_OLEDTheme
 +                } else {
 +                    R.style.NormalTheme
 +                }
