@@ -36,10 +36,6 @@ readonly IRONFOX_DOWNLOAD_UTILS="${IRONFOX_SCRIPTS}/download-utilities.sh"
 # File utilities
 readonly IRONFOX_FILE_UTILS="${IRONFOX_SCRIPTS}/file-utilities.sh"
 
-# S3 utilities
-# (For CI)
-readonly IRONFOX_S3_UTILS="${IRONFOX_SCRIPTS}/s3-utilities.sh"
-
 # Tools
 readonly IRONFOX_TOOLS="${IRONFOX_ROOT}/tools"
 
@@ -66,12 +62,6 @@ if [[ -z "${IRONFOX_CI+x}" ]] || [[ "${IRONFOX_CI}" == "" ]] || [[ "${IRONFOX_CI
   IRONFOX_CI="${IRONFOX_CI_DEFAULT}"
 fi
 readonly IRONFOX_CI
-
-## If so, set our CI environment variables
-readonly IRONFOX_ENV_CI="${IRONFOX_SCRIPTS}/env_ci.sh"
-if [[ "${IRONFOX_CI}" == 1 ]]; then
-  source "${IRONFOX_ENV_CI}" || return 1
-fi
 
 # Build directory
 readonly IRONFOX_BUILD_DEFAULT="${IRONFOX_ROOT}/build"
@@ -161,20 +151,6 @@ if [[ -z "${IRONFOX_LOG_BUILD+x}" ]] || [[ "${IRONFOX_LOG_BUILD}" == "" ]] || [[
   IRONFOX_LOG_BUILD="${IRONFOX_LOG_BUILD_DEFAULT}"
 fi
 readonly IRONFOX_LOG_BUILD
-
-# Should we create a log file for ci-download-artifacts.sh? (Default)
-readonly IRONFOX_LOG_AR_DOWN_DEFAULT=1
-if [[ -z "${IRONFOX_LOG_AR_DOWN+x}" ]] || [[ "${IRONFOX_LOG_AR_DOWN}" == "" ]] || [[ "${IRONFOX_LOG_AR_DOWN}" == "null" ]]; then
-  IRONFOX_LOG_AR_DOWN="${IRONFOX_LOG_AR_DOWN_DEFAULT}"
-fi
-readonly IRONFOX_LOG_AR_DOWN
-
-# Should we create a log file for ci-upload-artifacts.sh? (Default)
-readonly IRONFOX_LOG_AR_UP_DEFAULT=1
-if [[ -z "${IRONFOX_LOG_AR_UP+x}" ]] || [[ "${IRONFOX_LOG_AR_UP}" == "" ]] || [[ "${IRONFOX_LOG_AR_UP}" == "null" ]]; then
-  IRONFOX_LOG_AR_UP="${IRONFOX_LOG_AR_UP_DEFAULT}"
-fi
-readonly IRONFOX_LOG_AR_UP
 
 # Should we create a log file for prebuild.sh? (Default)
 readonly IRONFOX_LOG_PREBUILD_DEFAULT=1

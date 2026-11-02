@@ -1,35 +1,25 @@
-# Contributing to IronFox
+# Contributing to Vantage
 
-Thank you for helping improve IronFox. This guide covers how to report issues,
+Thank you for helping improve Vantage. This guide covers how to report issues,
 set up a build, change the code, and submit your changes. By participating,
 you agree to follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Ways to contribute
 
-- **Report bugs and suggest ideas** on the
-  [unified issue tracker](https://codeberg.org/ironfox-oss/bugs/issues).
+- **Report bugs and suggest ideas** on
+  [GitHub Issues](https://github.com/).
   Please search for existing reports first.
-- **Translate** the app on
-  [Weblate](https://hosted.weblate.org/engage/ironfox/).
-- **Improve the documentation** in the
-  [website repository](https://gitlab.com/ironfox-oss/ironfoxoss.org), where
-  the feature and user docs live.
+- **Improve the documentation** in this repository's [`docs/`](docs/) directory.
 - **Send code changes** as described below.
-- **Ask questions or discuss ideas** on
-  [Matrix](https://matrix.to/#/#ironfox:unredacted.org) (recommended) or
-  [Discord](https://discord.gg/zbdzfRVyVh).
 
-For anything larger than a small fix, please open an issue or ask on Matrix
-before starting, so the approach can be agreed first.
+For anything larger than a small fix, please open an issue before starting,
+so the approach can be agreed first.
 
 ## Where the code lives
 
 The main repository is on
-[GitLab](https://gitlab.com/ironfox-oss/IronFox). It is mirrored to
-[Codeberg](https://codeberg.org/ironfox-oss/IronFox) and
-[GitHub](https://github.com/ironfox-oss/IronFox). Send merge requests to
-GitLab. See [README.md](README.md) and [docs/](docs/) for an overview of the
-project and its documentation.
+[GitHub](https://github.com/). See [README.md](README.md) and [docs/](docs/)
+for an overview of the project and its documentation.
 
 ## Setting up a build
 
@@ -39,8 +29,8 @@ sources and toolchains take about 30 GB, and the build cache about 15 GB.
 Clone your fork of the repository, or the main one if you only want to build:
 
 ```sh
-git clone https://gitlab.com/ironfox-oss/IronFox.git
-cd IronFox
+git clone https://github.com/<your-account>/Vantage-Android.git
+cd Vantage-Android
 ```
 
 Building with the container image is recommended. A native build is supported
@@ -48,17 +38,15 @@ on recent Fedora, macOS, secureblue and Ubuntu.
 
 ### With Docker or Podman
 
-```sh
-./scripts/run-container.sh
-```
-
-This builds the builder image locally and opens a shell inside it with the
-repository mounted. Run the remaining steps in that shell. The script
-auto-detects your engine. To choose one explicitly:
+Build the builder image from the included `Containerfile`, then open a shell
+inside it with the repository mounted:
 
 ```sh
-CONTAINER_ENGINE=docker ./scripts/run-container.sh
+docker build -t vantage-builder -f Containerfile .    # or: podman build …
+docker run --rm -it -v "$PWD:/src" -w /src vantage-builder
 ```
+
+Run the remaining steps in that shell.
 
 ### Without a container
 
@@ -161,8 +149,6 @@ Commonly used variables:
 - `IRONFOX_OUTPUTS` (default `outputs/`): where built APKs are written.
 - `IRONFOX_SIGN_SKIP_ADB` (default `0`): `1` skips the prompt to install over
   ADB after signing.
-- `CONTAINER_ENGINE` (default: auto-detected): `docker` or `podman`, for
-  `run-container.sh`.
 
 `scripts/ironfox-studio.sh` opens the projects in Android Studio with the
 build environment set up. It reads `IRONFOX_MACH_TARGET_ARCH` (`arm64`, `arm`,
@@ -222,7 +208,7 @@ There is no automated test suite. Before you send a change:
    device or emulator.
 3. Check the behavior you changed.
 
-In your merge request, say which device, Android version and build variant you
+In your pull request, say which device, Android version and build variant you
 tested.
 
 ## Linting
@@ -255,11 +241,9 @@ Configuration is in `.shellcheckrc` (checks) and `.editorconfig` (formatting).
 
 ## Continuous integration
 
-Merge request pipelines run on your fork, not on the main repository, and
-they run only the `lint-scripts` job. The build, release and website jobs
-need GitLab's 2xlarge runners, which only the main project has, so they are
-skipped on forks. Build and test locally before you submit. A maintainer
-builds your change after review.
+This repository uses GitHub Actions for lightweight checks (shell lint).
+Full builds are run locally or on a maintainer's machine. Build and test
+locally before you submit. A maintainer builds your change after review.
 
 ## Changelog
 
@@ -277,8 +261,8 @@ change depends on something the diff does not show.
 1. Fork the repository and create a branch from `dev`. Do not target `main`.
 2. Make sure `./scripts/lint.sh` passes and that you have built and tested
    your change.
-3. Open a merge request against `dev` that describes what changed and why, and
-   links any related issue. The merge request template lists what to include.
+3. Open a pull request against `dev` that describes what changed and why, and
+   links any related issue.
 
 ## Licensing
 
