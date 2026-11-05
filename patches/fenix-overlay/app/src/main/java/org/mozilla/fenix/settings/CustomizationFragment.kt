@@ -158,7 +158,15 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
                 )
             val slotPreferences =
                 slotKeys.mapIndexed { index, key ->
-                    VantageSlotShortcutPreference(requireContext(), key, slotDefaults[index]).apply {
+                    VantageSlotShortcutPreference(
+                        requireContext(),
+                        key,
+                        slotDefaults[index],
+                        // Slot 1 must use Fenix's own setting (fenix_preferences), which is what
+                        // the browser/home toolbars read, otherwise the preview and the toolbar
+                        // would disagree about the selected shortcut.
+                        isPrimary = index == 0,
+                    ).apply {
                         isTranslationsFeatureEnabled = dynamicFeaturesStatus.isTranslationsFeatureEnabled
                         optionChangedListener = {
                             view?.post { updateToolbarShortcut() }
