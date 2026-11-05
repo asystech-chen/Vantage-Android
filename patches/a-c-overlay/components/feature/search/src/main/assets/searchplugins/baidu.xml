@@ -1,0 +1,13 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>百度</ShortName>
+<Image width="32" height="32">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAP1BMVEVHcEwWIuAABd8gK+EoMuH///8FFuD8/f/////////Z2/rp6/2tr/LJy/e7vvWLj+1pb+pWXOc9ReWbn+98gez6cyGxAAAACnRSTlMA////////+qwRrmYXVQAAAWdJREFUOI2Fk9u2hCAIhgMUy1NZvf+zblCz2rNmjReh+cnhF6dpmZ39Mty8TNPybbeNZZrHPMRcrY/pBuZp+PcIvIvNCLjdUaYx3ckYjtaCEXv7GIBn2aBt2A8g60nah/0AUj1Zhv0ArG6A5ICm5fIEIuBqk1RBUtMhtlhvcHMXkLCeCbGdS6oDk4FyAUUKJHgJGDVV9B3QheFQi81NgY00o9wBvgBXJD7nAcQO1BV3McWzEEcNEToQkEjKsGeNVTcCAvE5ygznJt4yG67RVMf26yWUFttu4inkDURVsAMGdvcfOBkYWQBSUYjAv4ECfOghL+IAHHYFTE/gBK3Z+wfQiryqQJWBEJ4ArDegTSJ79TMAWT2uWz0UTVIAFU0BugHpou7QY2t9AboYLUmpnjcfQhA0iQknXV3VgCzxiZkRQa5ThrRL79v+cBLV/2U9js2gomfbd+Pp+ZRCnzqZX1LPvx/vr+f/B6s9F/LJKysVAAAAAElFTkSuQmCC</Image>
+<InputEncoding>UTF-8</InputEncoding>
+<Url type="text/html" method="GET" template="https://www.baidu.com/s">
+  <Param name="wd" value="{searchTerms}" />
+</Url>
+<SearchForm>https://www.baidu.com</SearchForm>
+</SearchPlugin>

@@ -51,7 +51,7 @@
 
     <!-- Whether we should set CSS prefers-color-scheme to light -->
     <org.mozilla.fenix.settings.RadioButtonPreference
-      android:defaultValue="true"
+      android:defaultValue="false"
       android:key="@string/pref_key_prefers_light_color_scheme"
       android:title="@string/preference_prefers_light_color_scheme" />
 
@@ -63,7 +63,7 @@
 
     <!-- Whether we should set CSS prefers-color-scheme to follow the browser's theme -->
     <org.mozilla.fenix.settings.RadioButtonPreference
-      android:defaultValue="false"
+      android:defaultValue="true"
       android:key="@string/pref_key_prefers_browser_color_scheme"
       android:title="@string/preference_prefers_browser_color_scheme" />
   </androidx.preference.PreferenceCategory>

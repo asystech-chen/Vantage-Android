@@ -110,7 +110,7 @@ if [[ "${IRONFOX_RELEASE}" == 1 ]]; then
 else
   readonly IRONFOX_CHANNEL='nightly'
   readonly IRONFOX_CHANNEL_PRETTY='Nightly'
-  readonly IRONFOX_NAME='Vantage Nightly'
+  readonly IRONFOX_NAME='Vantage'
 fi
 
 readonly IRONFOX_OUTPUTS_AAB="${IRONFOX_OUTPUTS}/aab"

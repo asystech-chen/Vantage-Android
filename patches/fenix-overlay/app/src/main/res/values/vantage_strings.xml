@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <!-- Browser menu entry that opens the Vantage start page. -->
+  <string name="browser_menu_vantage_start_page">Vantage start page</string>
+  <!-- Vantage theme preference key and label. -->
+  <string name="pref_key_vantage_theme" translatable="false">pref_key_vantage_theme</string>
+  <string name="preference_vantage_theme">Vantage (blue/teal)</string>
+  <string name="pref_key_vantage_shortcut_slot2" translatable="false">vantage_shortcut_slot2</string>
+  <string name="pref_key_vantage_shortcut_slot3" translatable="false">vantage_shortcut_slot3</string>
+</resources>

@@ -1,32 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vantage: branded round icon (white orb + gradient ring + V). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="32"
-    android:viewportHeight="32">
-  <group android:scaleX="0.64166665"
-      android:scaleY="0.64166665"
-      android:translateX="5.733333"
-      android:translateY="5.733333">
+    android:viewportWidth="600"
+    android:viewportHeight="600">
+    <!-- 白色主圆 -->
     <path
-        android:pathData="M10.562,5.498C10.516,5.479 10.462,5.49 10.425,5.525l-4.89,4.803c-0.118,0.116 -0.214,0.344 -0.213,0.51 0.085,9 5.054,11.624 10.426,15.6 0.133,0.098 0.349,0.098 0.482,0 5.476,-3.998 10.332,-6.331 10.447,-15.521 0.002,-0.165 -0.093,-0.395 -0.211,-0.512l-4.931,-4.88c-0.08,-0.08 -0.216,-0.023 -0.215,0.09l-0.029,4.701c-0.001,0.166 -0.135,0.299 -0.301,0.299L10.959,10.615c-0.166,0 -0.3,-0.133 -0.301,-0.299L10.641,5.615c-0,-0.051 -0.031,-0.098 -0.079,-0.117z">
-      <aapt:attr name="android:fillColor">
-        <gradient 
-            android:startX="5.322"
-            android:startY="5.488"
-            android:endX="26.678"
-            android:endY="26.512"
-            android:type="linear">
-          <item android:offset="0" android:color="#AEFF0E00"/>
-          <item android:offset="1" android:color="#FFFFD500"/>
-        </gradient>
-      </aapt:attr>
+        android:fillColor="#FFFFFF"
+        android:pathData="M60,300a240,240 0 1,0 480,0a240,240 0 1,0 -480,0" />
+    <!-- 外环 -->
+    <path
+        android:pathData="M62,300a238,238 0 1,0 476,0a238,238 0 1,0 -476,0"
+        android:strokeWidth="3"
+        android:fillColor="#00000000">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="0"
+                android:startY="0"
+                android:endX="600"
+                android:endY="600"
+                android:type="linear">
+                <item android:offset="0" android:color="#55C7D7EA" />
+                <item android:offset="1" android:color="#3322D3AE" />
+            </gradient>
+        </aapt:attr>
     </path>
+    <!-- 内环 -->
     <path
-        android:pathData="m21.32,15.949c-1.995,3.338 -2.095,3.239 -3.345,1.988"
-        android:fillColor="#ffffff"/>
+        android:pathData="M75,300a225,225 0 1,0 450,0a225,225 0 1,0 -450,0"
+        android:strokeWidth="2"
+        android:strokeColor="#66E2E8F0"
+        android:fillColor="#00000000" />
+    <!-- V -->
     <path
-        android:pathData="m10.627,15.949c1.995,3.338 2.095,3.239 3.345,1.988"
-        android:fillColor="#ffffff"/>
-  </group>
+        android:pathData="M157,150 L300,422 L443,150"
+        android:strokeWidth="100"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="107"
+                android:startY="121"
+                android:endX="491"
+                android:endY="493"
+                android:type="linear">
+                <item android:offset="0" android:color="#3B82F6" />
+                <item android:offset="0.45" android:color="#2F9BE8" />
+                <item android:offset="0.75" android:color="#2ED3B8" />
+                <item android:offset="1" android:color="#22C7A6" />
+            </gradient>
+        </aapt:attr>
+    </path>
 </vector>

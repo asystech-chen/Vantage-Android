@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Vantage: dark mode splash backdrop matches the Vantage theme background. -->
+  <color name="vantage_splash_background">#0b1220</color>
+</resources>

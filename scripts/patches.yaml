@@ -1091,10 +1091,4 @@ patches:
     reason: "To provide users with the option to reduce battery consumption and eye strain on OLED displays by using true black theme."
     effect: "Users can toggle a UI option for an OLED-optimized dark theme, which helps improve visual comfort and power efficiency on OLED screens."
     category: "User Interface"
-  - file: "fenix-vantage-start-page.patch"
-    name: "Fenix - Vantage start page"
-    description: "Automatically loads the Vantage start page (https://asystech.cn/start/index.html) in new homepage tabs."
-    reason: "To open the Vantage start page whenever a new tab is created."
-    effect: "New tabs automatically display the Vantage start page."
-    category: "User Interface"
 

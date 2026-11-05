@@ -8,4 +8,6 @@
   <color name="vantage_layer2">#111c33</color>
   <color name="vantage_accent">#2f6bff</color>
   <color name="vantage_accent_secondary">#22d3ee</color>
+  <!-- Splash backdrop, matches the theme background so the orb sits on theme colour. -->
+  <color name="vantage_splash_background">#F7F9FC</color>
 </resources>
