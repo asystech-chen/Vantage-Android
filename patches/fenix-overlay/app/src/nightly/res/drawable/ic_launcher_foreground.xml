@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vantage: adaptive icon foreground, the V only (the white layer is the icon background). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M28.3,30.9 L54,79.9 L79.7,30.9"
+        android:strokeWidth="18"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000">
+        <aapt:attr name="android:strokeColor">
+            <gradient
+                android:startX="19.3"
+                android:startY="21.7"
+                android:endX="88.7"
+                android:endY="88.9"
+                android:type="linear">
+                <item android:offset="0" android:color="#3B82F6" />
+                <item android:offset="0.45" android:color="#2F9BE8" />
+                <item android:offset="0.75" android:color="#2ED3B8" />
+                <item android:offset="1" android:color="#22C7A6" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>

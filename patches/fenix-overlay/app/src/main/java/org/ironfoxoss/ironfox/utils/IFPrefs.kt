@@ -191,8 +191,8 @@ object IFPrefs {
     prefs.setBoolPref(R.string.pref_key_pocket_homescreen_recommendations, false)
     prefs.setBoolPref(R.string.pref_key_pocket_sponsored_stories, false)
 
-    // Disable recent search suggestions by default
-    prefs.setDefaultBoolPref(R.string.pref_key_show_recent_search_suggestions, false)
+    // Vantage: search suggestions are enabled by default
+    prefs.setDefaultBoolPref(R.string.pref_key_show_recent_search_suggestions, true)
 
     // Disable remote debugging
     /// We effectively no-op this anyways (in favor of using the Gecko pref directly)
@@ -201,8 +201,8 @@ object IFPrefs {
     // Disable remote search configuration
     prefs.setBoolPref(R.string.pref_key_use_remote_search_configuration, false)
 
-    // Disable search suggestions by default
-    prefs.setDefaultBoolPref(R.string.pref_key_show_search_suggestions, false)
+    // Vantage: search suggestions are enabled by default
+    prefs.setDefaultBoolPref(R.string.pref_key_show_search_suggestions, true)
     prefs.setBoolPref(R.string.pref_key_show_search_suggestions_in_private_onboarding, true)
 
     // Disable 'Search Optimization' cards
@@ -289,6 +289,11 @@ object IFPrefs {
 
     // Display the option to enable the OLED theme by default
     prefs.setDefaultBoolPref(R.string.pref_key_enable_oled_theme, true)
+
+    // Make website color scheme follow the browser theme by default
+    prefs.setDefaultBoolPref(R.string.pref_key_prefers_browser_color_scheme, true)
+    prefs.setDefaultBoolPref(R.string.pref_key_prefers_light_color_scheme, false)
+    prefs.setDefaultBoolPref(R.string.pref_key_prefers_dark_color_scheme, false)
 
     // Display the toolbar on the top by default
     prefs.setDefaultBoolPref(R.string.pref_key_toolbar_bottom, false)

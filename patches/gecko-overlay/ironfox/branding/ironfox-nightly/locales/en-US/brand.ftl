@@ -1,6 +1,6 @@
--brand-full-name = Vantage Nightly
+-brand-full-name = Vantage
 -brand-product-name = Vantage
--brand-short-name = Vantage Nightly
--brand-shortcut-name = Vantage Nightly
--brand-shorter-name = Vantage Nightly
+-brand-short-name = Vantage
+-brand-shortcut-name = Vantage
+-brand-shorter-name = Vantage
 -vendor-short-name = Vantage

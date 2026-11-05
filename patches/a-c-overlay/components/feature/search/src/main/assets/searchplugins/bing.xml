@@ -1,0 +1,13 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>Bing</ShortName>
+<Image width="32" height="32">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB60lEQVRYhe2WO5LTQBCGv57lAHZGoMABRYozaU0iRyRU7d6APYIpRUSWD2AvnAB8A8jI1kRGmW+AEuVLRqJpAsv27GK9KG058Z9oHj3Tn7rnJW8mbzmlzEm9nwHOAMCzpoYJUYjNr8FcAYOieYPoBjEzn3n6PwBStw0Toh7KFNVJ9Uz6sQC5bwNQmYKEqIe1q1rnACoTrN4lRL3OAFCmIK+c+gojY4z0fbMQjIyBpTNiiNppG4DSFCREA6z+cmhmvrmNj9ra9zHIwbGRsc981QSgPAI2PzgT+VLmHMA3tzHKwaHV6ybOqwEwh9DLgzAf14XMnNpVBwAMd4WG4dw45UEXAHs1Wdltt18TgNQpD8uMdkqIQqe6KbNrA/BtX8q1fmvZ/GZfFukAwMjXw4SEiY1KIbZ95p1jPyuzfayLF8HLox0e6zTTyz4QFE1hRjDI5PVvj3WaEPUyRkGWX35GuNkPVFa+WXxqClB5F2yPYr2jwRp4NG3sm3mjKFTuAp/5fXHc1v+RexChcVXKXJWmYCeP9R9P1t8zGS1R+kXz8+KbAkuMfPDNYpZpICBh0RdmOsKT9Y+q+Wuv47b6516oSUdtBNrKk5+rNpF4kifZ9uJS5681LrN9sjfhQwgtTUHna6CtTv4qPgOcAf4CS1CiUTfGv6sAAAAASUVORK5CYII=</Image>
+<InputEncoding>UTF-8</InputEncoding>
+<Url type="text/html" method="GET" template="https://cn.bing.com/search">
+  <Param name="q" value="{searchTerms}" />
+</Url>
+<SearchForm>https://cn.bing.com</SearchForm>
+</SearchPlugin>

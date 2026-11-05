@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Vantage: 首页 wordmark 文字放大（默认 18dp 太小） -->
+    <dimen name="wordmark_text_height">24dp</dimen>
+</resources>

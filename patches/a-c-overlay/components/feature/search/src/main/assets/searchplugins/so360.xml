@@ -1,0 +1,13 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/">
+<ShortName>360 搜索</ShortName>
+<Image width="32" height="32">data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEIElEQVRYhe2XW2wUZRiGn2+mHCophwUiBWMJjacYD2kLKAeTYgu1tEZvEKMxFqFNAI2JYoIx2igKeiEx4mFbiRceI7EGWxADRpDYGHCJETkkUjWgVUoPaUmBdXfm9QJq2s5s2S4mXuh7tfn/73uf95/9Z/4Z+F//suxiBZJs4mcrZntJu8uMOYKpBrlC5wxakf1iph02cuSnnYteP/GPBZBkke0rlvo+6xAz0jIzGp0RtrazrP7QJQUYv21Vnvz4R4hZ6Rr1k2dmr5RWlD6xxZZ4ww4woWn5fF98jJicAbyfs+3CspZ0V7zRlXaAcY3VBYb2SrrskuB/Z7DmSe7oBcfKX42nqsnq+zF528opCT+xdUi4ETNsD2atSNmgGWBlknLDyiXNaffORoEHU1te0LjGFR8gLU1Rtd113TWd5dHDIRCLbKu+R9IGibywdse1yq7F9U0pA4xrWl6I2I+Ce8Ixe7Krsn59qhX0adquVRN7z8QbBLcFIXaotLL0prBN6QCYbG0YHGNDOnCA30pe68iKRCoMC14ldP3Opp13hvU507+sHQ0qC8Lt6MKKhU+lA+9T+7yXTrvmVqWYvjs0QHdv6+0SYwIT5jyfzn08WB2Vb+4DdgweF1pcq1onwPF9XRdwMUswSo3DhffrbwiMicimz1svDwQwh6lBB53oKq3rzpTvujoYNp5I+gGWg5gYLLWOTOEArueG9rtyAiwHWWewVCGh0pfvKBI27pkfCObI+D1L4oWeXzl28nuOtB2kqrd9+rRdqzIOMTaRLNrYfZzDJw/yVfsRSuI9ALgOJwMBDGffY71/sLK3jUl+klwvwcvdx53aUy2rMw3wTnfLmqoz7Uz1E9yYOMv7XS1c453reuSOK1oDAfJz/a/L4j0DbjcDHuppq9K7s8cOF676gvlz46ev7D82UuK+s50/1lqtHwgQK6pLjJHXPHjCII8ziU3Dgr91awTf3gt7qk7xktvDegxAdTNvRl6MC4/mQRVRZA9bTSwxNHxOHl68AVQQgjnK1Tk3WPHu5OCZ82dB9f7vMHsx3JkaYK/qi8olBVamzXNzFC1ajRePpYAnMeeBMPj59fUZRQtHAN+Em/RV28+gA8j5CfOzgXyweUg5Q/Q8a9WxZxQtnATaiLEIrA1snVV/++GAFSlaeC2oGZiQ0nA4MvZw1dgSK96dVF3hF0gLBsy7bsmA/9xqYkfBZgKBIzUDvc34/IVWvDupaGFuAA7g+/cHNp3VxFrIyr4FyOwwMvPAHreaA8tsyZY/AcgeFX6qiuSQHyaKFhZjehRRQdgdMpCcBD4Bnj5/JQd51RVsRfR/KfExd/5Fv4wuBMnHuBdpFmYzQBOABLIOjB+QNTMiu8GW7T2V0mPz3By8c88hFoHacN31tnx/4L3hv6e/AGlepvoSuDWyAAAAAElFTkSuQmCC</Image>
+<InputEncoding>UTF-8</InputEncoding>
+<Url type="text/html" method="GET" template="https://www.so.com/s">
+  <Param name="q" value="{searchTerms}" />
+</Url>
+<SearchForm>https://www.so.com</SearchForm>
+</SearchPlugin>

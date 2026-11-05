@@ -2,7 +2,7 @@
 <resources>
     <string name="restart_required_summary">इस सेटिंग को बदलने से आपका ब्राउज़र पुनः आरंभ हो जाएगा</string>
     <string name="unsupported_summary">यह सेटिंग अनुशंसित या समर्थित नहीं है। सावधानी से आगे बढ़ें।</string>
-    <string name="if_preferences">IronFox सेटिंग्स</string>
+    <string name="if_preferences">Vantage सेटिंग्स</string>
     <string name="if_preferences_misc">अधिक</string>
     <string name="if_preferences_privacy">गोपनीयता</string>
     <string name="if_preferences_privacy_security">गोपनीयता और सुरक्षा</string>
