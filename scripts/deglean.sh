@@ -185,8 +185,8 @@ function deglean_ac() {
 
   # Remove the Glean service
   ## https://searchfox.org/firefox-main/source/mobile/android/android-components/components/service/glean/README.md
-  "${IRONFOX_RM}" -rv "${IRONFOX_AC}/components/service/glean" || return 1
-  "${IRONFOX_RM}" -rv "${IRONFOX_AC}/samples/glean" || return 1
+  "${IRONFOX_RM}" -rvf "${IRONFOX_AC}/components/service/glean" || return 1
+  "${IRONFOX_RM}" -rvf "${IRONFOX_AC}/samples/glean" || return 1
 
   # Remove Glean classes
   "${IRONFOX_SED}" -i -e 's|GleanMessaging|// GleanMessaging|g' "${IRONFOX_AC}/components/service/nimbus/src/main/java/mozilla/components/service/nimbus/messaging/NimbusMessagingController.kt" || return 1
@@ -195,7 +195,7 @@ function deglean_ac() {
   "${IRONFOX_SED}" -i -e 's|Microsurvey.privacy|// Microsurvey.privacy|g' "${IRONFOX_AC}/components/service/nimbus/src/main/java/mozilla/components/service/nimbus/messaging/NimbusMessagingController.kt" || return 1
   "${IRONFOX_SED}" -i -e 's|Microsurvey.shown|// Microsurvey.shown|g' "${IRONFOX_AC}/components/service/nimbus/src/main/java/mozilla/components/service/nimbus/messaging/NimbusMessagingController.kt" || return 1
   "${IRONFOX_SED}" -i -e 's|GleanMessaging|// GleanMessaging|g' "${IRONFOX_AC}/components/service/nimbus/src/main/java/mozilla/components/service/nimbus/messaging/NimbusMessagingStorage.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_AC}/components/lib/crash/src/main/java/mozilla/components/lib/crash/service/GleanCrashReporterService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AC}/components/lib/crash/src/main/java/mozilla/components/lib/crash/service/GleanCrashReporterService.kt" || return 1
 
   echo_green_text 'SUCCESS: De-gleaned Android Components'
 }
@@ -218,8 +218,8 @@ function deglean_as() {
   "${IRONFOX_SED}" -i 's|glean|# glean|g' "${IRONFOX_AS}/gradle/libs.versions.toml" || return 1
 
   # Remove unused/unnecessary Glean components
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/android/src/main/java/mozilla/appservices/remotesettings/GleanTelemetry.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/sync_manager/android/src/main/java/mozilla/appservices/syncmanager/BaseGleanSyncPing.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/android/src/main/java/mozilla/appservices/remotesettings/GleanTelemetry.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/sync_manager/android/src/main/java/mozilla/appservices/syncmanager/BaseGleanSyncPing.kt" || return 1
 
   # Remove Glean classes
   "${IRONFOX_SED}" -i 's|FxaClientMetrics|// FxaClientMetrics|g' "${IRONFOX_AS}/components/fxa-client/android/src/main/java/mozilla/appservices/fxaclient/FxaClient.kt" || return 1
@@ -252,7 +252,7 @@ function deglean_fenix() {
 
   "${IRONFOX_SED}" -i -e 's|Metrics|// Metrics|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/gecko/search/SearchWidgetProvider.kt" || return 1
 
-  "${IRONFOX_RM}" "${IRONFOX_FENIX}/app/longfox/metrics.yaml" || return 1
+  "${IRONFOX_RM}" -f "${IRONFOX_FENIX}/app/longfox/metrics.yaml" || return 1
 
   echo_green_text 'SUCCESS: De-gleaned Fenix'
 }

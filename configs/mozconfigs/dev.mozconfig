@@ -1,0 +1,23 @@
+# shellcheck shell=bash
+# Vantage dev build: fastest practical iterate-and-test profile.
+# Sourced from build.mozconfig only when IRONFOX_DEV=1.
+
+set -euo pipefail
+
+# Reuse the machine's existing ccache (~/.cache/ccache).
+ac_add_options --with-ccache
+export CCACHE='/usr/bin/ccache'
+
+# Keep Rust incremental state between builds.
+ac_add_options --enable-cargo-incremental
+export CARGO_INCREMENTAL=1
+export CARGO_PROFILE_DEV_LTO=false
+export CARGO_PROFILE_RELEASE_LTO=false
+
+# Skip stripping: faster packaging, bigger dev APK.
+ac_add_options --disable-install-strip
+ac_add_options --disable-strip
+
+# Never auto-clobber; the dev objdir is separate and must stay incremental.
+mk_add_options AUTOCLOBBER=0
+export AUTOCLOBBER=0

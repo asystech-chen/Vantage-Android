@@ -10,13 +10,18 @@ set -euo pipefail
 ### But this allows users to enable it and install unsigned extensions anyways if desired, at their own risk
 export MOZ_REQUIRE_SIGNING=
 
-## Automatically clobber if necessary
-mk_add_options AUTOCLOBBER=1
-export AUTOCLOBBER=1
+## Automatically clobber if necessary (never for incremental dev builds)
+if [[ "${IRONFOX_DEV:-0}" == '1' ]]; then
+  mk_add_options AUTOCLOBBER=0
+  export AUTOCLOBBER=0
+else
+  mk_add_options AUTOCLOBBER=1
+  export AUTOCLOBBER=1
+fi
 
 ## Configure allowed Gradle maven repositories
 # shellcheck disable=SC2140
-export GRADLE_MAVEN_REPOSITORIES="file://${IRONFOX_MAVEN_LOCAL}/","https://plugins.gradle.org/m2/","https://maven.google.com/"
+export GRADLE_MAVEN_REPOSITORIES="file://${IRONFOX_MAVEN_LOCAL}/","https://maven.aliyun.com/repository/google","https://maven.aliyun.com/repository/public","https://maven.aliyun.com/repository/gradle-plugin","https://plugins.gradle.org/m2/","https://maven.google.com/"
 
 ## Disable android:debuggable
 ac_add_options --disable-android-debuggable

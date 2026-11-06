@@ -41,7 +41,19 @@ ac_add_options --enable-stl-hardening
 export MOZ_SECURITY_HARDENING=1
 
 # Enable performance optimizations
-if [[ "${IRONFOX_DISABLE_LTO:-0}" == '1' ]]; then
+if [[ "${IRONFOX_DEV:-0}" == '1' ]]; then
+  # Dev build: no LTO, -O1. Optimize for compile speed, not runtime performance.
+  ac_add_options --disable-lto
+  unset MOZ_LTO
+  export MOZ_LTO=
+  IRONFOX_BUILD_COMPILER_FLAGS_TMP="${IRONFOX_COMPILER_FLAGS//-flto=full/}"
+  IRONFOX_BUILD_COMPILER_FLAGS_TMP="${IRONFOX_BUILD_COMPILER_FLAGS_TMP//-O3/-O1}"
+  IRONFOX_BUILD_COMPILER_FLAGS_TMP="${IRONFOX_BUILD_COMPILER_FLAGS_TMP//-ftree-vectorize/}"
+  readonly IRONFOX_BUILD_COMPILER_FLAGS="${IRONFOX_BUILD_COMPILER_FLAGS_TMP}"
+  ac_add_options --enable-optimize='-O1'
+  export MOZ_OPTIMIZE_FLAGS='-O1'
+  export RUSTC_OPT_LEVEL=1
+elif [[ "${IRONFOX_DISABLE_LTO:-0}" == '1' ]]; then
   # LTO is disabled for this build variant (the full-LTO link of libxul.so is
   # extremely memory hungry and slow; this trades some runtime performance for
   # a much faster build)
@@ -51,14 +63,17 @@ if [[ "${IRONFOX_DISABLE_LTO:-0}" == '1' ]]; then
   unset MOZ_LTO
   export MOZ_LTO=
   readonly IRONFOX_BUILD_COMPILER_FLAGS="${IRONFOX_COMPILER_FLAGS//-flto=full/}"
+  ac_add_options --enable-optimize='-O3 -ftree-vectorize'
+  export MOZ_OPTIMIZE_FLAGS='-O3 -ftree-vectorize'
+  export RUSTC_OPT_LEVEL=3
 else
   ac_add_options --enable-lto='full'
   export MOZ_LTO='full'
   readonly IRONFOX_BUILD_COMPILER_FLAGS="${IRONFOX_COMPILER_FLAGS}"
+  ac_add_options --enable-optimize='-O3 -ftree-vectorize'
+  export MOZ_OPTIMIZE_FLAGS='-O3 -ftree-vectorize'
+  export RUSTC_OPT_LEVEL=3
 fi
-ac_add_options --enable-optimize='-O3 -ftree-vectorize'
-export MOZ_OPTIMIZE_FLAGS='-O3 -ftree-vectorize'
-export RUSTC_OPT_LEVEL=3
 
 # Enable stripping
 ac_add_options --enable-install-strip
@@ -92,8 +107,16 @@ export HOST_LDFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
 export LDFLAGS="${IRONFOX_BUILD_COMPILER_FLAGS}"
 
 # Set Rust flags
-export RUSTDOCFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
-export RUSTFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
+if [[ "${IRONFOX_DEV:-0}" == '1' ]]; then
+  # Dev: lower opt level and keep incremental state for fast rebuilds.
+  IRONFOX_DEV_RUST_FLAGS="${IRONFOX_RUST_FLAGS//-Copt-level=3/-Copt-level=1}"
+  IRONFOX_DEV_RUST_FLAGS="${IRONFOX_DEV_RUST_FLAGS//-Cincremental=false/-Cincremental=true}"
+  export RUSTDOCFLAGS="${IRONFOX_DEV_RUST_FLAGS} -Crelro-level=full"
+  export RUSTFLAGS="${IRONFOX_DEV_RUST_FLAGS} -Crelro-level=full"
+else
+  export RUSTDOCFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
+  export RUSTFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
+fi
 
 if [[ "${IRONFOX_DISABLE_LTO:-0}" == '1' ]]; then
   # Also disable Rust's LTO for this build variant (configs/cargo/config.toml enables it,
@@ -105,3 +128,8 @@ fi
 # Set WASI sysroot path
 ac_add_options --with-wasi-sysroot="${IRONFOX_WASI}/share/wasi-sysroot"
 export WASI_SYSROOT="${IRONFOX_WASI}/share/wasi-sysroot"
+
+# Dev-specific overrides: reuse ccache, keep incremental state, don't strip.
+if [[ "${IRONFOX_DEV:-0}" == '1' ]]; then
+  . "${IRONFOX_MOZCONFIGS}/dev.mozconfig" || return 1
+fi

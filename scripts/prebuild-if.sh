@@ -242,7 +242,7 @@ function prepare_ac() {
   pushd "${IRONFOX_AC}" || return 1
 
   # Remove default built-in search engines
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/feature/search/src/main/assets/searchplugins/"* || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/feature/search/src/main/assets/searchplugins/"* || return 1
 
   # No-op AMO collections/recommendations
   "${IRONFOX_SED}" -i -e 's/DEFAULT_COLLECTION_NAME = ".*"/DEFAULT_COLLECTION_NAME = ""/' "${IRONFOX_AC}/components/feature/addons/src/main/java/mozilla/components/feature/addons/amo/AMOAddonsProvider.kt" || return 1
@@ -270,12 +270,12 @@ function prepare_ac() {
 
   # Nuke the "Mozilla Android Components - Ads Telemetry" and "Mozilla Android Components - Search Telemetry" extensions
   ## We don't install these with fenix-disable-telemetry.patch - so no need to keep the files around...
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/feature/search/src/main/assets/extensions/ads" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/feature/search/src/main/assets/extensions/search" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/feature/search/src/main/assets/extensions/ads" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/feature/search/src/main/assets/extensions/search" || return 1
 
   ## We can also remove the directories/libraries themselves as well
-  "${IRONFOX_RM}" -v "${IRONFOX_AC}/components/feature/search/src/main/java/mozilla/components/feature/search/middleware/AdsTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/feature/search/src/main/java/mozilla/components/feature/search/telemetry" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AC}/components/feature/search/src/main/java/mozilla/components/feature/search/middleware/AdsTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/feature/search/src/main/java/mozilla/components/feature/search/telemetry" || return 1
 
   # Nuke undesired Mozilla endpoints
   noop_ac_endpoints || return 1
@@ -287,30 +287,30 @@ function prepare_ac() {
   "${IRONFOX_RM}" -rv "${IRONFOX_AC}/samples/crash" || return 1
 
   # Remove Nimbus
-  "${IRONFOX_RM}" -v "${IRONFOX_AC}/components/browser/engine-gecko/geckoview.fml.yaml" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/browser/engine-gecko/src/main/java/mozilla/components/experiment" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AC}/components/browser/engine-gecko/geckoview.fml.yaml" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/browser/engine-gecko/src/main/java/mozilla/components/experiment" || return 1
   "${IRONFOX_SED}" -i -e 's|-keep class mozilla.components.service.nimbus|#-keep class mozilla.components.service.nimbus|g' "${IRONFOX_AC}/components/service/nimbus/proguard-rules-consumer.pro" || return 1
   "${IRONFOX_SED}" -i -e '/buildConfig/s/true/false/' "${IRONFOX_AC}/components/service/nimbus/build.gradle" || return 1
 
   # Remove Firebase
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/lib/push-firebase" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/lib/push-firebase" || return 1
 
   # Remove Google Play Integrity
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/feature/ipprotection/src/main/java/mozilla/components/feature/ipprotection/auth/gpi" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/lib/integrity-googleplay" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/feature/ipprotection/src/main/java/mozilla/components/feature/ipprotection/auth/gpi" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/lib/integrity-googleplay" || return 1
 
   # Remove MARS
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/service/mars" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/service/mars" || return 1
 
   # Remove Sentry
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/lib/crash-sentry" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/lib/crash-sentry" || return 1
 
   # Remove unnecessary crash reporting components
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/support/appservices/src/main/java/mozilla/components/support/rusterrors" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_AC}/components/lib/crash/src/main/java/mozilla/components/lib/crash/service/MozillaSocorroService.kt" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/support/appservices/src/main/java/mozilla/components/support/rusterrors" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AC}/components/lib/crash/src/main/java/mozilla/components/lib/crash/service/MozillaSocorroService.kt" || return 1
 
   # Remove Web Compat Reporter
-  "${IRONFOX_RM}" -vr "${IRONFOX_AC}/components/feature/webcompat-reporter" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AC}/components/feature/webcompat-reporter" || return 1
 
   # Apply a-c overlay
   apply_overlay "${IRONFOX_AC_OVERLAY}/" || return 1
@@ -452,7 +452,7 @@ function prepare_as() {
   "${IRONFOX_SED}" -i 's|nimbus-mobile-experiments||g' "${IRONFOX_AS}/components/nimbus/android/src/main/java/org/mozilla/experiments/nimbus/Nimbus.kt" || return 1
 
   # Remove default built-in search engines
-  "${IRONFOX_RM}" -vr "${IRONFOX_AS}"/components/remote_settings/dumps/main/attachments/search-config-icons/* || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AS}"/components/remote_settings/dumps/main/attachments/search-config-icons/* || return 1
 
   # Remove Glean
   deglean_as || return 1
@@ -461,17 +461,17 @@ function prepare_as() {
   noop_as_endpoints || return 1
 
   # Remove the AI summarizer models configuration collection
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/dumps/main/summarizer-models-config.json" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/dumps/main/summarizer-models-config.timestamp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/dumps/main/summarizer-models-config.json" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/dumps/main/summarizer-models-config.timestamp" || return 1
 
   # Remove the regions collection (and attachments)
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/dumps/main/regions.json" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/dumps/main/regions.timestamp" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_AS}/components/remote_settings/dumps/main/attachments/regions" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/dumps/main/regions.json" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/dumps/main/regions.timestamp" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AS}/components/remote_settings/dumps/main/attachments/regions" || return 1
 
   # Remove the search telemetry collection
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/dumps/main/search-telemetry-v2.json" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_AS}/components/remote_settings/dumps/main/search-telemetry-v2.timestamp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/dumps/main/search-telemetry-v2.json" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_AS}/components/remote_settings/dumps/main/search-telemetry-v2.timestamp" || return 1
 
   # Remove the Mozilla Ads Client library
   "${IRONFOX_SED}" -i 's|"components/ads-client"|# "components/ads-client"|g' "${IRONFOX_AS}/Cargo.toml" || return 1
@@ -483,7 +483,7 @@ function prepare_as() {
 
   # Remove the Filter Adult (parental controls) library
   "${IRONFOX_SED}" -i 's|"components/filter_adult"|# "components/filter_adult"|g' "${IRONFOX_AS}/Cargo.toml" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_AS}/components/filter_adult" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_AS}/components/filter_adult" || return 1
 
   # Remove the Rust Error support library
   ## Used for telemetry/error reporting, depends on Glean
@@ -568,7 +568,7 @@ function prepare_fenix() {
   "${IRONFOX_SED}" -i -e 's|import org.mozilla.fenix.ext.recordEventInNimbus|// import org.mozilla.fenix.ext.recordEventInNimbus|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/BackgroundServices.kt" || return 1
   "${IRONFOX_SED}" -i -e 's|context.recordEventInNimbus|// context.recordEventInNimbus|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/BackgroundServices.kt" || return 1
   "${IRONFOX_SED}" -i -e 's|FxNimbus.features.junoOnboarding.recordExposure|// FxNimbus.features.junoOnboarding.recordExposure|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/utils/Settings.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/raw/initial_experiments.json" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/raw/initial_experiments.json" || return 1
 
   # No-op search telemetry
   "${IRONFOX_SED}" -i 's|search-telemetry-v2||g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/Core.kt" || return 1
@@ -576,35 +576,35 @@ function prepare_fenix() {
   # Remove unused media
   ## Based on Tor Browser: https://gitlab.torproject.org/tpo/applications/tor-browser/-/commit/264dc7cd915e75ba9db3a27e09253acffe3f2311
   ## This should help reduce our APK sizes...
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/ic_launcher_private-web.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/ic_launcher-web.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/fox_ai_on_state.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_launcher_foreground.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_launcher_monochrome.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/ic_launcher_private-web.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/ic_launcher-web.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/fox_ai_on_state.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_launcher_foreground.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_launcher_monochrome.xml" || return 1
   ## Our overlay replaces the splash logo with a PNG of the same name, so the
   ## upstream vector has to go or AAPT2 fails with a duplicate resource error
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_splash_logo.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_onboarding_search_widget.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_onboarding_sync.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/microsurvey_success.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_marketing.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_sync.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_tou.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_tou_2.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_widget.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/review_prompt_negative_button.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable/review_prompt_positive_button.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-hdpi/fenix_search_widget.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-hdpi/ic_logo_wordmark_normal.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-hdpi/ic_logo_wordmark_private.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-mdpi/ic_logo_wordmark_normal.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-mdpi/ic_logo_wordmark_private.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-xhdpi/ic_logo_wordmark_normal.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-xhdpi/ic_logo_wordmark_private.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-xxhdpi/ic_logo_wordmark_normal.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-xxhdpi/ic_logo_wordmark_private.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-xxxhdpi/ic_logo_wordmark_normal.webp" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/res/drawable-xxxhdpi/ic_logo_wordmark_private.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_splash_logo.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_onboarding_search_widget.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/ic_onboarding_sync.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/microsurvey_success.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_marketing.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_sync.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_tou.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_tou_2.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/nova_onboarding_widget.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/review_prompt_negative_button.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable/review_prompt_positive_button.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-hdpi/fenix_search_widget.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-hdpi/ic_logo_wordmark_normal.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-hdpi/ic_logo_wordmark_private.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-mdpi/ic_logo_wordmark_normal.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-mdpi/ic_logo_wordmark_private.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-xhdpi/ic_logo_wordmark_normal.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-xhdpi/ic_logo_wordmark_private.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-xxhdpi/ic_logo_wordmark_normal.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-xxhdpi/ic_logo_wordmark_private.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-xxxhdpi/ic_logo_wordmark_normal.webp" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/res/drawable-xxxhdpi/ic_logo_wordmark_private.webp" || return 1
   # Compose artwork must resolve to a vector, not the ic_storage state selector.
   "${IRONFOX_SED}" -i -e 's|R.drawable.fox_ai_on_state|R.drawable.ic_ironfox_artwork|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/settings/ai/AIControlsScreen.kt" || return 1
   "${IRONFOX_SED}" -i -e 's|R.drawable.ic_onboarding_sync|R.drawable.ic_ironfox_artwork|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingScreen.kt" || return 1
@@ -638,57 +638,57 @@ function prepare_fenix() {
   "${IRONFOX_SED}" -i -e 's|TabsTrayTelemetryMiddleware(|// TabsTrayTelemetryMiddleware(|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/tabstray/ui/TabManagementFragment.kt" || return 1
   "${IRONFOX_SED}" -i -e 's|WebCompatReporterTelemetryMiddleware(|// WebCompatReporterTelemetryMiddleware(|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/webcompat/di/WebCompatReporterMiddlewareProvider.kt" || return 1
 
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/bookmarks/BookmarksTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/ActivationPing.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/AdjustMetricsService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/AdjustSdkController.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/AdjustThirdPartySharingController.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/BreadcrumbsRecorder.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/ConversionEventRecorder.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/DefaultInstallReferrerClient.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/Event.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/FirstSessionMetricsService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanMetricsService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReporting.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReportingApi.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReportingLifecycleObserver.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReportingMetricsService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GrowthDataWorker.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallAge.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerClientWrapper.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerHandlingService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerMetricsService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerWorker.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricController.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricsMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricsService.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricsStorage.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MozillaProductDetector.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/ReferralAttribution.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/RtamoAttributionHandler.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/toolbar/BrowserToolbarTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/CrashFactCollector.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/CrashReportingAppMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/NimbusExperimentDataProvider.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/ReleaseRuntimeTagProvider.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/downloads/listscreen/middleware/DownloadTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/ext/Configuration.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/middleware/HomeTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/PocketMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/toolbar/BrowserToolbarTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/messaging/state/MessagingMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/reviewprompt/CustomReviewPromptTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/reviewprompt/ReviewPromptMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/tabstray/TabsTrayTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/telemetry/TelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/webcompat/middleware/WebCompatReporterTelemetryMiddleware.kt" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/fonts" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/settings/datachoices" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/startupCrash" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/bookmarks/BookmarksTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/ActivationPing.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/AdjustMetricsService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/AdjustSdkController.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/AdjustThirdPartySharingController.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/BreadcrumbsRecorder.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/ConversionEventRecorder.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/DefaultInstallReferrerClient.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/Event.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/FirstSessionMetricsService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanMetricsService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReporting.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReportingApi.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReportingLifecycleObserver.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GleanUsageReportingMetricsService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/GrowthDataWorker.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallAge.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerClientWrapper.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerHandlingService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerMetricsService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/InstallReferrerWorker.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricController.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricsMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricsService.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MetricsStorage.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/MozillaProductDetector.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/ReferralAttribution.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/RtamoAttributionHandler.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/toolbar/BrowserToolbarTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/CrashFactCollector.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/CrashReportingAppMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/NimbusExperimentDataProvider.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/crashes/ReleaseRuntimeTagProvider.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/downloads/listscreen/middleware/DownloadTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/ext/Configuration.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/middleware/HomeTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/PocketMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/toolbar/BrowserToolbarTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/messaging/state/MessagingMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/reviewprompt/CustomReviewPromptTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/reviewprompt/ReviewPromptMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/tabstray/TabsTrayTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/telemetry/TelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/webcompat/middleware/WebCompatReporterTelemetryMiddleware.kt" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/metrics/fonts" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/settings/datachoices" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/startupCrash" || return 1
 
   # Remove MARS components
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/Ads.kt" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/TopSitesRefresher.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/components/Ads.kt" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/home/TopSitesRefresher.kt" || return 1
 
   # Remove Glean
   deglean_fenix || return 1
@@ -747,9 +747,9 @@ function prepare_fenix() {
   "${IRONFOX_SED}" -i -e 's|RATE_APP_URL = ".*"|RATE_APP_URL = ""|g' "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/settings/SupportUtils.kt" || return 1
 
   # Replace proprietary artwork
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/release/res/drawable/ic_launcher_foreground.xml" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}"/app/src/release/res/mipmap-*/ic_launcher.webp || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_FENIX}/app/src/release/res/values/colors.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/release/res/drawable/ic_launcher_foreground.xml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}"/app/src/release/res/mipmap-*/ic_launcher.webp || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_FENIX}/app/src/release/res/values/colors.xml" || return 1
   "${IRONFOX_SED}" -i -e '/android:roundIcon/d' "${IRONFOX_FENIX}/app/src/main/AndroidManifest.xml" || return 1
   "${IRONFOX_SED}" -i -e '/SplashScreen/,+5d' "${IRONFOX_FENIX}/app/src/main/res/values-v27/styles.xml" || return 1
   "${IRONFOX_MKDIR}" -vp "${IRONFOX_FENIX}/app/src/release/res/mipmap-anydpi-v26"
@@ -759,7 +759,7 @@ function prepare_fenix() {
     "${IRONFOX_FENIX}/app/src/main/java/org/mozilla/fenix/compose/list/ListItem.kt" || return 1
 
   # Remove default built-in search engines
-  "${IRONFOX_RM}" -vr "${IRONFOX_FENIX}/app/src/main/assets/searchplugins"/* || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_FENIX}/app/src/main/assets/searchplugins"/* || return 1
 
   # Apply Fenix overlay
   apply_overlay "${IRONFOX_FENIX_OVERLAY}/" || return 1
@@ -947,27 +947,27 @@ function prepare_firefox() {
   echo ']' >> "${IRONFOX_GECKO}/services/settings/dumps/main/moz.build" || return 1
 
   # Remove unused about:telemetry CSS
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/toolkit/content/aboutTelemetry.css" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/toolkit/content/aboutTelemetry.css" || return 1
 
   # Remove unused localizations
   "${IRONFOX_SED}" -i 's|locale/@AB_CD@/global/aboutStudies|# locale/@AB_CD@/global/aboutStudies|g' "${IRONFOX_GECKO}/toolkit/locales/jar.mn" || return 1
   "${IRONFOX_SED}" -i 's|crashreporter|# crashreporter|g' "${IRONFOX_GECKO}/toolkit/locales/jar.mn" || return 1
   "${IRONFOX_SED}" -i 's|locales-preview/aboutRestricted|# locales-preview/aboutRestricted|g' "${IRONFOX_GECKO}/toolkit/locales/jar.mn" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_GECKO}/toolkit/locales/en-US/crashreporter" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/toolkit/locales/en-US/toolkit/about/aboutGlean.ftl" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/toolkit/locales/en-US/toolkit/about/aboutTelemetry.ftl" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/toolkit/locales-preview/aboutRestricted.ftl" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_GECKO}/toolkit/locales/en-US/crashreporter" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/toolkit/locales/en-US/toolkit/about/aboutGlean.ftl" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/toolkit/locales/en-US/toolkit/about/aboutTelemetry.ftl" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/toolkit/locales-preview/aboutRestricted.ftl" || return 1
 
   # Prevent registration of the Glean add-on ping scheduler
   "${IRONFOX_SED}" -i 's|category update-timer amGleanDaily|# category update-timer amGleanDaily|g' "${IRONFOX_GECKO}/toolkit/mozapps/extensions/extensions.manifest" || return 1
 
   # Remove Claude integration
   ## (Necessary for those with IDEs that may try to parse/use this functionality)
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/.mcp.json" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/AGENTS.md" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_GECKO}/CLAUDE.md" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_GECKO}/.claude" || return 1
-  "${IRONFOX_RM}" -vr "${IRONFOX_GECKO}/.codex" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/.mcp.json" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/AGENTS.md" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GECKO}/CLAUDE.md" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_GECKO}/.claude" || return 1
+  "${IRONFOX_RM}" -vrf "${IRONFOX_GECKO}/.codex" || return 1
 
   # No-op RemoteSettingsCrashPull
   "${IRONFOX_SED}" -i 's|crash-reports-ondemand||g' "${IRONFOX_GECKO}/toolkit/components/crashes/RemoteSettingsCrashPull.sys.mjs" || return 1
@@ -1196,7 +1196,7 @@ function prepare_glean() {
   "${IRONFOX_SED}" -i -e 's|include_client_id: .*|include_client_id: false|g' "${IRONFOX_GLEAN}/glean-core/pings.yaml" || return 1
   "${IRONFOX_SED}" -i -e 's|send_if_empty: .*|send_if_empty: false|g' "${IRONFOX_GLEAN}/glean-core/pings.yaml" || return 1
   "${IRONFOX_SED}" -i -e 's|"$rootDir/glean-core/android/metrics.yaml"|// "$rootDir/glean-core/android/metrics.yaml"|g' "${IRONFOX_GLEAN}/glean-core/android/build.gradle" || return 1
-  "${IRONFOX_RM}" -v "${IRONFOX_GLEAN}/glean-core/android/metrics.yaml" || return 1
+  "${IRONFOX_RM}" -vf "${IRONFOX_GLEAN}/glean-core/android/metrics.yaml" || return 1
 
   # Nuke undesired Mozilla endpoints
   noop_glean_endpoints || return 1

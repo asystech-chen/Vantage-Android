@@ -1056,18 +1056,9 @@ class IronFoxSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
           }
           create().withCenterAlignedButtons()
         }
-        if (IronFoxPreferences.shouldUseUnifiedPush(requireContext())) {
-          requireComponents.push.switchToUnifiedPush(context) { success ->
-            if (!success) {
-              IronFoxPreferences.setUseUnifiedPush(requireContext(), false)
-            } else {
-              alert.show()
-            }
-          }
-        } else {
-          requireComponents.push.switchToAutoPush(context)
-          alert.show()
-        }
+        // Vantage: Fenix 159 removed the UnifiedPush/AutoPush switch API.
+        // Keep the restart prompt, but do not call the removed methods.
+        alert.show()
         null
       }
 

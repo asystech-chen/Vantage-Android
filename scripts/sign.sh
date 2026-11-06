@@ -6,7 +6,7 @@ set -euo pipefail
 set +x || return 1
 
 if [[ -z "${1+x}" ]]; then
-  echo_red_text "Usage: $0 arm|arm64|x86_64|bundle" >&1
+  echo_red_text "Usage: $0 arm|arm64|arm64-nolto|dev|x86_64|bundle" >&1
   return 1
 fi
 
@@ -15,7 +15,8 @@ readonly sign_target="$1"
 # Fail early if our inputs are missing...
 
 ## ARM64
-if [[ "${sign_target}" == 'arm64' ]] || [[ "${sign_target}" == 'bundle' ]]; then
+if [[ "${sign_target}" == 'arm64' ]] || [[ "${sign_target}" == 'arm64-nolto' ]] ||
+  [[ "${sign_target}" == 'dev' ]] || [[ "${sign_target}" == 'bundle' ]]; then
   verify_file_with_env "${IRONFOX_OUTPUTS_ARM64_UNSIGNED}" 'IRONFOX_OUTPUTS_ARM64_UNSIGNED' || return 1
 fi
 
@@ -156,7 +157,8 @@ function sign_apkset() {
 }
 
 # Sign ARM64 APK
-if [[ "${sign_target}" == 'arm64' ]] || [[ "${sign_target}" == 'bundle' ]]; then
+if [[ "${sign_target}" == 'arm64' ]] || [[ "${sign_target}" == 'arm64-nolto' ]] ||
+  [[ "${sign_target}" == 'dev' ]] || [[ "${sign_target}" == 'bundle' ]]; then
   sign_apk "${IRONFOX_OUTPUTS_ARM64_UNSIGNED}" "${IRONFOX_OUTPUTS_ARM64}" || return 1
 fi
 
