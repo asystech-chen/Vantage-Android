@@ -63,6 +63,17 @@ case "${build_target}" in
     readonly IRONFOX_DISABLE_LTO=1
     readonly IRONFOX_OBJDIR_SUFFIX='-nolto'
     ;;
+  dev)
+    # arm64-v8a, fast development build:
+    # no LTO, -O1, ccache, cargo incremental, separate objdir
+    readonly IRONFOX_TARGET_ARCH='arm64'
+    readonly IRONFOX_TARGET_ABI='arm64-v8a'
+    readonly IRONFOX_TARGET_PRETTY='ARM64 (dev)'
+    readonly IRONFOX_TARGET_RUST='arm64'
+    readonly IRONFOX_DISABLE_LTO=1
+    readonly IRONFOX_DEV=1
+    readonly IRONFOX_OBJDIR_SUFFIX='-dev'
+    ;;
   arm)
     # armeabi-v7a
     readonly IRONFOX_TARGET_ARCH='arm'
@@ -96,6 +107,10 @@ export IRONFOX_TARGET_ABI
 export IRONFOX_TARGET_PRETTY
 if [[ -n "${IRONFOX_DISABLE_LTO+x}" ]]; then
   export IRONFOX_DISABLE_LTO
+fi
+
+if [[ -n "${IRONFOX_DEV+x}" ]]; then
+  export IRONFOX_DEV
 fi
 if [[ -n "${IRONFOX_OBJDIR_SUFFIX+x}" ]]; then
   export IRONFOX_OBJDIR_SUFFIX
@@ -689,12 +704,9 @@ if [[ "${IRONFOX_BUILD_GECKO}" == 1 ]]; then
       echo_red_text "ERROR: IRONFOX_SB_GAPI_KEY_FILE has not been set! Aborting..."
       return 1
     fi
-    read -p 'Do you want to continue [y/N] ' -n 1 -r
-    echo ''
-    if ! [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-      echo_red_text 'Aborting...'
-      return 1
-    fi
+    # Vantage: Safe Browsing is intentionally disabled; continue without prompting
+    echo_red_text 'Safe Browsing is disabled by default for Vantage; continuing without it.'
+    IRONFOX_SB_GAPI_KEY_AVAILABLE=0
   fi
 fi
 
@@ -1776,7 +1788,8 @@ function build_fenix() {
   "${IRONFOX_MACH}" configure || return 1
 
   # If it's not our first time building Fenix, clean Gradle to ensure our builds are fresh
-  if [[ -f "${IRONFOX_TEMP}/built-fenix" ]]; then
+  # Dev builds must stay incremental; don't clean Fenix on every run.
+  if [[ -f "${IRONFOX_TEMP}/built-fenix" ]] && [[ "${IRONFOX_DEV:-0}" != '1' ]]; then
     "${IRONFOX_MACH}" gradle -p mobile/android/fenix :app:clean
   fi
 
