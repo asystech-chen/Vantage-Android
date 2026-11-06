@@ -165,10 +165,8 @@ internal fun Homepage(
                 )
             }
 
-            // Vantage: push the logo + search bar block towards the vertical middle of the screen.
-            if (state is HomepageState.Normal && !state.browsingMode.isPrivate) {
-                Spacer(modifier = Modifier.height(vantageScreenHeight * 0.28f))
-            }
+            // Vantage: the private-browsing button stays pinned right below the toolbar; only the
+            // wordmark + search block is pushed towards the vertical middle (see logoSpacerHeight).
 
             when (val headerState = state.headerState) {
                 is HeaderState.Experimental.Normal -> {
@@ -194,6 +192,12 @@ internal fun Homepage(
                         alwaysUsePB = components.settings.ironfox.alwaysUsePrivateBrowsing,
                         browsingModeChanged = browsingModeChanged,
                         onStoriesTapped = { interactor.onDiscoverMoreClicked() },
+                        logoSpacerHeight =
+                            if (state is HomepageState.Normal && !state.browsingMode.isPrivate) {
+                                vantageScreenHeight * 0.28f
+                            } else {
+                                0.dp
+                            },
                     )
                 }
             }
