@@ -64,9 +64,9 @@ abstract class ThemeManager {
             return when {
                 isVantageThemeSelected(activity) -> R.style.VantageTheme
                 followsSystem ->
-                    if (isNightMode(activity)) R.style.VantageTheme else R.style.NormalTheme
+                    if (isNightMode(activity)) R.style.VantageTheme else R.style.VantageLightTheme
                 IronFoxPreferences.shouldUseOledTheme(activity) -> R.style.Vantage_OLEDTheme
-                else -> R.style.NormalTheme
+                else -> R.style.VantageLightTheme
             }
         }
 
@@ -88,6 +88,15 @@ abstract class ThemeManager {
                     Configuration.UI_MODE_NIGHT_UNDEFINED, // We assume light here per Android doc's recommendation
                     Configuration.UI_MODE_NIGHT_NO -> {
                         updateLightSystemBars(window, context)
+                        // Vantage: the top tab strip paints its own gradient over the status bar,
+                        // otherwise use the light chrome surface.
+                        window.setStatusBarColorCompat(
+                            if (context.components.settings.shouldShowTabStripAtTop) {
+                                android.graphics.Color.TRANSPARENT
+                            } else {
+                                VANTAGE_LIGHT_CHROME_SURFACE
+                            },
+                        )
                     }
                     Configuration.UI_MODE_NIGHT_YES -> {
                         clearLightSystemBars(window)
@@ -124,6 +133,8 @@ abstract class ThemeManager {
     companion object {
         /** Vantage: grey chrome shared by the homepage and browser toolbars. */
         private val VANTAGE_CHROME_SURFACE = 0xFF23222B.toInt()
+        /** Vantage: light-theme chrome used by the toolbars. */
+        private val VANTAGE_LIGHT_CHROME_SURFACE = 0xFFF4F3F7.toInt()
 
         /**
          * Resolves the attribute to a resource ID.

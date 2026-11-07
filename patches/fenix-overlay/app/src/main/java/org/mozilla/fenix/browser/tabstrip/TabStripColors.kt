@@ -4,20 +4,18 @@
 
 package org.mozilla.fenix.browser.tabstrip
 
-import android.content.res.Configuration
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import mozilla.components.compose.browser.toolbar.store.BrowserToolbarState
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.theme.FirefoxTheme
-import org.mozilla.fenix.theme.usesVantageDarkPalette
+import org.mozilla.fenix.theme.usesVantageChrome
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.wallpapers.Wallpaper
 
@@ -75,10 +73,7 @@ data class TabStripColors(
             val isSearching = toolbarState?.let {
                 it.isEditMode() && it.editState.query.current.isNotEmpty()
             }
-            val isNightMode =
-                (LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-                    Configuration.UI_MODE_NIGHT_YES
-            val useVantageChrome = isNightMode && usesVantageDarkPalette(LocalContext.current)
+            val useVantageChrome = usesVantageChrome(LocalContext.current)
             val shouldUseEdgeToEdgeColors =
                 isEdgeToEdgeBackgroundEnabled && !isPrivate && isSearching == false && !useVantageChrome
 
@@ -103,10 +98,7 @@ data class TabStripColors(
         fun default(): TabStripColors {
             // Vantage: the desktop-style tab strip is a grey band, so the selected tab keeps
             // the darker page colour to stay distinguishable.
-            val isNightMode =
-                (LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-                    Configuration.UI_MODE_NIGHT_YES
-            val useVantageChrome = isNightMode && usesVantageDarkPalette(LocalContext.current)
+            val useVantageChrome = usesVantageChrome(LocalContext.current)
 
             return TabStripColors(
                 backgroundBrush = FirefoxTheme.gradients.accentSubtle.brush,

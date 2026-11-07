@@ -51,29 +51,33 @@ fun FirefoxTheme(
     // Vantage: the branded palette is used when Vantage is selected explicitly, or when the
     // device theme is followed and the system is currently dark.
     val useVantageTheme = theme == Theme.Dark && usesVantageDarkPalette(LocalContext.current)
+    // Vantage: the light theme is also branded (blue actions, blue -> teal tab strip).
+    val useVantageLightTheme = theme == Theme.Light
 
     val colorScheme: ColorScheme =
-        if (useVantageTheme) {
-            vantageDarkColorScheme()
-        } else {
-            when (theme) {
-                Theme.Light -> acornLightColorScheme()
-                Theme.Dark -> acornDarkColorScheme()
-                Theme.Oled -> acornOledColorScheme()
-                Theme.Private -> acornPrivateColorScheme()
-            }
+        when {
+            useVantageTheme -> vantageDarkColorScheme()
+            useVantageLightTheme -> vantageLightColorScheme()
+            else ->
+                when (theme) {
+                    Theme.Light -> acornLightColorScheme()
+                    Theme.Dark -> acornDarkColorScheme()
+                    Theme.Oled -> acornOledColorScheme()
+                    Theme.Private -> acornPrivateColorScheme()
+                }
         }
 
     val gradients: AcornGradientScheme =
-        if (useVantageTheme) {
-            vantageAcornGradientScheme
-        } else {
-            when (theme) {
-                Theme.Light -> lightAcornGradientScheme
-                Theme.Dark -> darkAcornGradientScheme
-                Theme.Oled -> oledAcornGradientScheme
-                Theme.Private -> privateAcornGradientScheme
-            }
+        when {
+            useVantageTheme -> vantageAcornGradientScheme
+            useVantageLightTheme -> vantageLightAcornGradientScheme
+            else ->
+                when (theme) {
+                    Theme.Light -> lightAcornGradientScheme
+                    Theme.Dark -> darkAcornGradientScheme
+                    Theme.Oled -> oledAcornGradientScheme
+                    Theme.Private -> privateAcornGradientScheme
+                }
         }
 
     val tabGroupColors: TabGroupColorPalette =
