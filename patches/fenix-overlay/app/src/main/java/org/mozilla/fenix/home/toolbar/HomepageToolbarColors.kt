@@ -4,19 +4,17 @@
 
 package org.mozilla.fenix.home.toolbar
 
-import android.content.res.Configuration
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import mozilla.components.lib.state.ext.observeAsComposableState
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
-import org.mozilla.fenix.theme.usesVantageDarkPalette
+import org.mozilla.fenix.theme.usesVantageChrome
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.wallpapers.Wallpaper
 
@@ -73,13 +71,9 @@ internal fun hasWallpaperBackground(
 ): Boolean {
     val currentWallpaperName = appStore.observeAsComposableState { it.wallpaperState.currentWallpaper.name }.value
 
-    val isNightMode =
-        (LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
-            Configuration.UI_MODE_NIGHT_YES
-
     return when {
-        // Vantage: use the solid branded grey chrome instead of letting the wallpaper show through.
-        isNightMode && usesVantageDarkPalette(LocalContext.current) -> false
+        // Vantage: use the solid branded chrome instead of letting the wallpaper show through.
+        usesVantageChrome(LocalContext.current) -> false
         isPrivateMode -> false
         settings.enableUniversalEdgeToEdgeWallpapers -> true
         else -> settings.enableHomepageEdgeToEdgeBackgroundFeature && currentWallpaperName == Wallpaper.EDGE_TO_EDGE

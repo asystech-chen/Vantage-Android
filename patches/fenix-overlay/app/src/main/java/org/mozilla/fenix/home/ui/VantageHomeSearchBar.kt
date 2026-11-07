@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -68,6 +69,8 @@ internal fun VantageHomeSearchBar(onSearch: (String) -> Unit) {
     Row(
         modifier =
             Modifier
+                // Vantage: fixed width instead of stretching proportionally on tablets.
+                .widthIn(max = 420.dp)
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outline,

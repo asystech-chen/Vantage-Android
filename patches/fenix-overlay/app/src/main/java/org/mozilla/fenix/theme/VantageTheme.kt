@@ -2,14 +2,17 @@
 package org.mozilla.fenix.theme
 
 import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import mozilla.components.compose.base.theme.AcornGradient
 import mozilla.components.compose.base.theme.AcornGradientScheme
 import mozilla.components.compose.base.theme.AcornGradientType
 import mozilla.components.compose.base.theme.darkAcornGradientScheme
+import mozilla.components.compose.base.theme.lightAcornGradientScheme
 import mozilla.components.compose.base.utils.ColorStop
 
 private const val VANTAGE_THEME_PREFS = "vantage_theme"
@@ -41,6 +44,14 @@ fun usesVantageDarkPalette(context: Context): Boolean {
         mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
 }
 
+/** Vantage: whether the branded chrome/palette applies to the current theme (light is always branded). */
+fun usesVantageChrome(context: Context): Boolean {
+    val isNightMode =
+        (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+    return !isNightMode || usesVantageDarkPalette(context)
+}
+
 private val vantageAccentGradient =
     AcornGradient(
         type = AcornGradientType.Linear(angleInDegrees = 96f),
@@ -63,6 +74,17 @@ private val vantageAccentSubtleGradient =
             ),
     )
 
+/** Vantage: light-mode tab strip gradient (same blue -> green identity, brighter tints). */
+private val vantageLightAccentSubtleGradient =
+    AcornGradient(
+        type = AcornGradientType.Linear(angleInDegrees = 90f),
+        colorStops =
+            listOf(
+                ColorStop(0f, Color(0xFF79A9F7)),
+                ColorStop(1f, Color(0xFF55CDB4)),
+            ),
+    )
+
 /** Vantage: Acorn gradients used by the tab strip and the loading progress bar. */
 internal val vantageAcornGradientScheme =
     AcornGradientScheme(
@@ -71,6 +93,16 @@ internal val vantageAcornGradientScheme =
         accentSubtle = vantageAccentSubtleGradient,
         tabOutline = vantageAccentGradient,
         privacyMask = darkAcornGradientScheme.privacyMask,
+    )
+
+/** Vantage: gradient set used by the light theme. */
+internal val vantageLightAcornGradientScheme =
+    AcornGradientScheme(
+        cfr = lightAcornGradientScheme.cfr,
+        accent = vantageAccentGradient,
+        accentSubtle = vantageLightAccentSubtleGradient,
+        tabOutline = vantageAccentGradient,
+        privacyMask = lightAcornGradientScheme.privacyMask,
     )
 
 internal fun vantageDarkColorScheme(): ColorScheme =
@@ -111,4 +143,39 @@ internal fun vantageDarkColorScheme(): ColorScheme =
         // `SnackbarDefaults.actionColor`, which resolves to `inversePrimary`.
         // Keep them in the brand blue instead of Acorn's purple.
         inversePrimary = Color(0xFF4A8FF7),
+    )
+
+/** Vantage: light counterpart of the branded palette, used by the light theme. */
+internal fun vantageLightColorScheme(): ColorScheme =
+    lightColorScheme(
+        primary = Color(0xFF3B82F6),
+        onPrimary = Color(0xFFFFFFFF),
+        primaryContainer = Color(0xFFDCE7FF),
+        onPrimaryContainer = Color(0xFF122C5C),
+        secondary = Color(0xFF14B8A6),
+        onSecondary = Color(0xFFFFFFFF),
+        secondaryContainer = Color(0xFFC9F7EC),
+        onSecondaryContainer = Color(0xFF04302A),
+        tertiary = Color(0xFF3B82F6),
+        onTertiary = Color(0xFFFFFFFF),
+        tertiaryContainer = Color(0xFFDCE7FF),
+        onTertiaryContainer = Color(0xFF122C5C),
+        background = Color(0xFFFAF9FC),
+        onBackground = Color(0xFF1C1B22),
+        surface = Color(0xFFF4F3F7),
+        onSurface = Color(0xFF1C1B22),
+        surfaceVariant = Color(0xFFE9E7EF),
+        onSurfaceVariant = Color(0xFF4A4954),
+        surfaceContainerLowest = Color(0xFFFFFFFF),
+        surfaceContainerLow = Color(0xFFF7F6FA),
+        surfaceContainer = Color(0xFFEFEDF3),
+        surfaceContainerHigh = Color(0xFFE9E7EF),
+        surfaceContainerHighest = Color(0xFFE1DFE8),
+        surfaceBright = Color(0xFFFFFFFF),
+        surfaceDim = Color(0xFFDEDCE4),
+        outline = Color(0xFF74727E),
+        outlineVariant = Color(0xFFC9C7D2),
+        error = Color(0xFFB3261E),
+        onError = Color(0xFFFFFFFF),
+        inversePrimary = Color(0xFF3B82F6),
     )

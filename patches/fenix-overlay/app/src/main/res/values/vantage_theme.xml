@@ -7,6 +7,9 @@
     <color name="vantage_on_primary_container">#FFDCE7FF</color>
     <color name="vantage_secondary">#FF22C7A6</color>
     <color name="vantage_on_secondary">#FF04221C</color>
+    <color name="vantage_light_primary">#FF3B82F6</color>
+    <color name="vantage_light_secondary">#FF14B8A6</color>
+    <color name="vantage_light_surface">#FFF4F3F7</color>
     <color name="vantage_secondary_container">#FF1B3550</color>
     <color name="vantage_on_secondary_container">#FFCFE4FF</color>
     <color name="vantage_tertiary">#FF4A8FF7</color>
@@ -60,5 +63,21 @@
         <item name="colorOutline">@color/vantage_outline</item>
         <item name="colorOutlineVariant">@color/vantage_outline_variant</item>
         <item name="colorControlNormal">@color/vantage_on_surface</item>
+    </style>
+
+    <!-- Vantage: light theme with the same blue/teal accents as the branded dark theme. -->
+    <style name="VantageLightTheme" parent="NormalTheme">
+        <item name="colorPrimary">@color/vantage_light_primary</item>
+        <item name="colorOnPrimary">@color/vantage_on_primary</item>
+        <item name="colorPrimaryContainer">@color/vantage_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/vantage_on_primary_container</item>
+        <item name="colorSecondary">@color/vantage_light_secondary</item>
+        <item name="colorOnSecondary">@color/vantage_on_primary</item>
+        <item name="colorTertiary">@color/vantage_light_primary</item>
+        <item name="colorOnTertiary">@color/vantage_on_primary</item>
+        <item name="colorAccent">@color/vantage_light_primary</item>
+        <item name="android:colorAccent">@color/vantage_light_primary</item>
+        <item name="colorControlActivated">@color/vantage_light_primary</item>
+        <item name="android:colorControlActivated">@color/vantage_light_primary</item>
     </style>
 </resources>

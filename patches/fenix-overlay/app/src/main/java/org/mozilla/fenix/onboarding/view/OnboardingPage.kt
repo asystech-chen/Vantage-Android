@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ import org.mozilla.fenix.compose.ScrollIndicator
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.VantageScaledContent
 import org.mozilla.fenix.theme.vantageDarkColorScheme
+import org.mozilla.fenix.theme.vantageLightColorScheme
 
 const val TITLE_TOP_SPACER_WEIGHT = 0.1f
 const val CONTENT_WEIGHT = 1f
@@ -56,9 +58,10 @@ val CONTENT_IMAGE_HEIGHT = 176.dp
  */
 @Composable
 fun OnboardingPage(pageState: OnboardingPageState) {
-    // Vantage: onboarding always uses the branded palette, regardless of the app theme.
+    // Vantage: the card background/border follow the system light/dark setting.
     MaterialTheme(
-        colorScheme = vantageDarkColorScheme(),
+        colorScheme =
+            if (isSystemInDarkTheme()) vantageDarkColorScheme() else vantageLightColorScheme(),
         typography = MaterialTheme.typography,
         shapes = MaterialTheme.shapes,
     ) {

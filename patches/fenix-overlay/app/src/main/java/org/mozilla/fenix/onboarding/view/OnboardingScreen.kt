@@ -24,6 +24,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,6 +63,7 @@ import org.mozilla.fenix.onboarding.store.OnboardingAction.OnboardingToolbarActi
 import org.mozilla.fenix.onboarding.store.OnboardingStore
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.vantageDarkColorScheme
+import org.mozilla.fenix.theme.vantageLightColorScheme
 import org.mozilla.fenix.utils.isLargeScreenSize
 import org.ironfoxoss.core.IFDeviceUtils
 
@@ -387,9 +389,10 @@ private fun OnboardingContent(
     onIfPreferencesButtonClick: () -> Unit,
     onIfPreferenceUpdaterButtonClick: () -> Unit,
 ) {
-    // Vantage: every onboarding page uses the branded palette, regardless of the app theme.
+    // Vantage: the onboarding background/border follow the system light/dark setting.
     MaterialTheme(
-        colorScheme = vantageDarkColorScheme(),
+        colorScheme =
+            if (isSystemInDarkTheme()) vantageDarkColorScheme() else vantageLightColorScheme(),
         typography = MaterialTheme.typography,
         shapes = MaterialTheme.shapes,
     ) {
