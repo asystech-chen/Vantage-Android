@@ -146,6 +146,12 @@ if [[ "${dry_run}" -eq 0 ]]; then
   touch "${IRONFOX_BUILD}/finished-prebuild"
 fi
 
+if [[ "${dry_run}" -eq 0 ]]; then
+  echo
+  echo '==> warming Gradle caches'
+  "${IRONFOX_SCRIPTS}/warm-gradle.sh" || exit 1
+fi
+
 echo
 if [[ "${dry_run}" -eq 1 ]]; then
   echo "DRY RUN: would run ${ran} target(s), skip ${skipped}."

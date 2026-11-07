@@ -81,3 +81,24 @@ stamp per target in `build/.state/prepared-<target>` containing a fingerprint of
 - `unshare -rn` requires unprivileged user namespaces. On hosts where they are
   disabled, `make verify` exits with a clear error; `IRONFOX_OFFLINE=1` builds
   still work, they just are not network-isolated.
+
+## Warming Gradle caches
+
+Gradle resolves plugin/classpath artifacts lazily, so a project can configure
+fine offline today and then fail on a never-resolved artifact after a source or
+plugin change. `scripts/warm-gradle.sh` resolves those projects once with
+network access:
+
+```bash
+make warm           # or: ./scripts/warm-gradle.sh [--force]
+```
+
+It warms the Gecko root project, `ironfox/android` (`:core:tasks`), Glean and
+microG, logs to `build/logs/warm-<name>.log`, and records a fingerprint in
+`build/.state/warmed-gradle`. `make prepare` and `prebuild.sh all` call it
+automatically (`IRONFOX_PREPARE_GRADLE_WARM=0` disables it).
+
+Known artifacts that were missing from an offline cache before warming:
+`org.checkerframework:checker-qual:2.5.8`,
+`org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.2.10`,
+`com.google.errorprone:error_prone_annotations:2.27.0`.

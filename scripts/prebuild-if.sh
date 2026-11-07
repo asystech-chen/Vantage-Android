@@ -1404,5 +1404,13 @@ if [[ "${IRONFOX_PREPARE_WASI}" == 1 ]]; then
   prepare_wasi || return 1
 fi
 
+# Warm Gradle caches for the Android projects. Needs network; prevents later
+## offline builds from failing on artifacts that were never resolved before.
+if [[ "${prebuild_target}" == 'all' ]] && [[ "${IRONFOX_PREPARE_GRADLE_WARM:-1}" == 1 ]]; then
+  echo_default_text 'Warming Gradle caches...'
+  "${IRONFOX_BASH}" "${IRONFOX_SCRIPTS}/warm-gradle.sh" || return 1
+  echo_default_text 'SUCCESS: Warmed Gradle caches'
+fi
+
 echo_default_text "SUCCESS: Prepared to build IronFox '${IRONFOX_VERSION}'!"
 "${IRONFOX_TOUCH}" "${IRONFOX_BUILD}/finished-prebuild"
