@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!-- Vantage: 重构后设置页的分类标题与搜索框文案。 -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <string name="vantage_preferences_category_appearance">外观与定制</string>
+  <string name="vantage_preferences_category_account_data">账户与数据</string>
+  <string name="vantage_preferences_category_downloads_sharing">下载与分享</string>
+  <string name="vantage_preferences_category_extensions_experiments">扩展与实验</string>
+  <string name="vantage_preferences_category_vantage">Vantage 设置</string>
+  <string name="vantage_settings_search_hint">搜索设置</string>
+</resources>
