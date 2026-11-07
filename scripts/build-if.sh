@@ -304,7 +304,7 @@ else
   echo 'Rebuild - uniffi:                     rebuild-uniffi'
   echo 'Rebuild - UnifiedPush-AC:             rebuild-up-ac'
   echo 'Rebuild - WASI SDK:                   rebuild-wasi'
-  echo_green_text "TIP: If you're not sure, you *probably* want to stick to the default (fenix)."
+  echo_default_text "TIP: If you're not sure, you *probably* want to stick to the default (fenix)."
   return 1
 fi
 
@@ -501,7 +501,7 @@ verify_env "${IRONFOX_CHANNEL}" 'IRONFOX_CHANNEL' || return 1
 if [[ "${IRONFOX_CHANNEL}" != 'release' ]] && [[ "${IRONFOX_CHANNEL}" != 'nightly' ]]; then
   echo_red_text "ERROR: Release channel (${IRONFOX_CHANNEL}) is invalid!"
   echo "Please ensure that IRONFOX_CHANNEL is set to 'release' or 'nightly'."
-  echo_red_text 'Aborting...'
+  echo_default_text 'Aborting...'
   return 1
 fi
 
@@ -509,7 +509,7 @@ verify_env "${IRONFOX_CHANNEL_PRETTY}" 'IRONFOX_CHANNEL_PRETTY' || return 1
 if [[ "${IRONFOX_CHANNEL_PRETTY}" != 'Release' ]] && [[ "${IRONFOX_CHANNEL_PRETTY}" != 'Nightly' ]]; then
   echo_red_text "ERROR: Pretty release channel (${IRONFOX_CHANNEL_PRETTY}) is invalid!"
   echo "Please ensure that IRONFOX_CHANNEL_PRETTY is set to 'Release' or 'Nightly'."
-  echo_red_text 'Aborting...'
+  echo_default_text 'Aborting...'
   return 1
 fi
 
@@ -517,7 +517,7 @@ verify_env "${IRONFOX_RELEASE}" 'IRONFOX_RELEASE' || return 1
 if [[ "${IRONFOX_RELEASE}" != 1 ]] && [[ "${IRONFOX_RELEASE}" != 0 ]]; then
   echo_red_text "ERROR: IRONFOX_RELEASE (${IRONFOX_RELEASE}) is invalid!"
   echo "Please ensure that IRONFOX_RELEASE is set to 1 (for release) or 0 (for nightly)."
-  echo_red_text 'Aborting...'
+  echo_default_text 'Aborting...'
   return 1
 fi
 
@@ -525,7 +525,7 @@ verify_env "${IRONFOX_NAME}" 'IRONFOX_NAME' || return 1
 if [[ "${IRONFOX_NAME}" != 'Vantage' ]] && [[ "${IRONFOX_NAME}" != 'Vantage Nightly' ]]; then
   echo_red_text "ERROR: IRONFOX_NAME (${IRONFOX_NAME}) is invalid!"
   echo "Please ensure that IRONFOX_NAME is set to 'Vantage' or 'Vantage Nightly'."
-  echo_red_text 'Aborting...'
+  echo_default_text 'Aborting...'
   return 1
 fi
 
@@ -601,7 +601,7 @@ if [[ "${IRONFOX_BUILD_BUNDLETOOL}" == 1 ]]; then
   verify_dir_with_env "${IRONFOX_BUNDLETOOL_DIR}" 'IRONFOX_BUNDLETOOL_DIR' || return 1
   if [[ -z "${IRONFOX_BUNDLETOOL_JAR+x}" ]]; then
     echo_red_text 'ERROR: IRONFOX_BUNDLETOOL_JAR is missing!'
-    echo_red_text 'Aborting...'
+    echo_default_text 'Aborting...'
     return 1
   fi
 fi
@@ -647,7 +647,7 @@ verify_dir_with_env "${IRONFOX_JDK_17_HOME}" 'IRONFOX_JDK_17_HOME' || return 1
 readonly JAVA_VER=$("${IRONFOX_JAVA}" -version 2>&1 | "${IRONFOX_AWK}" -F '"' '/version/ {print $2}' | "${IRONFOX_AWK}" -F '.' '{sub("^$", "0", $2); print $1$2}')
 [[ "${JAVA_VER}" -ge 15 ]] || {
   echo_red_text "ERROR: Java 17 or newer must be set as the default JDK!"
-  echo_red_text 'Aborting...'
+  echo_default_text 'Aborting...'
   return 1
 }
 
@@ -695,9 +695,14 @@ fi
 # Safe Browsing API key
 if [[ "${IRONFOX_BUILD_GECKO}" == 1 ]]; then
   IRONFOX_SB_GAPI_KEY_AVAILABLE=1
-  verify_file_with_env "${IRONFOX_SB_GAPI_KEY_FILE}" 'IRONFOX_SB_GAPI_KEY_FILE' || IRONFOX_SB_GAPI_KEY_AVAILABLE=0
+  # Optional input: check silently, so a missing key is a yellow warning rather
+  ## than a red "ERROR: Environment variable is missing" line.
+  if [[ -z "${IRONFOX_SB_GAPI_KEY_FILE+x}" ]] || [[ "${IRONFOX_SB_GAPI_KEY_FILE}" == "" ]] ||
+    [[ "${IRONFOX_SB_GAPI_KEY_FILE}" == "null" ]] || [[ ! -f "${IRONFOX_SB_GAPI_KEY_FILE}" ]]; then
+    IRONFOX_SB_GAPI_KEY_AVAILABLE=0
+  fi
   if [[ "${IRONFOX_SB_GAPI_KEY_AVAILABLE}" == 0 ]]; then
-    echo_red_text 'IRONFOX_SB_GAPI_KEY_FILE environment variable has not been specified! Safe Browsing will not be supported in this build.'
+    echo_yellow_text 'IRONFOX_SB_GAPI_KEY_FILE environment variable has not been specified! Safe Browsing will not be supported in this build.'
     echo "If this is unexpected, please ensure that IRONFOX_SB_GAPI_KEY_FILE is set to a valid file path."
     if [[ "${IRONFOX_CI}" == 1 ]]; then
       # CI should always include Safe Browsing, so always fail if it's missing here
@@ -705,7 +710,7 @@ if [[ "${IRONFOX_BUILD_GECKO}" == 1 ]]; then
       return 1
     fi
     # Vantage: Safe Browsing is intentionally disabled; continue without prompting
-    echo_red_text 'Safe Browsing is disabled by default for Vantage; continuing without it.'
+    echo_yellow_text 'Safe Browsing is disabled by default for Vantage; continuing without it.'
     IRONFOX_SB_GAPI_KEY_AVAILABLE=0
   fi
 fi
@@ -736,7 +741,7 @@ IRONFOX_BUILT_FENIX=0
 
 # Set-up our build environment
 function set_build_env() {
-  echo_red_text 'Setting build environment variables...'
+  echo_default_text 'Setting build environment variables...'
 
   # First, clean our environment
   unset IF_BUILD_ID
@@ -933,12 +938,12 @@ function set_build_env() {
   readonly IF_LOCAL_GLEAN_VERSION="0.0.1-SNAPSHOT-${IRONFOX_GLEAN_VERSION}-${IF_LOCAL_GLEAN_VERSION_STAMP}"
   readonly IF_LOCAL_GLEAN_VERSION_GRADLE="${IRONFOX_GLEAN_VERSION}-${IF_LOCAL_GLEAN_VERSION_STAMP}"
 
-  echo_green_text 'SUCCESS: Set build environment variables'
+  echo_default_text 'SUCCESS: Set build environment variables'
 }
 
 # Prepare Application Services
 function prep_as() {
-  echo_red_text 'Preparing Application Services...'
+  echo_default_text 'Preparing Application Services...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -960,12 +965,12 @@ function prep_as() {
   # Substitute our builds of Android Components
   "${IRONFOX_SED}" -i -e "/^android-components = \"/c\\android-components = \"${IF_LOCAL_AC_VERSION}\"" "${IRONFOX_AS}/gradle/libs.versions.toml" || return 1
 
-  echo_green_text 'SUCCESS: Prepared Application Services'
+  echo_default_text 'SUCCESS: Prepared Application Services'
 }
 
 # Prepare Fenix
 function prep_fenix() {
-  echo_red_text 'Preparing Fenix...'
+  echo_default_text 'Preparing Fenix...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1024,12 +1029,12 @@ function prep_fenix() {
 
   "${IRONFOX_SED}" -i "s/{IRONFOX_NAME}/${IRONFOX_NAME}/g" ${IRONFOX_FENIX}/app/src/*/res/values*/*strings.xml || return 1
 
-  echo_green_text 'SUCCESS: Prepared Fenix'
+  echo_default_text 'SUCCESS: Prepared Fenix'
 }
 
 # Prepare mozilla-central
 function prep_gecko() {
-  echo_red_text 'Preparing Gecko...'
+  echo_default_text 'Preparing Gecko...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1073,12 +1078,12 @@ function prep_gecko() {
   ## (To ensure our configurations are properly updated/reflected...)
   "${IRONFOX_RM}" -rf "${IRONFOX_GECKO}/.gradle/mach-environment-cache"
 
-  echo_green_text 'SUCCESS: Prepared Gecko'
+  echo_default_text 'SUCCESS: Prepared Gecko'
 }
 
 # Prepare Glean
 function prep_glean() {
-  echo_red_text 'Preparing Glean...'
+  echo_default_text 'Preparing Glean...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1104,12 +1109,12 @@ function prep_glean() {
   "${IRONFOX_CP}" -f "${IRONFOX_TEMP}/glean/build.gradle" "${IRONFOX_GLEAN}/glean-core/android/build.gradle" || return 1
   "${IRONFOX_SED}" -i "s|{IRONFOX_UNIFFI}|${IRONFOX_UNIFFI}|g" "${IRONFOX_GLEAN}/glean-core/android/build.gradle" || return 1
 
-  echo_green_text 'SUCCESS: Prepared Glean'
+  echo_default_text 'SUCCESS: Prepared Glean'
 }
 
 # Prepare UnifiedPush-AC
 function prep_up_ac() {
-  echo_red_text 'Preparing UnifiedPush-AC...'
+  echo_default_text 'Preparing UnifiedPush-AC...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1129,12 +1134,12 @@ function prep_up_ac() {
   "${IRONFOX_SED}" -i "s|{IF_LOCAL_AC_VERSION}|${IF_LOCAL_AC_VERSION}|g" "${IRONFOX_UP_AC}/local.properties" || return 1
   "${IRONFOX_SED}" -i "s|{IF_LOCAL_AS_VERSION}|${IF_LOCAL_AS_VERSION}|g" "${IRONFOX_UP_AC}/local.properties" || return 1
 
-  echo_green_text 'SUCCESS: Prepared UnifiedPush-AC'
+  echo_default_text 'SUCCESS: Prepared UnifiedPush-AC'
 }
 
 # Prepare LLVM
 function prep_llvm() {
-  echo_red_text 'Preparing LLVM...'
+  echo_default_text 'Preparing LLVM...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1148,12 +1153,12 @@ function prep_llvm() {
   fi
   "${IRONFOX_CP}" -f "${IRONFOX_TEMPLATES}/llvm/targets_to_build_${IRONFOX_TARGET_ARCH}" "${IRONFOX_BUILD}/targets_to_build" || return 1
 
-  echo_green_text 'SUCCESS: Prepared LLVM'
+  echo_default_text 'SUCCESS: Prepared LLVM'
 }
 
 # Bundletool
 function build_bundletool() {
-  echo_red_text 'Building Bundletool...'
+  echo_default_text 'Building Bundletool...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1164,12 +1169,12 @@ function build_bundletool() {
 
   "${IRONFOX_CP}" -f "${IRONFOX_BUNDLETOOL_DIR}/build/libs/bundletool.jar" "${IRONFOX_BUNDLETOOL_JAR}" || return 1
 
-  echo_green_text 'SUCCESS: Built Bundletool'
+  echo_default_text 'SUCCESS: Built Bundletool'
 }
 
 # LLVM
 function build_llvm() {
-  echo_red_text 'Building LLVM...'
+  echo_default_text 'Building LLVM...'
 
   # Ensure we have cat
   verify_exec "${IRONFOX_CAT}" 'IRONFOX_CAT' || return 1
@@ -1182,7 +1187,7 @@ function build_llvm() {
 
   pushd "${llvm}" || return 1
   local -r llvmtarget=$("${IRONFOX_CAT}" "${IRONFOX_BUILD}/targets_to_build")
-  echo_green_text "building llvm for ${llvmtarget}"
+  echo_default_text "building llvm for ${llvmtarget}"
   "${IRONFOX_CMAKE}" -S llvm -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=out -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="$llvmtarget" \
     -DLLVM_USE_LINKER=lld -DLLVM_BINUTILS_INCDIR=/usr/include -DLLVM_ENABLE_PLUGINS=FORCE_ON \
@@ -1191,12 +1196,12 @@ function build_llvm() {
   "${IRONFOX_CMAKE}" --build build --target install -j"$("${IRONFOX_NPROC}")" || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built LLVM'
+  echo_default_text 'SUCCESS: Built LLVM'
 }
 
 # Phoenix
 function build_phoenix() {
-  echo_red_text 'Building Phoenix...'
+  echo_default_text 'Building Phoenix...'
 
   # Ensure we have bash
   verify_exec "${IRONFOX_BASH}" 'IRONFOX_BASH' || return 1
@@ -1218,21 +1223,21 @@ function build_phoenix() {
   "${IRONFOX_CP}" "${IRONFOX_PHOENIX}/outputs/android/phoenix.cfg" "${IRONFOX_GECKO}/ironfox/prefs/ironfox.cfg" || return 1
   "${IRONFOX_CP}" "${IRONFOX_PHOENIX}/outputs/android/policies.json" "${IRONFOX_GECKO}/ironfox/prefs/policies.json" || return 1
 
-  echo_green_text 'SUCCESS: Built Phoenix'
+  echo_default_text 'SUCCESS: Built Phoenix'
 }
 
 # uniffi-bindgen
 function build_uniffi() {
-  echo_red_text 'Building uniffi-bindgen...'
+  echo_default_text 'Building uniffi-bindgen...'
   pushd "${IRONFOX_UNIFFI_DIR}" || return 1
   "${IRONFOX_CARGO}" build --release || return 1
   popd || return 1
-  echo_green_text 'SUCCESS: Built uniffi-bindgen'
+  echo_default_text 'SUCCESS: Built uniffi-bindgen'
 }
 
 # WASI SDK
 function build_wasi() {
-  echo_red_text 'Building WASI SDK...'
+  echo_default_text 'Building WASI SDK...'
 
   # Ensure we have bash
   verify_exec "${IRONFOX_BASH}" 'IRONFOX_BASH' || return 1
@@ -1241,12 +1246,12 @@ function build_wasi() {
   "${IRONFOX_BASH}" "${IRONFOX_PREBUILDS}/scripts/build.sh" 'wasi' || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built WASI SDK'
+  echo_default_text 'SUCCESS: Built WASI SDK'
 }
 
 # microG
 function build_microg() {
-  echo_red_text 'Building microG...'
+  echo_default_text 'Building microG...'
 
   pushd "${IRONFOX_GMSCORE}" || return 1
   "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_21_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JAVA_HOME} -x javaDocReleaseGeneration \
@@ -1256,24 +1261,24 @@ function build_microg() {
     :play-services-tasks:publishToMavenLocal || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built microG'
+  echo_default_text 'SUCCESS: Built microG'
 }
 
 # Glean
 function build_glean() {
-  echo_red_text 'Building Glean...'
+  echo_default_text 'Building Glean...'
 
   pushd "${IRONFOX_GLEAN}" || return 1
   "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} -Plocal=${IF_LOCAL_GLEAN_VERSION_GRADLE} :glean-native:publishToMavenLocal || return 1
-  "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} -Plocal=${IF_LOCAL_GLEAN_VERSION_GRADLE} publishToMavenLocal -x Bootstrap_CONDA || return 1
+  "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} -Plocal=${IF_LOCAL_GLEAN_VERSION_GRADLE} publishToMavenLocal || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built Glean'
+  echo_default_text 'SUCCESS: Built Glean'
 }
 
 # Application Services
 function build_as() {
-  echo_red_text 'Building Application Services...'
+  echo_default_text 'Building Application Services...'
 
   # Ensure we have bash
   verify_exec "${IRONFOX_BASH}" 'IRONFOX_BASH' || return 1
@@ -1293,16 +1298,16 @@ function build_as() {
   "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} -Plocal=${IF_LOCAL_AS_VERSION_GRADLE} publish || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built Application Services'
+  echo_default_text 'SUCCESS: Built Application Services'
 }
 
 # nimbus-fml
 function build_nimbus_fml() {
-  echo_red_text 'Building nimbus-fml...'
+  echo_default_text 'Building nimbus-fml...'
   pushd "${IRONFOX_AS}/components/support/nimbus-fml" || return 1
   "${IRONFOX_CARGO}" build --release || return 1
   popd || return 1
-  echo_green_text 'SUCCESS: Built nimbus-fml'
+  echo_default_text 'SUCCESS: Built nimbus-fml'
 }
 
 # GeckoView
@@ -1390,7 +1395,7 @@ function _build_geckoview() {
   pushd "${IRONFOX_GECKO}" || return 1
 
   # Build GeckoView
-  echo_red_text "Building GeckoView (${pretty_arch})..."
+  echo_default_text "Building GeckoView (${pretty_arch})..."
   "${IRONFOX_MACH}" configure || return 1
 
   if [[ "${publish_gv_to_maven_local}" == 1 ]]; then
@@ -1416,7 +1421,7 @@ function _build_geckoview() {
     "${IRONFOX_CP}" -vf "${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${target_arch}/gradle/target.maven.zip" "${aar_output}" || return 1
   fi
 
-  echo_green_text "SUCCESS: Built GeckoView (${pretty_arch})"
+  echo_default_text "SUCCESS: Built GeckoView (${pretty_arch})"
   popd || return 1
 }
 
@@ -1567,24 +1572,50 @@ function _build_gecko() {
   pushd "${IRONFOX_GECKO}" || return 1
 
   # Build Gecko
-  echo_red_text "Building Gecko (${pretty_arch})..."
+  echo_default_text "Building Gecko (${pretty_arch})..."
   export IRONFOX_MACH_GECKO_STAGE='build'
-  "${IRONFOX_MACH}" configure || return 1
-  "${IRONFOX_MACH}" build || return 1
-  echo_green_text "SUCCESS: Built Gecko (${pretty_arch})"
+
+  # Dev builds must not use LTO. env_external.sh exports CARGO_PROFILE_*_LTO as
+  ## readonly, so dev.mozconfig's exports cannot override them in this shell;
+  ## pass the override through `env` for the mach child instead.
+  local -a mach_env=()
+  if [[ "${IRONFOX_DEV:-0}" == '1' ]]; then
+    # NOTE: `env` is not on the restricted PATH set up by env.sh, so use its
+    ## absolute path. `env` is required here because the CARGO_PROFILE_*_LTO
+    ## variables are readonly in this shell and cannot be reassigned directly.
+    mach_env=(/usr/bin/env CARGO_PROFILE_DEV_LTO=false CARGO_PROFILE_RELEASE_LTO=false)
+  fi
+
+  # Re-running configure rewrites mozilla-config.h, which makes every object
+  ## file stale and turns an incremental build into a full rebuild. Only run it
+  ## when no config exists or a config input changed; mach build reconfigures
+  ## on its own when it detects stale inputs.
+  local -r gecko_objdir="${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${target_arch}${IRONFOX_OBJDIR_SUFFIX:-}"
+  if [[ ! -f "${gecko_objdir}/config.status" ]] ||
+    [[ -n "$(find "${IRONFOX_MOZCONFIGS}" "${IRONFOX_ROOT}/env_override.sh" -newer "${gecko_objdir}/config.status" -print -quit 2> /dev/null)" ]]; then
+    "${mach_env[@]}" "${IRONFOX_MACH}" configure || return 1
+  else
+    echo_default_text 'Skipping mach configure (config.status is current)'
+  fi
+  "${mach_env[@]}" "${IRONFOX_MACH}" build || return 1
+  echo_default_text "SUCCESS: Built Gecko (${pretty_arch})"
 
   # Package Gecko
   if [[ "${package_gecko}" == 1 ]]; then
-    echo_red_text "Packaging Gecko (${pretty_arch})..."
-    export IRONFOX_MACH_GECKO_STAGE='package'
+    echo_default_text "Packaging Gecko (${pretty_arch})..."
 
-    if [[ "${target_arch}" != 'bundle' ]]; then
-      # If we're building a bundle, no need to re-run mach configure here (since Mach is always set to package for Bundle builds)
-      "${IRONFOX_MACH}" configure || return 1
+    # Keep the build-stage config while packaging. Switching to package stage
+    ## sources no-build.mozconfig, rewrites mozilla-config.h and forces a full
+    ## rebuild on the next build. IRONFOX_PACKAGE_LEGACY=1 restores old behaviour.
+    if [[ "${IRONFOX_PACKAGE_LEGACY:-0}" == 1 ]]; then
+      export IRONFOX_MACH_GECKO_STAGE='package'
+      if [[ "${target_arch}" != 'bundle' ]]; then
+        "${mach_env[@]}" "${IRONFOX_MACH}" configure || return 1
+      fi
     fi
 
-    "${IRONFOX_MACH}" package-multi-locale --locales ${IRONFOX_LOCALES} || return 1
-    echo_green_text "SUCCESS: Packaged Gecko (${pretty_arch})"
+    "${mach_env[@]}" "${IRONFOX_MACH}" package-multi-locale --locales ${IRONFOX_LOCALES} || return 1
+    echo_default_text "SUCCESS: Packaged Gecko (${pretty_arch})"
   fi
   popd || return 1
 }
@@ -1635,7 +1666,7 @@ function build_gecko() {
 
 # IronFox Core
 function build_ironfox_core() {
-  echo_red_text 'Building IronFox Core...'
+  echo_default_text 'Building IronFox Core...'
 
   # Ensure we have rm
   verify_exec "${IRONFOX_RM}" 'IRONFOX_RM' || return 1
@@ -1663,12 +1694,12 @@ function build_ironfox_core() {
   "${IRONFOX_MACH}" gradle -p ironfox/android :core:publish || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built IronFox Core'
+  echo_default_text 'SUCCESS: Built IronFox Core'
 }
 
 # Android Components (Core)
 function build_ac_core() {
-  echo_red_text 'Building Android Components (Core)...'
+  echo_default_text 'Building Android Components (Core)...'
 
   # Ensure we have rm
   verify_exec "${IRONFOX_RM}" 'IRONFOX_RM' || return 1
@@ -1702,23 +1733,23 @@ function build_ac_core() {
   "${IRONFOX_MACH}" gradle -Plocal=${IF_LOCAL_AC_VERSION_GRADLE} -p mobile/android/android-components :components:ui-icons:publishToMavenLocal || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built Android Components (Core)'
+  echo_default_text 'SUCCESS: Built Android Components (Core)'
 }
 
 # UnifiedPush-AC
 function build_up_ac() {
-  echo_red_text 'Building UnifiedPush-AC...'
+  echo_default_text 'Building UnifiedPush-AC...'
 
   pushd "${IRONFOX_UP_AC}" || return 1
   "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} publish || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built UnifiedPush-AC'
+  echo_default_text 'SUCCESS: Built UnifiedPush-AC'
 }
 
 # Android Components
 function build_ac() {
-  echo_red_text 'Building Android Components...'
+  echo_default_text 'Building Android Components...'
 
   # Ensure we have rm
   verify_exec "${IRONFOX_RM}" 'IRONFOX_RM' || return 1
@@ -1746,12 +1777,12 @@ function build_ac() {
   "${IRONFOX_MACH}" gradle -Plocal=${IF_LOCAL_AC_VERSION_GRADLE} -p mobile/android/android-components publishToMavenLocal || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Built Android Components'
+  echo_default_text 'SUCCESS: Built Android Components'
 }
 
 # Fenix
 function build_fenix() {
-  echo_red_text "Building IronFox ${IRONFOX_VERSION}: ${IRONFOX_CHANNEL_PRETTY} (${IRONFOX_TARGET_PRETTY})..."
+  echo_default_text "Building IronFox ${IRONFOX_VERSION}: ${IRONFOX_CHANNEL_PRETTY} (${IRONFOX_TARGET_PRETTY})..."
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1866,7 +1897,7 @@ function build_fenix() {
   fi
   popd || return 1
 
-  echo_green_text "SUCCESS: Built IronFox ${IRONFOX_VERSION}: ${IRONFOX_CHANNEL_PRETTY} (${IRONFOX_TARGET_PRETTY})"
+  echo_default_text "SUCCESS: Built IronFox ${IRONFOX_VERSION}: ${IRONFOX_CHANNEL_PRETTY} (${IRONFOX_TARGET_PRETTY})"
 
   if [[ ! -f "${IRONFOX_TEMP}/built-fenix" ]]; then
     "${IRONFOX_TOUCH}" "${IRONFOX_TEMP}/built-fenix"
@@ -1879,7 +1910,7 @@ function build_fenix() {
 # Prepare build environment...
 ## (These need to be performed here instead of in `prebuild.sh`, so that we can account for if users decide to
 ### change the variables, without them needing to re-run the entire prebuild script...)
-echo_red_text 'Preparing your build environment...'
+echo_default_text 'Preparing your build environment...'
 
 # Set-up our build environment
 set_build_env || return 1
@@ -1915,7 +1946,7 @@ if [[ "${IRONFOX_BUILD_UP_AC}" == 1 ]]; then
   prep_up_ac || return 1
 fi
 
-echo_green_text 'SUCCESS: Prepared build environment'
+echo_default_text 'SUCCESS: Prepared build environment'
 
 # Build Phoenix
 if [[ "${IRONFOX_BUILD_PHOENIX}" == 1 ]]; then

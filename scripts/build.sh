@@ -34,6 +34,18 @@ function setup_env() {
 # Set-up our environment
 setup_env || exit 1
 
+# Offline build mode: restrict dependency resolution to local caches
+if [[ "${IRONFOX_OFFLINE}" == 1 ]]; then
+  export IRONFOX_OFFLINE
+  export CARGO_NET_OFFLINE=true
+  export UV_OFFLINE=1
+  export PIP_NO_INDEX=1
+  export npm_config_offline=true
+  # Any accidental network use should fail fast instead of silently succeeding
+  unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
+  echo_default_text 'Offline mode enabled: Gradle/Cargo/uv/pip will not access the network'
+fi
+
 # Ensure we have GNU awk
 verify_exec "${IRONFOX_AWK}" 'IRONFOX_AWK' || exit 1
 
@@ -63,7 +75,7 @@ fi
 
 # Set-up target parameters
 if [[ -z "${1+x}" ]]; then
-  echo_red_text "Usage: $0 arm|arm64|arm64-nolto|dev|x86_64|bundle" >&1
+  echo_default_text "Usage: $0 arm|arm64|arm64-nolto|dev|x86_64|bundle" >&1
   exit 1
 fi
 
@@ -150,7 +162,7 @@ fi
 
 # Offer to install IronFox via ADB
 if [[ "${IRONFOX_BUILT_FENIX}" == 1 ]] && [[ "${IRONFOX_SIGN_SKIP_ADB}" != 1 ]]; then
-  echo_red_text 'Would you like to install IronFox to a connected device?'
+  echo_default_text 'Would you like to install IronFox to a connected device?'
   read -p "If you'd like to install IronFox, please ensure your device is connected before proceeding. [y/N] " -n 1 -r
   echo
   if [[ "${REPLY}" =~ ^[Yy]$ ]]; then

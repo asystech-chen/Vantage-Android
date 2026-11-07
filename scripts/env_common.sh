@@ -1597,6 +1597,23 @@ else
 fi
 readonly IRONFOX_CURL_FLAGS
 
+# Offline build mode
+## When enabled, build-time dependency resolution is restricted to local caches
+## (Gradle --offline, Cargo offline, uv/pip offline). Preparation steps
+## (get_sources.sh / prebuild.sh) still require network unless their outputs exist.
+readonly IRONFOX_OFFLINE_DEFAULT=0
+if [[ -z "${IRONFOX_OFFLINE+x}" ]] || [[ "${IRONFOX_OFFLINE}" == "" ]] || [[ "${IRONFOX_OFFLINE}" == "null" ]]; then
+  IRONFOX_OFFLINE="${IRONFOX_OFFLINE_DEFAULT}"
+fi
+readonly IRONFOX_OFFLINE
+
+# Appended to Gradle invocations when offline mode is enabled
+if [[ "${IRONFOX_OFFLINE}" == 1 ]]; then
+  readonly IRONFOX_GRADLE_OFFLINE_SUFFIX=' --offline'
+else
+  readonly IRONFOX_GRADLE_OFFLINE_SUFFIX=''
+fi
+
 # If Gradle flags are added, this determines whether they should be appended to our default flags (default),
 ## or if they should override them entirely
 readonly IRONFOX_GRADLE_FLAGS_OVERRIDE_DEFAULT=0
@@ -1607,7 +1624,7 @@ fi
 readonly IRONFOX_GRADLE_FLAGS_OVERRIDE
 
 # Gradle flags
-readonly IRONFOX_GRADLE_FLAGS_DEFAULT="-Dandroid.builder.sdkDownload=false -Dgradle.user.home=${IRONFOX_GRADLE_HOME} -Dhttps.protocols=TLSv1.3,TLSv1.2 -Dmaven.repo.local=${IRONFOX_MAVEN_LOCAL} -Dndk.dir=${IRONFOX_ANDROID_NDK} -Dorg.gradle.caching=false -Dorg.gradle.configuration-cache=false -Dorg.gradle.configureondemand=true -Dorg.gradle.console=verbose -Dorg.gradle.daemon=false -Dorg.gradle.debug=false -Dorg.gradle.java.installations.auto-detect=false -Dorg.gradle.java.installations.auto-download=false -Dorg.gradle.welcome=never -Dsdk.dir=${IRONFOX_ANDROID_SDK} --no-build-cache --no-configuration-cache --no-daemon"
+readonly IRONFOX_GRADLE_FLAGS_DEFAULT="-Dandroid.builder.sdkDownload=false -Dgradle.user.home=${IRONFOX_GRADLE_HOME} -Dhttps.protocols=TLSv1.3,TLSv1.2 -Dmaven.repo.local=${IRONFOX_MAVEN_LOCAL} -Dndk.dir=${IRONFOX_ANDROID_NDK} -Dorg.gradle.caching=false -Dorg.gradle.configuration-cache=false -Dorg.gradle.configureondemand=true -Dorg.gradle.console=verbose -Dorg.gradle.daemon=false -Dorg.gradle.debug=false -Dorg.gradle.java.installations.auto-detect=false -Dorg.gradle.java.installations.auto-download=false -Dorg.gradle.welcome=never -Dsdk.dir=${IRONFOX_ANDROID_SDK} --no-build-cache --no-configuration-cache --no-daemon${IRONFOX_GRADLE_OFFLINE_SUFFIX}"
 if [[ -z "${IRONFOX_GRADLE_FLAGS+x}" ]] || [[ "${IRONFOX_GRADLE_FLAGS}" == "" ]] || [[ "${IRONFOX_GRADLE_FLAGS}" == "null" ]]; then
   IRONFOX_GRADLE_FLAGS="${IRONFOX_GRADLE_FLAGS_DEFAULT}"
 elif [[ "${IRONFOX_GRADLE_FLAGS_OVERRIDE}" == 1 ]]; then
