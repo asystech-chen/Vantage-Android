@@ -9,7 +9,7 @@
 
 SHELL := /bin/bash
 
-.PHONY: help check fetch prepare dev arm64 online-dev verify clean-stamps
+.PHONY: help check fetch prepare prepare-dry warm dev arm64 online-dev verify clean-stamps
 
 help:
 	@echo 'Vantage-Android targets:'
@@ -17,6 +17,7 @@ help:
 	@echo '  make fetch        Download sources/toolchains via get_sources.sh'
 	@echo '  make prepare      Run missing prebuild targets (idempotent wrapper)'
 	@echo '  make prepare-dry  Show which prebuild targets would run'
+	@echo '  make warm         Prewarm Gradle caches (online; included in prepare)'
 	@echo '  make dev          Offline build: dev (fast, arm64-v8a, no LTO)'
 	@echo '  make arm64        Offline build: arm64 release profile'
 	@echo '  make online-dev   Build dev without offline restrictions'
@@ -34,6 +35,9 @@ prepare:
 
 prepare-dry:
 	./scripts/prepare.sh --dry-run
+
+warm:
+	./scripts/warm-gradle.sh
 
 dev:
 	IRONFOX_OFFLINE=1 ./scripts/build.sh dev
