@@ -31,6 +31,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import org.ironfoxoss.ironfox.utils.IronFoxPreferences
+import org.mozilla.fenix.ext.components
 
 abstract class ThemeManager {
 
@@ -90,7 +91,20 @@ abstract class ThemeManager {
                     }
                     Configuration.UI_MODE_NIGHT_YES -> {
                         clearLightSystemBars(window)
-                        setStatusBarColor(window, context)
+                        if (usesVantageDarkPalette(context)) {
+                            // Vantage: the tab strip (when at the top) draws its own gradient
+                            // overlay over the status bar, so the window must stay transparent
+                            // for it. Otherwise paint the grey toolbar chrome.
+                            window.setStatusBarColorCompat(
+                                if (context.components.settings.shouldShowTabStripAtTop) {
+                                    android.graphics.Color.TRANSPARENT
+                                } else {
+                                    VANTAGE_CHROME_SURFACE
+                                },
+                            )
+                        } else {
+                            setStatusBarColor(window, context)
+                        }
                         updateNavigationBar(window, context)
                     }
                 }
@@ -108,6 +122,9 @@ abstract class ThemeManager {
     }
 
     companion object {
+        /** Vantage: grey chrome shared by the homepage and browser toolbars. */
+        private val VANTAGE_CHROME_SURFACE = 0xFF23222B.toInt()
+
         /**
          * Resolves the attribute to a resource ID.
          *

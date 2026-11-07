@@ -54,12 +54,12 @@ private val vantageAccentGradient =
 
 private val vantageAccentSubtleGradient =
     AcornGradient(
-        type = AcornGradientType.Linear(angleInDegrees = 96f),
-        // Quiet charcoal panel for the tab strip, so wallpapers no longer tint it.
+        type = AcornGradientType.Linear(angleInDegrees = 90f),
+        // Desktop Vantage titlebar/tab strip: deep blue on the left, deep teal on the right.
         colorStops =
             listOf(
-                ColorStop(0f, Color(0xFF232A3A)),
-                ColorStop(1f, Color(0xFF1C1B22)),
+                ColorStop(0f, Color(0xFF16406E)),
+                ColorStop(1f, Color(0xFF166B47)),
             ),
     )
 
@@ -91,7 +91,8 @@ internal fun vantageDarkColorScheme(): ColorScheme =
         onTertiaryContainer = Color(0xFFDCE7FF),
         background = Color(0xFF1C1B22),
         onBackground = Color(0xFFF5F4F8),
-        surface = Color(0xFF1C1B22),
+        // Desktop-style grey chrome for toolbars and search surfaces.
+        surface = Color(0xFF23222B),
         onSurface = Color(0xFFF5F4F8),
         surfaceVariant = Color(0xFF2B2A33),
         onSurfaceVariant = Color(0xFFC8C6D0),
@@ -106,4 +107,8 @@ internal fun vantageDarkColorScheme(): ColorScheme =
         outlineVariant = Color(0xFF35343D),
         error = Color(0xFFFF6B6B),
         onError = Color(0xFF2A0000),
+        // Vantage: Snackbar action buttons (e.g. the tab-close undo) read
+        // `SnackbarDefaults.actionColor`, which resolves to `inversePrimary`.
+        // Keep them in the brand blue instead of Acorn's purple.
+        inversePrimary = Color(0xFF4A8FF7),
     )

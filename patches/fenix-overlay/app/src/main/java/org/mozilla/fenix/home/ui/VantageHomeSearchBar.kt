@@ -70,11 +70,11 @@ internal fun VantageHomeSearchBar(onSearch: (String) -> Unit) {
             Modifier
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.outlineVariant,
+                    color = MaterialTheme.colorScheme.outline,
                     shape = searchBarShape,
                 )
                 .clip(shape = searchBarShape)
-                .background(color = MaterialTheme.colorScheme.surfaceContainerLowest)
+                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
                 .fillMaxWidth()
                 .padding(all = FirefoxTheme.layout.space.static50),
         verticalAlignment = Alignment.CenterVertically,

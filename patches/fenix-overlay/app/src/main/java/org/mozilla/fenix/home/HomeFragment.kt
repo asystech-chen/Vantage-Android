@@ -5,6 +5,7 @@
 package org.mozilla.fenix.home
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,15 +15,21 @@ import android.widget.FrameLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -37,6 +44,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -194,6 +203,7 @@ import org.mozilla.fenix.termsofuse.store.PrivacyNoticeBannerStore
 import org.mozilla.fenix.termsofuse.store.PrivacyNoticeBannerTelemetryMiddleware
 import org.mozilla.fenix.termsofuse.store.Surface
 import org.mozilla.fenix.theme.FirefoxTheme
+import org.mozilla.fenix.theme.usesVantageDarkPalette
 import org.mozilla.fenix.trackingprotection.TrackersBlockedFeature
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.allowUndo
@@ -726,6 +736,33 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
                                         )
                                     )
                                 },
+                            )
+                        }
+
+                        val isNightMode =
+                            (LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                                Configuration.UI_MODE_NIGHT_YES
+                        if (!isPrivateMode && universalEdgeToEdge && isNightMode &&
+                            usesVantageDarkPalette(LocalContext.current)
+                        ) {
+                            // Vantage: paint the status bar inset with the same chrome as the
+                            // tab strip / toolbar instead of letting the wallpaper show through.
+                            Box(
+                                modifier =
+                                    Modifier.fillMaxWidth()
+                                        .windowInsetsTopHeight(WindowInsets.statusBars)
+                                        .then(
+                                            if (settings.shouldShowTabStripAtTop) {
+                                                // Desktop Vantage: the tab strip gradient carries
+                                                // on into the status bar.
+                                                Modifier.background(
+                                                    FirefoxTheme.gradients.accentSubtle.brush,
+                                                )
+                                            } else {
+                                                Modifier.background(MaterialTheme.colorScheme.surface)
+                                            }
+                                        )
+                                        .align(Alignment.TopCenter),
                             )
                         }
 
