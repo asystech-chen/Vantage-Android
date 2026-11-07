@@ -57,9 +57,6 @@ import org.mozilla.fenix.onboarding.view.IfPreferenceUpdaterContentState.Configu
 import org.mozilla.fenix.onboarding.view.OnboardingPageState
 import org.mozilla.fenix.theme.FirefoxTheme
 
-private val IF_UPDATER_IMAGE_HEIGHT = 120.dp
-private val IF_UPDATER_IMAGE_HEIGHT_SMALL_DEVICE = 88.dp
-
 private sealed interface IfPreferenceUpdaterContentState {
   /**
    * Show IronFox updater preference switches.
@@ -311,10 +308,10 @@ private fun IronFoxPreferenceUpdaterSwitchItem(
 @Composable
 private fun Header(pageState: OnboardingPageState) {
   Image(
-    painter = painterResource(id = pageState.imageRes),
+    // Vantage: use the round, transparent brand mark instead of the square splash PNG.
+    painter = painterResource(id = fenixR.drawable.ic_onboarding_welcome),
     contentDescription = null,
-    modifier =
-      Modifier.height(pageState.imageHeight()),
+    modifier = Modifier.size(96.dp),
   )
 
   Spacer(Modifier.height(20.dp))
@@ -327,10 +324,3 @@ private fun Header(pageState: OnboardingPageState) {
 
   Spacer(Modifier.height(10.dp))
 }
-
-private fun OnboardingPageState.imageHeight() =
-  if (isSmallDevice) {
-    IF_UPDATER_IMAGE_HEIGHT_SMALL_DEVICE
-  } else {
-    IF_UPDATER_IMAGE_HEIGHT
-  }

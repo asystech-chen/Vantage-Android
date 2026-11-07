@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-  <!-- 浏览器菜单中打开 Vantage 起始页的入口。 -->
-  <string name="browser_menu_vantage_start_page">Vantage 起始页</string>
+  <!-- 浏览器菜单中打开 ASYS 搜索起始页的入口。 -->
+  <string name="browser_menu_vantage_start_page">ASYS 搜索起始页</string>
 </resources>
