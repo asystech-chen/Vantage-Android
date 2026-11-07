@@ -42,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -485,10 +486,9 @@ private fun ColumnScope.IronFoxPreferenceDoHProviderSelection(
 @Composable
 private fun Header(pageState: OnboardingPageState) {
   Image(
-    painter = painterResource(id = pageState.imageRes),
+    painter = painterResource(id = fenixR.drawable.ic_splash_logo),
     contentDescription = null,
-    modifier =
-      Modifier.height(pageState.imageHeight()),
+    modifier = Modifier.size(132.dp),
   )
 
   Spacer(Modifier.height(20.dp))

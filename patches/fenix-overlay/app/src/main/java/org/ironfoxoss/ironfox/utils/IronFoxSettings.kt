@@ -131,7 +131,7 @@ class IronFoxSettings(private val context: Context) : PreferencesHolder {
   var historyEnabled by
     booleanPreference(
       key = context.getPreferenceKey(R.string.pref_key_ironfox_history_enabled),
-      default = false,
+      default = true,
     )
 
   var historyEnabledCachedValue by
@@ -197,7 +197,7 @@ class IronFoxSettings(private val context: Context) : PreferencesHolder {
   var javascriptJitTrustedPrincipalsEnabled by
     booleanPreference(
       key = context.getPreferenceKey(R.string.pref_key_jit_trusted_principals_enabled),
-      default = false,
+      default = true,
     )
 
   var openLinksInAPrivateTabCachedValue by
@@ -269,7 +269,7 @@ class IronFoxSettings(private val context: Context) : PreferencesHolder {
   var spoofEnglish by
     booleanPreference(
       key = context.getPreferenceKey(R.string.pref_key_spoof_english),
-      default = true,
+      default = false,
     )
 
   var spoofTimezone by
@@ -360,7 +360,7 @@ class IronFoxSettings(private val context: Context) : PreferencesHolder {
   var webglDisabled by
     booleanPreference(
       key = context.getPreferenceKey(R.string.pref_key_webgl_disabled),
-      default = true,
+      default = false,
     )
 
   var webrtcEnabled by
@@ -372,6 +372,6 @@ class IronFoxSettings(private val context: Context) : PreferencesHolder {
   var xpinstallEnabled by
     booleanPreference(
       key = context.getPreferenceKey(R.string.pref_key_xpinstall_enabled),
-      default = false,
+      default = true,
     )
 }

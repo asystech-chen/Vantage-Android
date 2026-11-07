@@ -6,11 +6,13 @@ import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.R as materialR
 import com.google.android.material.color.MaterialColors
 import org.mozilla.fenix.R
+import org.mozilla.fenix.ext.components
 
 /**
  * Preference that renders a small toolbar preview whose first three icons are tappable.
@@ -69,5 +71,9 @@ constructor(
                 context.getString(R.string.preferences_toolbar_select_shortcut) + " " + (index + 1)
             slot.setOnClickListener { onSlotClick?.invoke(index) }
         }
+
+        // Vantage: the preview must mirror the real toolbar, including the live tab count.
+        holder.itemView.findViewById<TextView>(R.id.vantage_slots_tab_counter)?.text =
+            context.components.core.store.state.tabs.size.toString()
     }
 }
