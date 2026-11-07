@@ -62,13 +62,13 @@ function download() {
 
   # Check if the file already exists
   if [[ -f "${output_file}" ]]; then
-    echo_red_text "File already exists: '${output_file}'!"
+    echo_default_text "File already exists: '${output_file}'!"
     read -p "Do you want to re-download? [y/N] " -n 1 -r
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-      echo_red_text "Removing file: '${output_file}'..."
+      echo_default_text "Removing file: '${output_file}'..."
       "${IRONFOX_RM}" -f "${output_file}"
-      echo_green_text "SUCCESS: Removed file: '${output_file}'!"
+      echo_default_text "SUCCESS: Removed file: '${output_file}'!"
     else
       return 0
     fi
@@ -85,7 +85,7 @@ function download() {
     local -r created_dl_dir=0
   fi
 
-  echo_red_text "Downloading file: '${file_name}' from URL: '${url}' to destination: '${output_file}'..."
+  echo_default_text "Downloading file: '${file_name}' from URL: '${url}' to destination: '${output_file}'..."
   "${IRONFOX_CURL}" ${IRONFOX_CURL_FLAGS} --location "${url}" --output "${output_file}" || local download_failed=1
 
   # Ensure the file we just downloaded is valid
@@ -102,7 +102,7 @@ function download() {
     echo_red_text "ERROR: Unable to download file: '${file_name}' from URL: '${url}' to destination: '${output_file}'!"
     return 1
   else
-    echo_green_text "SUCCESS: Downloaded file: '${file_name}' from URL: '${url}' to destination: '${output_file}'!"
+    echo_default_text "SUCCESS: Downloaded file: '${file_name}' from URL: '${url}' to destination: '${output_file}'!"
   fi
 }
 
@@ -248,13 +248,13 @@ function clone_git_repo() {
 
   # Check if the target directory already exists
   if [[ -d "${path}" ]]; then
-    echo_red_text "Path already exists: '${path}'!"
+    echo_yellow_text "Path already exists: '${path}'!"
     read -p "Do you want to re-clone this repository? [y/N] " -n 1 -r
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-      echo_red_text "Removing path: '${path}'..."
+      echo_yellow_text "Removing path: '${path}'..."
       "${IRONFOX_RM}" -rf "${path}"
-      echo_green_text "SUCCESS: Removed path: '${path}'!"
+      echo_default_text "SUCCESS: Removed path: '${path}'!"
     else
       return 0
     fi
@@ -274,9 +274,9 @@ function clone_git_repo() {
   fi
 
   if [[ "${display_url}" == 'null' ]]; then
-    echo_red_text "Cloning repository to path: '${path}'..."
+    echo_default_text "Cloning repository to path: '${path}'..."
   else
-    echo_red_text "Cloning repository from URL: '${display_url}' to path: '${path}'..."
+    echo_default_text "Cloning repository from URL: '${display_url}' to path: '${path}'..."
   fi
 
   # If `no-revision` is specified for the revision, we don't clone the repo with a specific revision
@@ -310,9 +310,9 @@ function clone_git_repo() {
     return 1
   else
     if [[ "${display_url}" == 'null' ]]; then
-      echo_green_text "SUCCESS: Cloned repository to path: '${path}'!"
+      echo_default_text "SUCCESS: Cloned repository to path: '${path}'!"
     else
-      echo_green_text "SUCCESS: Cloned repository from URL: '${display_url}' to path: '${path}'!"
+      echo_default_text "SUCCESS: Cloned repository from URL: '${display_url}' to path: '${path}'!"
     fi
   fi
 }
