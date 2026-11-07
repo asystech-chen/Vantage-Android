@@ -2,7 +2,6 @@ package org.ironfoxoss.ironfox.utils
 
 import android.content.Context
 import mozilla.components.lib.crash.store.CrashReportOption
-import org.ironfoxoss.core.IFConstants
 import org.ironfoxoss.core.IFDeviceUtils
 import org.ironfoxoss.ironfox.utils.IFPrefUtils
 import org.ironfoxoss.ironfox.utils.IronFoxPreferences
@@ -51,8 +50,9 @@ object IFPrefs {
     prefs.setDefaultBoolPref(R.string.pref_key_delete_permissions_now, true) // [DEFAULT] Permissions
 
     // Clear browsing history, cache, download history, and open tabs on exit by default
+    // Vantage: keep browsing history by default.
     prefs.setDefaultBoolPref(R.string.pref_key_delete_browsing_data_on_quit, true)
-    prefs.setDefaultBoolPref(R.string.pref_key_delete_browsing_history_on_quit, true) // Browsing history
+    prefs.setDefaultBoolPref(R.string.pref_key_delete_browsing_history_on_quit, false) // Browsing history
     prefs.setDefaultBoolPref(R.string.pref_key_delete_caches_on_quit, true) // Cache
     prefs.setDefaultBoolPref(R.string.pref_key_delete_downloads_on_quit, true) // Download history
     prefs.setDefaultBoolPref(R.string.pref_key_delete_open_tabs_on_quit, true) // Open tabs
@@ -304,8 +304,11 @@ object IFPrefs {
     // Enable DoH without fallback by default
     prefs.setDefaultIntPref(R.string.pref_key_doh_settings_mode, 3)
 
-    /// Set the default DoH provider
-    prefs.setStringPref(R.string.pref_key_doh_default_provider_uri, IFConstants.IRONFOX_DEFAULT_DOH_URL)
+    /// Set the default DoH provider (Vantage: AliDNS)
+    prefs.setStringPref(
+      R.string.pref_key_doh_default_provider_uri,
+      "https://dns.alidns.com/dns-query",
+    )
 
     // Enable the ability to import bookmarks by default
     prefs.setDefaultBoolPref(R.string.pref_key_enable_import_bookmarks, true)

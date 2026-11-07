@@ -32,6 +32,7 @@ object FenixSettingsVisibilityManager {
     hidePreference(context, R.string.pref_key_rate, prefFragment)
     hidePreference(context, R.string.pref_key_start_profiler, prefFragment)
     hidePreference(context, R.string.pref_key_remote_debugging, prefFragment)
+    hidePreference(context, R.string.pref_key_ip_protection_settings, prefFragment)
     hideFxa(context, prefFragment)
     hideLocalAddonInstall(context, prefFragment)
 

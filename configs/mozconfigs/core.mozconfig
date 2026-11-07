@@ -20,8 +20,10 @@ else
 fi
 
 ## Configure allowed Gradle maven repositories
+## Vantage: Maven Central first so plugin markers (ex. KSP) resolve reliably;
+## the Aliyun mirrors stay as fallbacks (their gradle-plugin mirror can return 502).
 # shellcheck disable=SC2140
-export GRADLE_MAVEN_REPOSITORIES="file://${IRONFOX_MAVEN_LOCAL}/","https://maven.aliyun.com/repository/google","https://maven.aliyun.com/repository/public","https://maven.aliyun.com/repository/gradle-plugin","https://plugins.gradle.org/m2/","https://maven.google.com/"
+export GRADLE_MAVEN_REPOSITORIES="file://${IRONFOX_MAVEN_LOCAL}/","https://repo.maven.apache.org/maven2/","https://plugins.gradle.org/m2/","https://maven.google.com/","https://maven.aliyun.com/repository/google","https://maven.aliyun.com/repository/public","https://maven.aliyun.com/repository/gradle-plugin"
 
 ## Disable android:debuggable
 ac_add_options --disable-android-debuggable

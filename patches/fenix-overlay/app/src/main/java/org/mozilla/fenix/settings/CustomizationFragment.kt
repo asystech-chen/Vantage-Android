@@ -5,6 +5,9 @@
 package org.mozilla.fenix.settings
 
 import org.ironfoxoss.ironfox.utils.FenixSettingsVisibilityManager
+import org.ironfoxoss.ironfox.utils.IronFoxPreferences
+import org.mozilla.fenix.theme.isVantageThemeSelected
+import org.mozilla.fenix.theme.setVantageThemeSelected
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
@@ -119,6 +122,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         bindLightTheme()
         bindAutoBatteryTheme()
         setupRadioGroups()
+        syncThemeSelection()
         setupToolbarCategory()
         setupTabStripDisplayCategory()
         setupTabStripLocationCategory()
@@ -279,6 +283,33 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         )
     }
 
+    /**
+     * Vantage: the radio buttons persisted their own booleans, so two of them could stay
+     * checked at the same time (e.g. Vantage and Follow device theme). Re-derive the checked
+     * state from the actual night mode + branded-theme flag on every bind instead.
+     */
+    private fun syncThemeSelection() {
+        val mode = AppCompatDelegate.getDefaultNightMode()
+        val isDark = mode == AppCompatDelegate.MODE_NIGHT_YES
+        val vantage = isVantageThemeSelected(requireContext())
+        val oled = radioDarkestTheme.isVisible && IronFoxPreferences.shouldUseOledTheme(requireContext())
+        val followsSystem =
+            mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
+                mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
+
+        radioLightTheme.setCheckedWithoutClickListener(mode == AppCompatDelegate.MODE_NIGHT_NO)
+        radioDarkTheme.setCheckedWithoutClickListener(isDark && !vantage && !oled)
+        radioVantageTheme.setCheckedWithoutClickListener(isDark && vantage)
+        radioDarkestTheme.setCheckedWithoutClickListener(isDark && !vantage && oled)
+        if (SDK_INT >= Build.VERSION_CODES.P) {
+            radioFollowDeviceTheme.setCheckedWithoutClickListener(followsSystem)
+        } else {
+            radioAutoBatteryTheme.setCheckedWithoutClickListener(
+                mode == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY,
+            )
+        }
+    }
+
     private fun bindLightTheme() {
         radioLightTheme = requirePreference(R.string.pref_key_light_theme)
         radioLightTheme.onClickListener {
@@ -305,7 +336,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
     private fun bindVantageTheme() {
         radioVantageTheme = requirePreference(R.string.pref_key_vantage_theme)
         radioVantageTheme.onClickListener {
-            setNewTheme(AppCompatDelegate.MODE_NIGHT_YES)
+            setNewTheme(AppCompatDelegate.MODE_NIGHT_YES, vantage = true)
         }
     }
 
@@ -328,7 +359,8 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         }
     }
 
-    private fun setNewTheme(mode: Int) {
+    private fun setNewTheme(mode: Int, vantage: Boolean = false) {
+        setVantageThemeSelected(requireContext(), vantage)
         if (AppCompatDelegate.getDefaultNightMode() != mode) {
             AppCompatDelegate.setDefaultNightMode(mode)
         }

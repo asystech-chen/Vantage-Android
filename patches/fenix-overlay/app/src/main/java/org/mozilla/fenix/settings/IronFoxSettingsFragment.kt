@@ -804,6 +804,12 @@ class IronFoxSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFr
 
   override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
     setPreferencesFromResource(fenixR.xml.ironfox_preferences, rootKey)
+
+    // Vantage: locale spoofing and Firefox VPN are not available/needed here.
+    findPreference<SwitchPreference>(getPreferenceKey(fenixR.string.pref_key_spoof_english))?.isVisible = false
+    findPreference<SwitchPreference>(
+      getPreferenceKey(fenixR.string.pref_key_ironfox_ip_protection_enabled)
+    )?.isVisible = false
     with(requireContext().components.settings) {
       findPreference<SwitchPreference>(
         getPreferenceKey(fenixR.string.pref_key_enable_unifiedpush),

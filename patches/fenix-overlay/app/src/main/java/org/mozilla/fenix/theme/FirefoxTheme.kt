@@ -8,6 +8,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.platform.LocalContext
 import mozilla.components.compose.base.theme.AcornColors
 import mozilla.components.compose.base.theme.AcornGradientScheme
 import mozilla.components.compose.base.theme.AcornTheme
@@ -47,8 +48,9 @@ fun FirefoxTheme(
             Theme.Private -> privateColorPalette
         }
 
-    // Vantage: the dark theme uses the blue/teal palette.
-    val useVantageTheme = theme == Theme.Dark
+    // Vantage: the branded palette is used when Vantage is selected explicitly, or when the
+    // device theme is followed and the system is currently dark.
+    val useVantageTheme = theme == Theme.Dark && usesVantageDarkPalette(LocalContext.current)
 
     val colorScheme: ColorScheme =
         if (useVantageTheme) {
@@ -63,11 +65,15 @@ fun FirefoxTheme(
         }
 
     val gradients: AcornGradientScheme =
-        when (theme) {
-            Theme.Light -> lightAcornGradientScheme
-            Theme.Dark -> darkAcornGradientScheme
-            Theme.Oled -> oledAcornGradientScheme
-            Theme.Private -> privateAcornGradientScheme
+        if (useVantageTheme) {
+            vantageAcornGradientScheme
+        } else {
+            when (theme) {
+                Theme.Light -> lightAcornGradientScheme
+                Theme.Dark -> darkAcornGradientScheme
+                Theme.Oled -> oledAcornGradientScheme
+                Theme.Private -> privateAcornGradientScheme
+            }
         }
 
     val tabGroupColors: TabGroupColorPalette =

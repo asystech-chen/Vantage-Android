@@ -7,6 +7,7 @@ package org.mozilla.fenix.components.menu
 import android.app.Activity
 import android.app.Dialog
 import android.app.PendingIntent
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -144,6 +145,23 @@ private object MenuAnimationConfig {
 /** A bottom sheet fragment displaying the menu dialog. */
 @Suppress("LargeClass")
 class MenuDialogFragment : BottomSheetDialogFragment() {
+
+    override fun onStart() {
+        super.onStart()
+        // Vantage: hide the system bars in the menu window too, so opening the menu
+        // does not visually drop out of full screen.
+        VantageFullScreenState.applyToWindow(dialog?.window)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        activity?.window?.decorView?.postDelayed(
+            {
+                activity?.let { VantageFullScreenState.apply(it) }
+            },
+            150,
+        )
+    }
 
     private val args by navArgs<MenuDialogFragmentArgs>()
     private val webExtensionsMenuBinding = ViewBoundFeatureWrapper<WebExtensionsMenuBinding>()
@@ -655,6 +673,13 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                     menuStore.dispatch(MenuAction.Navigate.IPProtectionSettings)
                                 },
                                 moreSettingsSubmenu = {
+                                    // Vantage: zoom controls pinned at the top of the "More" submenu
+                                    // so they are never clipped by the navigation bar.
+                                    VantageZoomRow(
+                                        sessionId = selectedTab?.id,
+                                        engineSession = selectedTab?.engineState?.engineSession,
+                                        onFinish = { dismiss() },
+                                    )
                                     MoreSettingsSubmenu(
                                         isReaderViewActive = isReaderViewActive,
                                         isWebCompatEnabled = isWebCompatEnabled,
@@ -726,12 +751,6 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                                 Logger.warn("No active selected tab - cannot add tab to groups.")
                                             }
                                         },
-                                    )
-                                    // Vantage: page zoom controls live at the end of the expanded "More" list.
-                                    VantageZoomRow(
-                                        sessionId = selectedTab?.id,
-                                        engineSession = selectedTab?.engineState?.engineSession,
-                                        onFinish = { dismiss() },
                                     )
                                 },
                                 extensionSubmenu = {

@@ -5,6 +5,10 @@ package org.ironfoxoss.core
  *
  */
 object IFDohProviders {
+  // AliDNS (Alibaba) - Vantage default
+  const val alidnsName = "阿里 DNS 🇨🇳"
+  const val alidnsUri = "https://dns.alidns.com/dns-query"
+
   // Quad9
   const val quad9Name = "Quad9 🇨🇭"
   const val quad9Uri = "https://dns.quad9.net/dns-query"

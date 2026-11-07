@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vantage: XML theme used by preference screens when the branded theme is selected. -->
+<resources>
+    <color name="vantage_primary">#FF4A8FF7</color>
+    <color name="vantage_on_primary">#FFFFFFFF</color>
+    <color name="vantage_primary_container">#FF1D3C8F</color>
+    <color name="vantage_on_primary_container">#FFDCE7FF</color>
+    <color name="vantage_secondary">#FF22C7A6</color>
+    <color name="vantage_on_secondary">#FF04221C</color>
+    <color name="vantage_secondary_container">#FF1B3550</color>
+    <color name="vantage_on_secondary_container">#FFCFE4FF</color>
+    <color name="vantage_tertiary">#FF4A8FF7</color>
+    <color name="vantage_tertiary_container">#FF1D3C8F</color>
+    <color name="vantage_on_tertiary_container">#FFDCE7FF</color>
+    <color name="vantage_background">#FF1C1B22</color>
+    <color name="vantage_surface">#FF1C1B22</color>
+    <color name="vantage_surface_variant">#FF2B2A33</color>
+    <color name="vantage_surface_container_lowest">#FF151419</color>
+    <color name="vantage_surface_container_low">#FF1C1B22</color>
+    <color name="vantage_surface_container">#FF23222B</color>
+    <color name="vantage_surface_container_high">#FF2B2A33</color>
+    <color name="vantage_surface_container_highest">#FF35343D</color>
+    <color name="vantage_surface_container_selected">#FF2E3A52</color>
+    <color name="vantage_on_surface">#FFF5F4F8</color>
+    <color name="vantage_on_surface_variant">#FFC8C6D0</color>
+    <color name="vantage_on_background">#FFF5F4F8</color>
+    <color name="vantage_outline">#FF4A4954</color>
+    <color name="vantage_outline_variant">#FF35343D</color>
+
+    <style name="VantageTheme" parent="NormalTheme">
+        <item name="colorPrimary">@color/vantage_primary</item>
+        <item name="colorOnPrimary">@color/vantage_on_primary</item>
+        <item name="colorPrimaryContainer">@color/vantage_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/vantage_on_primary_container</item>
+        <item name="colorSecondary">@color/vantage_secondary</item>
+        <item name="colorOnSecondary">@color/vantage_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/vantage_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/vantage_on_secondary_container</item>
+        <item name="colorTertiary">@color/vantage_tertiary</item>
+        <item name="colorTertiaryContainer">@color/vantage_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/vantage_on_tertiary_container</item>
+        <item name="colorAccent">@color/vantage_primary</item>
+        <item name="android:colorAccent">@color/vantage_primary</item>
+        <item name="colorControlActivated">@color/vantage_primary</item>
+        <item name="android:colorControlActivated">@color/vantage_primary</item>
+        <item name="android:listChoiceIndicatorSingle">@drawable/vantage_radiobutton</item>
+        <item name="android:colorBackground">@color/vantage_background</item>
+        <item name="android:windowBackground">@color/vantage_background</item>
+        <item name="colorSurface">@color/vantage_surface</item>
+        <item name="colorOnSurface">@color/vantage_on_surface</item>
+        <item name="colorOnBackground">@color/vantage_on_background</item>
+        <item name="colorSurfaceVariant">@color/vantage_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/vantage_on_surface_variant</item>
+        <item name="colorSurfaceContainerLowest">@color/vantage_surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/vantage_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/vantage_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/vantage_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/vantage_surface_container_highest</item>
+        <item name="colorSurfaceContainerSelected">@color/vantage_surface_container_selected</item>
+        <item name="colorOutline">@color/vantage_outline</item>
+        <item name="colorOutlineVariant">@color/vantage_outline_variant</item>
+        <item name="colorControlNormal">@color/vantage_on_surface</item>
+    </style>
+</resources>

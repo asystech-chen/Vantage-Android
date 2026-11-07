@@ -75,13 +75,17 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
+        <!-- Matches the real expanded toolbar: tab counter (live count) + overflow menu. -->
         <TextView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/vantage_slots_tab_counter"
+            android:layout_width="32dp"
+            android:layout_height="26dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/vantage_tab_counter_bg"
             android:gravity="center"
-            android:text="1"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="14sp" />
+            android:textSize="12sp"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:layout_width="40dp"
@@ -89,6 +93,7 @@
             android:gravity="center"
             android:text="&#8942;"
             android:textColor="?attr/colorOnSurfaceVariant"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:importantForAccessibility="no" />
     </LinearLayout>
 </LinearLayout>

@@ -1,0 +1,192 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+package org.mozilla.fenix.theme
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
+import android.util.TypedValue
+import android.view.Window
+import androidx.annotation.AnyRes
+import androidx.annotation.StyleRes
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import com.google.android.material.R as materialR
+import mozilla.components.support.ktx.android.content.getColorFromAttr
+import mozilla.components.support.ktx.android.content.getStatusBarColor
+import mozilla.components.support.ktx.android.view.createWindowInsetsController
+import mozilla.components.support.ktx.android.view.setNavigationBarColorCompat
+import mozilla.components.support.ktx.android.view.setStatusBarColorCompat
+import org.mozilla.fenix.HomeActivity
+import org.mozilla.fenix.R
+import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+import org.mozilla.fenix.customtabs.ExternalAppBrowserActivity
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import org.ironfoxoss.ironfox.utils.IronFoxPreferences
+
+abstract class ThemeManager {
+
+    protected abstract val activity: Activity
+    abstract var currentTheme: BrowsingMode
+
+    /** Returns the style resource corresponding to the [currentTheme]. */
+    @get:StyleRes
+    val currentThemeResource
+        get() =
+            when (currentTheme) {
+                BrowsingMode.Normal -> normalThemeResource
+                BrowsingMode.Private -> R.style.PrivateTheme
+            }
+
+    /**
+     * Vantage: resolve the XML theme for normal browsing.
+     *
+     * Following the device theme maps its dark mode onto the branded theme instead of the
+     * stock violet one, and it takes precedence over a stale OLED flag.
+     */
+    @get:StyleRes
+    private val normalThemeResource: Int
+        get() {
+            val mode = AppCompatDelegate.getDefaultNightMode()
+            val followsSystem =
+                mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
+                    mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
+
+            return when {
+                isVantageThemeSelected(activity) -> R.style.VantageTheme
+                followsSystem ->
+                    if (isNightMode(activity)) R.style.VantageTheme else R.style.NormalTheme
+                IronFoxPreferences.shouldUseOledTheme(activity) -> R.style.Vantage_OLEDTheme
+                else -> R.style.NormalTheme
+            }
+        }
+
+    private fun isNightMode(context: Context): Boolean =
+        (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+
+    /**
+     * Handles status bar theme change since the window does not dynamically recreate
+     *
+     * @param activity The activity to apply the status bar theme to.
+     */
+    fun applyStatusBarTheme(activity: Activity) = applyStatusBarTheme(activity.window, activity)
+
+    private fun applyStatusBarTheme(window: Window, context: Context) {
+        when (currentTheme) {
+            BrowsingMode.Normal -> {
+                when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                    Configuration.UI_MODE_NIGHT_UNDEFINED, // We assume light here per Android doc's recommendation
+                    Configuration.UI_MODE_NIGHT_NO -> {
+                        updateLightSystemBars(window, context)
+                    }
+                    Configuration.UI_MODE_NIGHT_YES -> {
+                        clearLightSystemBars(window)
+                        setStatusBarColor(window, context)
+                        updateNavigationBar(window, context)
+                    }
+                }
+            }
+            BrowsingMode.Private -> {
+                clearLightSystemBars(window)
+                setStatusBarColor(window, context)
+                updateNavigationBar(window, context)
+            }
+        }
+    }
+
+    fun setActivityTheme(activity: Activity) {
+        activity.setTheme(currentThemeResource)
+    }
+
+    companion object {
+        /**
+         * Resolves the attribute to a resource ID.
+         *
+         * @param attribute The attribute to resolve.
+         * @param context Any context.
+         * @return The resource ID of the resolved attribute.
+         */
+        @AnyRes
+        fun resolveAttribute(attribute: Int, context: Context): Int {
+            val typedValue = TypedValue()
+            val theme = context.theme
+            theme.resolveAttribute(attribute, typedValue, true)
+
+            return typedValue.resourceId
+        }
+
+        @ColorInt
+        fun resolveAttributeColor(@AttrRes attribute: Int, context: Context): Int {
+            val resourceId = resolveAttribute(attribute, context)
+            return ContextCompat.getColor(context, resourceId)
+        }
+
+        /**
+         * Resolves the attribute to a color.
+         *
+         * @param attribute The attribute to resolve.
+         * @return The [Color] of the resolved attribute.
+         */
+        @Composable
+        fun resolveAttributeColor(attribute: Int): Color {
+            val resourceId = resolveAttribute(attribute, LocalContext.current)
+            return colorResource(resourceId)
+        }
+
+        private fun updateLightSystemBars(window: Window, context: Context) {
+            setStatusBarColor(window, context)
+            window.createWindowInsetsController().isAppearanceLightStatusBars = true
+
+            // display handle light navigation bar color
+            window.createWindowInsetsController().isAppearanceLightNavigationBars = true
+
+            updateNavigationBar(window, context)
+        }
+
+        private fun clearLightSystemBars(window: Window) {
+            window.createWindowInsetsController().isAppearanceLightStatusBars = false
+
+            // display handle light navigation bar color
+            window.createWindowInsetsController().isAppearanceLightNavigationBars = false
+        }
+
+        private fun updateNavigationBar(window: Window, context: Context) {
+            window.setNavigationBarColorCompat(context.getColorFromAttr(materialR.attr.colorSurface))
+        }
+
+        private fun setStatusBarColor(window: Window, context: Context) {
+            context.getStatusBarColor()?.let { window.setStatusBarColorCompat(it) }
+        }
+    }
+}
+
+class DefaultThemeManager(
+    currentTheme: BrowsingMode,
+    override val activity: Activity,
+) : ThemeManager() {
+    override var currentTheme: BrowsingMode = currentTheme
+        set(value) {
+            if (currentTheme != value) {
+                // ExternalAppBrowserActivity doesn't need to switch between private and non-private.
+                if (activity is ExternalAppBrowserActivity) return
+                // Don't recreate if activity is finishing
+                if (activity.isFinishing) return
+
+                field = value
+
+                val intent = activity.intent ?: Intent().also { activity.intent = it }
+                intent.putExtra(HomeActivity.PRIVATE_BROWSING_MODE, value == BrowsingMode.Private)
+
+                activity.recreate()
+            }
+        }
+}
