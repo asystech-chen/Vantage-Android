@@ -233,7 +233,7 @@ function prepare_ac() {
   # Ensure we have `IRONFOX_ANDROID_TARGET_SDK`
   verify_env "${IRONFOX_ANDROID_TARGET_SDK}" 'IRONFOX_ANDROID_TARGET_SDK' || return 1
 
-  echo_red_text 'Preparing Android Components...'
+  echo_default_text 'Preparing Android Components...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_AC}" 'IRONFOX_AC' || return 1
@@ -317,7 +317,7 @@ function prepare_ac() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Android Components!'
+  echo_default_text 'SUCCESS: Prepared Android Components!'
 }
 
 function prepare_android_sdk() {
@@ -333,7 +333,7 @@ function prepare_android_sdk() {
   # Ensure we have `IRONFOX_ANDROID_SDK_BUILD_TOOLS_REVISION`
   verify_env "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_REVISION}" 'IRONFOX_ANDROID_SDK_BUILD_TOOLS_REVISION' || return 1
 
-  echo_red_text 'Preparing Android SDK...'
+  echo_default_text 'Preparing Android SDK...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_ANDROID_NDK}" 'IRONFOX_ANDROID_NDK' || return 1
@@ -369,7 +369,7 @@ function prepare_android_sdk() {
   apply_patch 'android-ndk-fix-target-triples.patch' || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Android SDK!'
+  echo_default_text 'SUCCESS: Prepared Android SDK!'
 }
 
 function prepare_as() {
@@ -394,7 +394,7 @@ function prepare_as() {
   # Ensure we have `IRONFOX_RUST_VERSION`
   verify_env "${IRONFOX_RUST_VERSION}" 'IRONFOX_RUST_VERSION' || return 1
 
-  echo_red_text 'Preparing Application Services...'
+  echo_default_text 'Preparing Application Services...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_AS}" 'IRONFOX_AS' || return 1
@@ -495,11 +495,11 @@ function prepare_as() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Application Services!'
+  echo_default_text 'SUCCESS: Prepared Application Services!'
 }
 
 function prepare_bundletool() {
-  echo_red_text 'Preparing Bundletool...'
+  echo_default_text 'Preparing Bundletool...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_BUNDLETOOL_DIR}" 'IRONFOX_BUNDLETOOL_DIR' || return 1
@@ -514,7 +514,7 @@ function prepare_bundletool() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Bundletool!'
+  echo_default_text 'SUCCESS: Prepared Bundletool!'
 }
 
 function prepare_fenix() {
@@ -530,7 +530,7 @@ function prepare_fenix() {
   # Ensure we have rm
   verify_exec "${IRONFOX_RM}" 'IRONFOX_RM' || return 1
 
-  echo_red_text 'Preparing Fenix...'
+  echo_default_text 'Preparing Fenix...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_FENIX}" 'IRONFOX_FENIX' || return 1
@@ -801,7 +801,7 @@ function prepare_fenix() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Fenix!'
+  echo_default_text 'SUCCESS: Prepared Fenix!'
 }
 
 function prepare_firefox() {
@@ -820,7 +820,7 @@ function prepare_firefox() {
   # Ensure we have `IRONFOX_RUST_VERSION`
   verify_env "${IRONFOX_RUST_VERSION}" 'IRONFOX_RUST_VERSION' || return 1
 
-  echo_red_text 'Preparing Firefox...'
+  echo_default_text 'Preparing Firefox...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_GECKO}" 'IRONFOX_GECKO' || return 1
@@ -1080,11 +1080,11 @@ function prepare_firefox() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Firefox!'
+  echo_default_text 'SUCCESS: Prepared Firefox!'
 }
 
 function prepare_glean() {
-  echo_red_text 'Preparing Glean...'
+  echo_default_text 'Preparing Glean...'
 
   # Ensure we have cp
   verify_exec "${IRONFOX_CP}" 'IRONFOX_CP' || return 1
@@ -1222,14 +1222,14 @@ function prepare_glean() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared Glean!'
+  echo_default_text 'SUCCESS: Prepared Glean!'
 }
 
 function prepare_llvm() {
   # Ensure we have Python
   verify_exec "${IRONFOX_PYTHON}" 'IRONFOX_PYTHON' || return 1
 
-  echo_red_text 'Preparing LLVM...'
+  echo_default_text 'Preparing LLVM...'
 
   if [[ -n "${FDROID_BUILD+x}" ]]; then
     # Patch the LLVM source code
@@ -1241,7 +1241,7 @@ function prepare_llvm() {
       --src_path "${llvm}" || return 1
   fi
 
-  echo_green_text 'SUCCESS: Prepared LLVM!'
+  echo_default_text 'SUCCESS: Prepared LLVM!'
 }
 
 function prepare_microg() {
@@ -1260,7 +1260,7 @@ function prepare_microg() {
   # Ensure we have `IRONFOX_GMSCORE_ANDROID_SDK_COMPILE_VERSION`
   verify_env "${IRONFOX_GMSCORE_ANDROID_SDK_COMPILE_VERSION}" 'IRONFOX_GMSCORE_ANDROID_SDK_COMPILE_VERSION' || return 1
 
-  echo_red_text 'Preparing microG...'
+  echo_default_text 'Preparing microG...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_GMSCORE}" 'IRONFOX_GMSCORE' || return 1
@@ -1287,14 +1287,14 @@ function prepare_microg() {
 
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared microG!'
+  echo_default_text 'SUCCESS: Prepared microG!'
 }
 
 function prepare_uniffi() {
   # Ensure we have GNU sed
   verify_exec "${IRONFOX_SED}" 'IRONFOX_SED' || return 1
 
-  echo_red_text 'Preparing uniffi-bindgen...'
+  echo_default_text 'Preparing uniffi-bindgen...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_UNIFFI_DIR}" 'IRONFOX_UNIFFI_DIR' || return 1
@@ -1307,11 +1307,11 @@ function prepare_uniffi() {
   # Set Rust version
   "${IRONFOX_SED}" -i -e "s|channel = .*|channel = \""${IRONFOX_RUST_VERSION}\""|g" "${IRONFOX_UNIFFI_DIR}/rust-toolchain.toml" || return 1
 
-  echo_green_text 'SUCCESS: Prepared uniffi-bindgen!'
+  echo_default_text 'SUCCESS: Prepared uniffi-bindgen!'
 }
 
 function prepare_wasi() {
-  echo_red_text 'Preparing WASI SDK...'
+  echo_default_text 'Preparing WASI SDK...'
 
   # Ensure we have bash
   verify_exec "${IRONFOX_BASH}" 'IRONFOX_BASH' || return 1
@@ -1323,7 +1323,7 @@ function prepare_wasi() {
   "${IRONFOX_BASH}" "${IRONFOX_PREBUILDS}/scripts/prebuild.sh" 'wasi' || return 1
   popd || return 1
 
-  echo_green_text 'SUCCESS: Prepared WASI SDK!'
+  echo_default_text 'SUCCESS: Prepared WASI SDK!'
 }
 
 function prepare_rust() {
@@ -1333,7 +1333,7 @@ function prepare_rust() {
   # Ensure we have mkdir
   verify_exec "${IRONFOX_MKDIR}" 'IRONFOX_MKDIR' || return 1
 
-  echo_red_text 'Preparing Rust...'
+  echo_default_text 'Preparing Rust...'
 
   # Verify directories
   verify_dir_with_env "${IRONFOX_CONFIGS}" 'IRONFOX_CONFIGS' || return 1
@@ -1350,10 +1350,10 @@ function prepare_rust() {
     "${IRONFOX_LN}" -s "${IRONFOX_CONFIGS}/cargo/config.toml" "${IRONFOX_CARGO_HOME}/config.toml" || return 1
   fi
 
-  echo_green_text 'SUCCESS: Prepared Rust!'
+  echo_default_text 'SUCCESS: Prepared Rust!'
 }
 
-echo_red_text "Preparing to build IronFox '${IRONFOX_VERSION}'..."
+echo_default_text "Preparing to build IronFox '${IRONFOX_VERSION}'..."
 
 # This needs to run before we prepare Android Components, to ensure that ex. patches apply properly
 if [[ "${IRONFOX_PREPARE_GECKO}" == 1 ]]; then
@@ -1404,5 +1404,5 @@ if [[ "${IRONFOX_PREPARE_WASI}" == 1 ]]; then
   prepare_wasi || return 1
 fi
 
-echo_green_text "SUCCESS: Prepared to build IronFox '${IRONFOX_VERSION}'!"
+echo_default_text "SUCCESS: Prepared to build IronFox '${IRONFOX_VERSION}'!"
 "${IRONFOX_TOUCH}" "${IRONFOX_BUILD}/finished-prebuild"

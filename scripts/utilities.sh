@@ -13,6 +13,14 @@ function echo_green_text() {
   echo -e "\033[32m$1\033[0m" || return 1
 }
 
+function echo_yellow_text() {
+  echo -e "\033[33m$1\033[0m" || return 1
+}
+
+function echo_default_text() {
+  echo "$1" || return 1
+}
+
 # Verify that an environment variable exists
 function verify_env() {
   function print_usage() {
@@ -77,19 +85,19 @@ function verify_exec() {
 
   if [[ ! -f "${exec}" ]]; then
     echo_red_text "ERROR: '${exec}' is missing!"
-    echo_green_text "Please ensure that environment variable is set to a valid executable: '${exec_env}'!"
+    echo_default_text "Please ensure that environment variable is set to a valid executable: '${exec_env}'!"
     return 1
   fi
 
   if [[ ! -s "${exec}" ]]; then
     echo_red_text "ERROR: '${exec}' is empty!"
-    echo_green_text "Please ensure that environment variable is set to a valid executable: '${exec_env}'!"
+    echo_default_text "Please ensure that environment variable is set to a valid executable: '${exec_env}'!"
     return 1
   fi
 
   if [[ ! -x "${exec}" ]]; then
     echo_red_text "ERROR: '${exec}' is not executable!"
-    echo_green_text "Please ensure that environment variable is set to a valid executable: '${exec_env}'!"
+    echo_default_text "Please ensure that environment variable is set to a valid executable: '${exec_env}'!"
     return 1
   fi
 }

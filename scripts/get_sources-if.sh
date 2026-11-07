@@ -522,13 +522,13 @@ function update_checksum() {
   fi
 
   if [[ "${old_checksum}" == "${new_checksum}" ]]; then
-    echo_red_text "Checksums for file: '${file}' already match! Skipping..."
+    echo_default_text "Checksums for file: '${file}' already match! Skipping..."
     echo "Old ${checksum_type_pretty}: '${old_checksum}'"
     echo "New ${checksum_type_pretty}: '${new_checksum}'"
   else
-    echo_red_text "Updating ${checksum_type_pretty} for file: '${file}'..."
+    echo_default_text "Updating ${checksum_type_pretty} for file: '${file}'..."
     "${IRONFOX_SED}" -i "s|'${old_checksum}'|'${new_checksum}'|g" "${IRONFOX_VERSIONS}" || return 1
-    echo_green_text "SUCCESS: Updated ${checksum_type_pretty} for file: '${file}'!"
+    echo_default_text "SUCCESS: Updated ${checksum_type_pretty} for file: '${file}'!"
   fi
 }
 
@@ -600,7 +600,7 @@ function validate_checksum() {
 
     return 1
   else
-    echo_green_text "SUCCESS: Validated checksum (${checksum_type_pretty}) for file: '${file}'!"
+    echo_default_text "SUCCESS: Validated checksum (${checksum_type_pretty}) for file: '${file}'!"
     echo "${checksum_type_pretty}: '${local_checksum}'"
   fi
 }
@@ -665,14 +665,14 @@ function download_file() {
   fi
 
   if [[ -f "${file}" ]]; then
-    echo_red_text "File already exists: '${file}'!"
+    echo_default_text "File already exists: '${file}'!"
     read -p "Do you want to re-download? [y/N] " -n 1 -r
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our file
-      echo_red_text "Removing file: '${file}'..."
+      echo_default_text "Removing file: '${file}'..."
       backup_file "${file}"
-      echo_green_text "SUCCESS: Removed file: '${file}'!"
+      echo_default_text "SUCCESS: Removed file: '${file}'!"
     else
       unset IRONFOX_DOWNLOAD_EXIT
       IRONFOX_PERFORM_POST_DOWNLOAD=0
@@ -772,14 +772,14 @@ function download_and_extract() {
   fi
 
   if [[ -d "${path}" ]] && [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
-    echo_red_text "Path already exists: '${path}'!"
+    echo_yellow_text "Path already exists: '${path}'!"
     read -p "Do you want to re-download? [y/N] " -n 1 -r
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
       # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
-      echo_red_text "Removing path: '${path}'..."
+      echo_yellow_text "Removing path: '${path}'..."
       backup_dir "${path}"
-      echo_green_text "SUCCESS: Removed path: '${path}'!"
+      echo_default_text "SUCCESS: Removed path: '${path}'!"
     else
       IRONFOX_PERFORM_POST_DOWNLOAD=0
       return 0
@@ -870,7 +870,7 @@ function get_androguard() {
     local pyenv_sourced=0
 
     if [[ -d "${IRONFOX_ANDROGUARD}" ]]; then
-      echo_red_text "androguard is already installed at path: '${IRONFOX_ANDROGUARD}'!"
+      echo_default_text "androguard is already installed at path: '${IRONFOX_ANDROGUARD}'!"
       read -p "Do you want to re-download it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
@@ -885,7 +885,7 @@ function get_androguard() {
     fi
   fi
 
-  echo_red_text "Downloading androguard to path: '${IRONFOX_ANDROGUARD_DIR}'..."
+  echo_default_text "Downloading androguard to path: '${IRONFOX_ANDROGUARD_DIR}'..."
   download_and_extract "https://github.com/androguard/androguard/archive/${IRONFOX_ANDROGUARD_COMMIT}.tar.gz" "${IRONFOX_ANDROGUARD_DIR}" "${IRONFOX_ANDROGUARD_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
@@ -893,9 +893,9 @@ function get_androguard() {
       source "${IRONFOX_PYENV}" || return 1
       local pyenv_sourced=1
     fi
-    echo_red_text "Installing androguard to path: '${IRONFOX_ANDROGUARD}'..."
+    echo_default_text "Installing androguard to path: '${IRONFOX_ANDROGUARD}'..."
     "${IRONFOX_UV}" pip install --no-editable --strict "${IRONFOX_ANDROGUARD_DIR}" || return 1
-    echo_green_text "SUCCESS: Set-up androguard at path: '${IRONFOX_ANDROGUARD}'!"
+    echo_default_text "SUCCESS: Set-up androguard at path: '${IRONFOX_ANDROGUARD}'!"
   fi
 }
 
@@ -911,19 +911,19 @@ function get_android_ndk() {
   local -r base_url="https://dl.google.com/android/repository"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android NDK (Linux)...'
+    echo_default_text 'Downloading Android NDK (Linux)...'
     download_and_extract "${base_url}/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-linux.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_LINUX}" || return 1
 
-    echo_red_text 'Downloading Android NDK (OS X)...'
+    echo_default_text 'Downloading Android NDK (OS X)...'
     download_and_extract "${base_url}/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-darwin.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_OSX}" || return 1
   else
-    echo_red_text "Downloading Android NDK to path: '${IRONFOX_ANDROID_NDK}'..."
+    echo_default_text "Downloading Android NDK to path: '${IRONFOX_ANDROID_NDK}'..."
     if [[ "${IRONFOX_PLATFORM}" == 'darwin' ]]; then
       download_and_extract "${base_url}/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-darwin.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_OSX}" || return 1
     else
       download_and_extract "${base_url}/android-ndk-${IRONFOX_ANDROID_NDK_VERSION}-linux.zip" "${IRONFOX_ANDROID_NDK}" "${IRONFOX_ANDROID_NDK_SHA512SUM_LINUX}" || return 1
     fi
-    echo_green_text "SUCCESS: Set-up Android NDK at path: '${IRONFOX_ANDROID_NDK}'!"
+    echo_default_text "SUCCESS: Set-up Android NDK at path: '${IRONFOX_ANDROID_NDK}'!"
   fi
 }
 
@@ -947,15 +947,15 @@ function get_android_sdk() {
     verify_exec "${IRONFOX_MKDIR}" 'IRONFOX_MKDIR' || return 1
 
     if [[ -d "${IRONFOX_ANDROID_SDK}" ]]; then
-      echo_red_text "Found existing installation at path: '${IRONFOX_ANDROID_SDK}'!"
+      echo_default_text "Found existing installation at path: '${IRONFOX_ANDROID_SDK}'!"
       echo 'Continuing will remove this installation and related data.'
       read -p "Do you still want to continue? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
         # Back-up (in case something goes wrong - ex. checksum validation fails) and remove our directory
-        echo_red_text "Removing path: '${IRONFOX_ANDROID_SDK}'..."
+        echo_yellow_text "Removing path: '${IRONFOX_ANDROID_SDK}'..."
         backup_dir "${IRONFOX_ANDROID_SDK}"
-        echo_green_text "SUCCESS: Removed path: '${IRONFOX_ANDROID_SDK}'!"
+        echo_default_text "SUCCESS: Removed path: '${IRONFOX_ANDROID_SDK}'!"
       else
         return 0
       fi
@@ -964,13 +964,13 @@ function get_android_sdk() {
   fi
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK (Linux)...'
+    echo_default_text 'Downloading Android SDK (Linux)...'
     download_file "${base_url}/commandlinetools-linux-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM_LINUX}" || return 1
 
-    echo_red_text 'Downloading Android SDK (OS X - ARM64)...'
+    echo_default_text 'Downloading Android SDK (OS X - ARM64)...'
     download_file "${base_url}/commandlinetools-mac_arm64-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM_OSX_ARM64}" || return 1
 
-    echo_red_text 'Downloading Android SDK (OS X - x86_64)...'
+    echo_default_text 'Downloading Android SDK (OS X - x86_64)...'
     download_file "${base_url}/commandlinetools-mac_x86_64-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM_OSX_X86_64}" || return 1
   else
     # Set our platform + checksum to verify
@@ -993,7 +993,7 @@ function get_android_sdk() {
       return 1
     fi
 
-    echo_red_text "Downloading Android SDK to path: '${IRONFOX_ANDROID_SDK}'..."
+    echo_default_text "Downloading Android SDK to path: '${IRONFOX_ANDROID_SDK}'..."
     download_and_extract "${base_url}/commandlinetools-${IRONFOX_ANDROID_SDK_PLAT}-${IRONFOX_ANDROID_SDK_REVISION}_latest.zip" "${IRONFOX_ANDROID_SDK}/cmdline-tools/${IRONFOX_ANDROID_SDK_VERSION}" "${IRONFOX_ANDROID_SDK_SHA512SUM}" || return 1
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1004,7 +1004,7 @@ function get_android_sdk() {
       fi
       echo -n '24333f8a63b6825ea9c5514f83c2829b004d1fee' > "${IRONFOX_ANDROID_SDK}/licenses/android-sdk-license" || return 1
 
-      echo_green_text "SUCCESS: Set-up Android SDK at path: '${IRONFOX_ANDROID_SDK}'!"
+      echo_default_text "SUCCESS: Set-up Android SDK at path: '${IRONFOX_ANDROID_SDK}'!"
     fi
   fi
 }
@@ -1021,10 +1021,10 @@ function get_android_sdk_build_tools() {
   local -r base_url="https://dl.google.com/android/repository"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK Build Tools (latest) (Linux)...'
+    echo_default_text 'Downloading Android SDK Build Tools (latest) (Linux)...'
     download_file "${base_url}/build-tools_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION}_linux.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM_LINUX}" || return 1
 
-    echo_red_text 'Downloading Android SDK Build Tools (latest) (OS X)...'
+    echo_default_text 'Downloading Android SDK Build Tools (latest) (OS X)...'
     download_file "${base_url}/build-tools_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION}_macosx.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM_OSX}" || return 1
   else
     # Set our platform + checksum to verify
@@ -1039,10 +1039,10 @@ function get_android_sdk_build_tools() {
       return 1
     fi
 
-    echo_red_text "Downloading Android SDK Build Tools (latest) to path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS}'..."
+    echo_default_text "Downloading Android SDK Build Tools (latest) to path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS}'..."
     download_and_extract "${base_url}/build-tools_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_VERSION}_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_PLATFORM}.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_SHA512SUM}" || return 1
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up Android SDK Build Tools (latest) at path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS}'!"
+      echo_default_text "SUCCESS: Set-up Android SDK Build Tools (latest) at path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS}'!"
     fi
   fi
 }
@@ -1059,10 +1059,10 @@ function get_android_sdk_build_tools_35() {
   local -r base_url="https://dl.google.com/android/repository"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK Build Tools (35.0.0) (Linux)...'
+    echo_default_text 'Downloading Android SDK Build Tools (35.0.0) (Linux)...'
     download_file "${base_url}/build-tools_r35_linux.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM_LINUX}" || return 1
 
-    echo_red_text 'Downloading Android SDK Build Tools (35.0.0) (OS X)...'
+    echo_default_text 'Downloading Android SDK Build Tools (35.0.0) (OS X)...'
     download_file "${base_url}/build-tools_r35_macosx.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM_OSX}" || return 1
   else
     # Set our platform + checksum to verify
@@ -1077,10 +1077,10 @@ function get_android_sdk_build_tools_35() {
       return 1
     fi
 
-    echo_red_text "Downloading Android SDK Build Tools (35.0.0) to path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}'..."
+    echo_default_text "Downloading Android SDK Build Tools (35.0.0) to path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}'..."
     download_and_extract "${base_url}/build-tools_r35_${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_PLATFORM}.zip" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}" "${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35_SHA512SUM}" || return 1
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up Android SDK Build Tools (35.0.0) at path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}'!"
+      echo_default_text "SUCCESS: Set-up Android SDK Build Tools (35.0.0) at path: '${IRONFOX_ANDROID_SDK_BUILD_TOOLS_35}'!"
     fi
   fi
 }
@@ -1104,10 +1104,10 @@ function get_android_sdk_platform() {
   # By default, we know the download has not failed...
   local IRONFOX_DOWNLOAD_FAILED=0
 
-  echo_red_text "Downloading Android SDK Platform (latest) to path: '${IRONFOX_ANDROID_SDK_PLATFORM}'..."
+  echo_default_text "Downloading Android SDK Platform (latest) to path: '${IRONFOX_ANDROID_SDK_PLATFORM}'..."
   "${IRONFOX_ANDROID}" sdk install "platforms/android-${IRONFOX_ANDROID_SDK_PLATFORM_VERSION}" --no-metrics --sdk="${IRONFOX_ANDROID_SDK}" || return 1
 
-  echo_green_text "SUCCESS: Set-up Android SDK Platform (latest) at path: '${IRONFOX_ANDROID_SDK_PLATFORM}'!"
+  echo_default_text "SUCCESS: Set-up Android SDK Platform (latest) at path: '${IRONFOX_ANDROID_SDK_PLATFORM}'!"
 }
 
 # Get Android SDK Platform (36)
@@ -1129,10 +1129,10 @@ function get_android_sdk_platform_36() {
   # By default, we know the download has not failed...
   local IRONFOX_DOWNLOAD_FAILED=0
 
-  echo_red_text "Downloading Android SDK Platform (36) to path: '${IRONFOX_ANDROID_SDK_PLATFORM_36}'..."
+  echo_default_text "Downloading Android SDK Platform (36) to path: '${IRONFOX_ANDROID_SDK_PLATFORM_36}'..."
   "${IRONFOX_ANDROID}" sdk install "platforms/android-36" --no-metrics --sdk="${IRONFOX_ANDROID_SDK}" || return 1
 
-  echo_green_text "SUCCESS: Set-up Android SDK Platform (36) at path: '${IRONFOX_ANDROID_SDK_PLATFORM_36}'!"
+  echo_default_text "SUCCESS: Set-up Android SDK Platform (36) at path: '${IRONFOX_ANDROID_SDK_PLATFORM_36}'!"
 }
 
 # Get Android SDK Platform Tools
@@ -1147,10 +1147,10 @@ function get_android_sdk_platform_tools() {
   local -r base_url="https://dl.google.com/android/repository"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Android SDK Platform Tools (Linux)...'
+    echo_default_text 'Downloading Android SDK Platform Tools (Linux)...'
     download_file "${base_url}/platform-tools_r${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_VERSION}-linux.zip" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM_LINUX}" || return 1
 
-    echo_red_text 'Downloading Android SDK Platform Tools (OS X)...'
+    echo_default_text 'Downloading Android SDK Platform Tools (OS X)...'
     download_file "${base_url}/platform-tools_r${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_VERSION}-darwin.zip" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM_OSX}" || return 1
   else
     # Set our platform + checksum to verify
@@ -1165,10 +1165,10 @@ function get_android_sdk_platform_tools() {
       return 1
     fi
 
-    echo_red_text "Downloading Android SDK Platform Tools to path: '${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}'..."
+    echo_default_text "Downloading Android SDK Platform Tools to path: '${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}'..."
     download_and_extract "${base_url}/platform-tools_r${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_VERSION}-${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_PLATFORM}.zip" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}" "${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS_SHA512SUM}" || return 1
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up Android SDK Platform Tools at path: '${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}'!"
+      echo_default_text "SUCCESS: Set-up Android SDK Platform Tools at path: '${IRONFOX_ANDROID_SDK_PLATFORM_TOOLS}'!"
     fi
   fi
 }
@@ -1184,10 +1184,10 @@ function get_as() {
   # Ensure we have `IRONFOX_AS_SHA512SUM`
   verify_env "${IRONFOX_AS_SHA512SUM}" 'IRONFOX_AS_SHA512SUM' || return 1
 
-  echo_red_text "Downloading Application Services to path: '${IRONFOX_AS}'..."
+  echo_default_text "Downloading Application Services to path: '${IRONFOX_AS}'..."
   download_and_extract "https://github.com/mozilla/application-services/archive/${IRONFOX_AS_COMMIT}.tar.gz" "${IRONFOX_AS}" "${IRONFOX_AS_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up Application Services at path: '${IRONFOX_AS}'!"
+    echo_default_text "SUCCESS: Set-up Application Services at path: '${IRONFOX_AS}'!"
   fi
 }
 
@@ -1215,13 +1215,13 @@ function get_bundletool() {
   local -r base_url="https://github.com/google/bundletool"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Bundletool (Source archive)...'
+    echo_default_text 'Downloading Bundletool (Source archive)...'
     download_and_extract "${base_url}/archive/${IRONFOX_BUNDLETOOL_REPO_COMMIT}.tar.gz" "${IRONFOX_BUNDLETOOL_DIR}" "${IRONFOX_BUNDLETOOL_REPO_SHA512SUM}" || return 1
 
-    echo_red_text 'Downloading Bundletool (Prebuilt)...'
+    echo_default_text 'Downloading Bundletool (Prebuilt)...'
     download_file "${base_url}/releases/download/${IRONFOX_BUNDLETOOL_VERSION}/bundletool-all-${IRONFOX_BUNDLETOOL_VERSION}.jar" "${IRONFOX_BUNDLETOOL_JAR}" "${IRONFOX_BUNDLETOOL_SHA512SUM}" || return 1
   else
-    echo_red_text "Downloading Bundletool to path: '${IRONFOX_BUNDLETOOL_DIR}'..."
+    echo_default_text "Downloading Bundletool to path: '${IRONFOX_BUNDLETOOL_DIR}'..."
     if [[ "${IRONFOX_NO_PREBUILDS}" == "1" ]]; then
       download_and_extract "${base_url}/archive/${IRONFOX_BUNDLETOOL_REPO_COMMIT}.tar.gz" "${IRONFOX_BUNDLETOOL_DIR}" "${IRONFOX_BUNDLETOOL_REPO_SHA512SUM}" || return 1
     else
@@ -1229,7 +1229,7 @@ function get_bundletool() {
     fi
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up Bundletool at path: '${IRONFOX_BUNDLETOOL_DIR}'!"
+      echo_default_text "SUCCESS: Set-up Bundletool at path: '${IRONFOX_BUNDLETOOL_DIR}'!"
     fi
   fi
 }
@@ -1266,7 +1266,7 @@ function get_cbindgen() {
     verify_file_with_env "${IRONFOX_CARGO_ENV}" 'IRONFOX_CARGO_ENV' || return 1
 
     if [[ -d "${IRONFOX_CARGO_HOME}/bin/cbindgen" ]]; then
-      echo_red_text "cbindgen is already installed at path: '${IRONFOX_CARGO_HOME}/bin/cbindgen'!"
+      echo_default_text "cbindgen is already installed at path: '${IRONFOX_CARGO_HOME}/bin/cbindgen'!"
       read -p "Do you want to re-download it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
@@ -1275,14 +1275,14 @@ function get_cbindgen() {
     fi
   fi
 
-  echo_red_text "Downloading cbindgen to path: '${IRONFOX_CBINDGEN_DIR}'..."
+  echo_default_text "Downloading cbindgen to path: '${IRONFOX_CBINDGEN_DIR}'..."
   download_and_extract "https://github.com/mozilla/cbindgen/archive/${IRONFOX_CBINDGEN_COMMIT}.tar.gz" "${IRONFOX_CBINDGEN_DIR}" "${IRONFOX_CBINDGEN_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     source "${IRONFOX_CARGO_ENV}" || return 1
-    echo_red_text 'Installing cbindgen...'
+    echo_default_text 'Installing cbindgen...'
     "${IRONFOX_CARGO}" +"${IRONFOX_RUST_VERSION}" install --locked --force --vers "${IRONFOX_CBINDGEN_VERSION}" --path "${IRONFOX_CBINDGEN_DIR}" cbindgen || return 1
-    echo_green_text "SUCCESS: Set-up cbindgen at path: '${IRONFOX_CARGO_HOME}/bin/cbindgen'!"
+    echo_default_text "SUCCESS: Set-up cbindgen at path: '${IRONFOX_CARGO_HOME}/bin/cbindgen'!"
   fi
 }
 
@@ -1297,10 +1297,10 @@ function get_firefox() {
   # Ensure we have `IRONFOX_GECKO_SHA512SUM`
   verify_env "${IRONFOX_GECKO_SHA512SUM}" 'IRONFOX_GECKO_SHA512SUM' || return 1
 
-  echo_red_text "Downloading Firefox to path: '${IRONFOX_GECKO}'..."
+  echo_default_text "Downloading Firefox to path: '${IRONFOX_GECKO}'..."
   download_and_extract "https://github.com/mozilla-firefox/firefox/archive/${IRONFOX_GECKO_COMMIT}.tar.gz" "${IRONFOX_GECKO}" "${IRONFOX_GECKO_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up Firefox at path: '${IRONFOX_GECKO}'!"
+    echo_default_text "SUCCESS: Set-up Firefox at path: '${IRONFOX_GECKO}'!"
   fi
 }
 
@@ -1315,10 +1315,10 @@ function get_firefox_l10n() {
   # Ensure we have `IRONFOX_L10N_CENTRAL_SHA512SUM`
   verify_env "${IRONFOX_L10N_CENTRAL_SHA512SUM}" 'IRONFOX_L10N_CENTRAL_SHA512SUM' || return 1
 
-  echo_red_text "Downloading firefox-l10n to path: '${IRONFOX_L10N_CENTRAL}'..."
+  echo_default_text "Downloading firefox-l10n to path: '${IRONFOX_L10N_CENTRAL}'..."
   download_and_extract "https://github.com/mozilla-l10n/firefox-l10n/archive/${IRONFOX_L10N_CENTRAL_COMMIT}.tar.gz" "${IRONFOX_L10N_CENTRAL}" "${IRONFOX_L10N_CENTRAL_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up firefox-l10n at path: '${IRONFOX_L10N_CENTRAL}'!"
+    echo_default_text "SUCCESS: Set-up firefox-l10n at path: '${IRONFOX_L10N_CENTRAL}'!"
   fi
 }
 
@@ -1333,10 +1333,10 @@ function get_glean() {
   # Ensure we have `IRONFOX_GLEAN_SHA512SUM`
   verify_env "${IRONFOX_GLEAN_SHA512SUM}" 'IRONFOX_GLEAN_SHA512SUM' || return 1
 
-  echo_red_text "Downloading Glean to path: '${IRONFOX_GLEAN}'..."
+  echo_default_text "Downloading Glean to path: '${IRONFOX_GLEAN}'..."
   download_and_extract "https://github.com/mozilla/glean/archive/${IRONFOX_GLEAN_COMMIT}.tar.gz" "${IRONFOX_GLEAN}" "${IRONFOX_GLEAN_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up Glean at path: '${IRONFOX_GLEAN}'!"
+    echo_default_text "SUCCESS: Set-up Glean at path: '${IRONFOX_GLEAN}'!"
   fi
 }
 
@@ -1375,7 +1375,7 @@ function get_glean_parser() {
     local pyenv_sourced=0
 
     if [[ -f "${IRONFOX_GLEAN_PARSER}" ]]; then
-      echo_red_text "Glean Parser is already installed at path: '${IRONFOX_GLEAN_PARSER}'!"
+      echo_default_text "Glean Parser is already installed at path: '${IRONFOX_GLEAN_PARSER}'!"
       read -p "Do you want to re-download it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
@@ -1390,7 +1390,7 @@ function get_glean_parser() {
     fi
   fi
 
-  echo_red_text "Downloading Glean Parser to path: '${IRONFOX_GLEAN_PARSER_DIR}'..."
+  echo_default_text "Downloading Glean Parser to path: '${IRONFOX_GLEAN_PARSER_DIR}'..."
   download_and_extract "https://github.com/mozilla/glean_parser/archive/${IRONFOX_GLEAN_PARSER_COMMIT}.tar.gz" "${IRONFOX_GLEAN_PARSER_DIR}" "${IRONFOX_GLEAN_PARSER_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1408,9 +1408,9 @@ function get_glean_parser() {
     # Set the version
     "${IRONFOX_SED}" -i "s|{IRONFOX_GLEAN_PARSER_VERSION}|${IRONFOX_GLEAN_PARSER_VERSION}|g" "${IRONFOX_GLEAN_PARSER_DIR}/pyproject.toml" || return 1
 
-    echo_red_text "Installing Glean Parser to path: '${IRONFOX_GLEAN_PARSER}'..."
+    echo_default_text "Installing Glean Parser to path: '${IRONFOX_GLEAN_PARSER}'..."
     "${IRONFOX_UV}" pip install --no-editable --strict "${IRONFOX_GLEAN_PARSER_DIR}" || return 1
-    echo_green_text "SUCCESS: Set-up Glean Parser at path: '${IRONFOX_GLEAN_PARSER}'!"
+    echo_default_text "SUCCESS: Set-up Glean Parser at path: '${IRONFOX_GLEAN_PARSER}'!"
   fi
 }
 
@@ -1425,10 +1425,10 @@ function get_gradle() {
   # Ensure we have `IRONFOX_GRADLE_SHA512SUM`
   verify_env "${IRONFOX_GRADLE_SHA512SUM}" 'IRONFOX_GRADLE_SHA512SUM' || return 1
 
-  echo_red_text "Downloading F-Droid's Gradle script to path: '${IRONFOX_GRADLE_PY}'..."
+  echo_default_text "Downloading F-Droid's Gradle script to path: '${IRONFOX_GRADLE_PY}'..."
   download_file "https://gitlab.com/fdroid/gradlew-fdroid/-/raw/${IRONFOX_GRADLE_COMMIT}/gradlew.py" "${IRONFOX_GRADLE_PY}" "${IRONFOX_GRADLE_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up Gradle at path: '${IRONFOX_GRADLE_PY}'!"
+    echo_default_text "SUCCESS: Set-up Gradle at path: '${IRONFOX_GRADLE_PY}'!"
   fi
 }
 
@@ -1467,7 +1467,7 @@ function get_gyp() {
     local pyenv_sourced=0
 
     if [[ -f "${IRONFOX_GYP}" ]]; then
-      echo_red_text "GYP is already installed at path: '${IRONFOX_GYP}'!"
+      echo_default_text "GYP is already installed at path: '${IRONFOX_GYP}'!"
       read -p "Do you want to re-download it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
@@ -1482,7 +1482,7 @@ function get_gyp() {
     fi
   fi
 
-  echo_red_text "Downloading GYP to path: '${IRONFOX_GYP_DIR}'..."
+  echo_default_text "Downloading GYP to path: '${IRONFOX_GYP_DIR}'..."
   download_and_extract "https://github.com/nodejs/gyp-next/archive/${IRONFOX_GYP_COMMIT}.tar.gz" "${IRONFOX_GYP_DIR}" "${IRONFOX_GYP_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1490,9 +1490,9 @@ function get_gyp() {
       source "${IRONFOX_PYENV}" || return 1
       local pyenv_sourced=1
     fi
-    echo_red_text "Installing GYP to path: '${IRONFOX_GYP}'..."
+    echo_default_text "Installing GYP to path: '${IRONFOX_GYP}'..."
     "${IRONFOX_UV}" pip install --no-editable --strict "${IRONFOX_GYP_DIR}" || return 1
-    echo_green_text "SUCCESS: Set-up GYP at path: '${IRONFOX_GYP}'!"
+    echo_default_text "SUCCESS: Set-up GYP at path: '${IRONFOX_GYP}'!"
   fi
 }
 
@@ -1512,10 +1512,10 @@ function get_jdk_17() {
   local -r base_url="https://github.com/adoptium/temurin17-binaries/releases/download"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading JDK (17) (Linux - x86_64)...'
+    echo_default_text 'Downloading JDK (17) (Linux - x86_64)...'
     download_file "${base_url}/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_x64_linux_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading JDK (17) (OS X - ARM64)...'
+    echo_default_text 'Downloading JDK (17) (OS X - ARM64)...'
     download_file "${base_url}/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_aarch64_mac_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM_OSX_ARM64}" || return 1
   else
     # Set our platform
@@ -1555,10 +1555,10 @@ function get_jdk_17() {
       fi
     fi
 
-    echo_red_text "Downloading JDK (17) to path: '${IRONFOX_JDK_17}'..."
+    echo_default_text "Downloading JDK (17) to path: '${IRONFOX_JDK_17}'..."
     download_and_extract "${base_url}/jdk-${IRONFOX_JDK_17_VERSION}%2B${IRONFOX_JDK_17_REVISION}/OpenJDK17U-jdk_${IRONFOX_JDK_17_ARCH}_${IRONFOX_JDK_17_PLATFORM}_hotspot_${IRONFOX_JDK_17_VERSION}_${IRONFOX_JDK_17_REVISION}.tar.gz" "${IRONFOX_JDK_17}" "${IRONFOX_JDK_17_SHA512SUM}" || return 1
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up JDK (17) at path: '${IRONFOX_JDK_17}'!"
+      echo_default_text "SUCCESS: Set-up JDK (17) at path: '${IRONFOX_JDK_17}'!"
     fi
   fi
 }
@@ -1578,10 +1578,10 @@ function get_jdk_21() {
   local -r base_url="https://github.com/adoptium/temurin21-binaries/releases/download"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading JDK (21) (Linux - x86_64)...'
+    echo_default_text 'Downloading JDK (21) (Linux - x86_64)...'
     download_file "${base_url}/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_x64_linux_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading JDK (21) (OS X - ARM64)...'
+    echo_default_text 'Downloading JDK (21) (OS X - ARM64)...'
     download_file "${base_url}/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_aarch64_mac_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM_OSX_ARM64}" || return 1
   else
     # Set our platform
@@ -1621,10 +1621,10 @@ function get_jdk_21() {
       fi
     fi
 
-    echo_red_text "Downloading JDK (21) to path: '${IRONFOX_JDK_21}'..."
+    echo_default_text "Downloading JDK (21) to path: '${IRONFOX_JDK_21}'..."
     download_and_extract "${base_url}/jdk-${IRONFOX_JDK_21_VERSION}%2B${IRONFOX_JDK_21_REVISION}/OpenJDK21U-jdk_${IRONFOX_JDK_21_ARCH}_${IRONFOX_JDK_21_PLATFORM}_hotspot_${IRONFOX_JDK_21_VERSION}_${IRONFOX_JDK_21_REVISION}.tar.gz" "${IRONFOX_JDK_21}" "${IRONFOX_JDK_21_SHA512SUM}" || return 1
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up JDK (21) at path: '${IRONFOX_JDK_21}'!"
+      echo_default_text "SUCCESS: Set-up JDK (21) at path: '${IRONFOX_JDK_21}'!"
     fi
   fi
 }
@@ -1644,10 +1644,10 @@ function get_jdk_25() {
   local -r base_url="https://github.com/adoptium/temurin25-binaries/releases/download"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading JDK (25) (Linux - x86_64)...'
+    echo_default_text 'Downloading JDK (25) (Linux - x86_64)...'
     download_file "${base_url}/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_x64_linux_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading JDK (25) (OS X - ARM64)...'
+    echo_default_text 'Downloading JDK (25) (OS X - ARM64)...'
     download_file "${base_url}/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_aarch64_mac_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM_OSX_ARM64}" || return 1
   else
     # Set our platform
@@ -1687,10 +1687,10 @@ function get_jdk_25() {
       fi
     fi
 
-    echo_red_text "Downloading JDK (25) to path: '${IRONFOX_JDK_25}'..."
+    echo_default_text "Downloading JDK (25) to path: '${IRONFOX_JDK_25}'..."
     download_and_extract "${base_url}/jdk-${IRONFOX_JDK_25_VERSION}%2B${IRONFOX_JDK_25_REVISION}/OpenJDK25U-jdk_${IRONFOX_JDK_25_ARCH}_${IRONFOX_JDK_25_PLATFORM}_hotspot_${IRONFOX_JDK_25_VERSION}_${IRONFOX_JDK_25_REVISION}.tar.gz" "${IRONFOX_JDK_25}" "${IRONFOX_JDK_25_SHA512SUM}" || return 1
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up JDK (25) at path: '${IRONFOX_JDK_25}'!"
+      echo_default_text "SUCCESS: Set-up JDK (25) at path: '${IRONFOX_JDK_25}'!"
     fi
   fi
 }
@@ -1706,10 +1706,10 @@ function get_microg() {
   # Ensure we have `IRONFOX_GMSCORE_SHA512SUM`
   verify_env "${IRONFOX_GMSCORE_SHA512SUM}" 'IRONFOX_GMSCORE_SHA512SUM' || return 1
 
-  echo_red_text "Downloading microG to path: '${IRONFOX_GMSCORE}'..."
+  echo_default_text "Downloading microG to path: '${IRONFOX_GMSCORE}'..."
   download_and_extract "https://github.com/microg/GmsCore/archive/${IRONFOX_GMSCORE_COMMIT}.tar.gz" "${IRONFOX_GMSCORE}" "${IRONFOX_GMSCORE_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up microG at path: '${IRONFOX_GMSCORE}'!"
+    echo_default_text "SUCCESS: Set-up microG at path: '${IRONFOX_GMSCORE}'!"
   fi
 }
 
@@ -1727,7 +1727,7 @@ function get_node() {
   # If all we're doing is updating the checksum, we don't care if the environment is prepared
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]]; then
     if [[ -d "${IRONFOX_NVM}" ]]; then
-      echo_red_text "The Node.js environment is already set-up at path: '${IRONFOX_NVM}'!"
+      echo_default_text "The Node.js environment is already set-up at path: '${IRONFOX_NVM}'!"
       read -p "Do you want to re-create it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
@@ -1739,12 +1739,12 @@ function get_node() {
   download_and_extract "https://github.com/nvm-sh/nvm/archive/${IRONFOX_NVM_COMMIT}.tar.gz" "${IRONFOX_NVM}" "${IRONFOX_NVM_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_red_text 'Installing Node.js...'
+    echo_default_text 'Installing Node.js...'
     source "${IRONFOX_NVM_ENV}" || return 1
     nvm install "${IRONFOX_NODE_VERSION}" || return 1
     nvm alias default "${IRONFOX_NODE_VERSION}" || return 1
     nvm use "${IRONFOX_NODE_VERSION}" || return 1
-    echo_green_text "SUCCESS: Set-up Node.js environment at path: '${IRONFOX_NVM}'!"
+    echo_default_text "SUCCESS: Set-up Node.js environment at path: '${IRONFOX_NVM}'!"
   fi
 }
 
@@ -1771,14 +1771,14 @@ function get_npm() {
     return 1
   fi
 
-  echo_red_text 'Downloading npm...'
+  echo_default_text 'Downloading npm...'
   download_file "https://registry.npmjs.org/npm/-/npm-${IRONFOX_NPM_VERSION}.tgz" "${IRONFOX_DOWNLOADS}/npm.tgz" "${IRONFOX_NPM_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_red_text 'Installing npm...'
+    echo_default_text 'Installing npm...'
     source "${IRONFOX_NVM_ENV}" || return 1
     "${IRONFOX_NPM}" install -g npm@file:"${IRONFOX_DOWNLOADS}/npm.tgz" || return 1
-    echo_green_text "SUCCESS: Set-up npm at path: '${IRONFOX_NPM}'!"
+    echo_default_text "SUCCESS: Set-up npm at path: '${IRONFOX_NPM}'!"
   fi
 }
 
@@ -1793,10 +1793,10 @@ function get_phoenix() {
   # Ensure we have `IRONFOX_PHOENIX_SHA512SUM`
   verify_env "${IRONFOX_PHOENIX_SHA512SUM}" 'IRONFOX_PHOENIX_SHA512SUM' || return 1
 
-  echo_red_text "Downloading Phoenix to path: '${IRONFOX_PHOENIX}'..."
+  echo_default_text "Downloading Phoenix to path: '${IRONFOX_PHOENIX}'..."
   download_and_extract "https://gitlab.com/celenityy/Phoenix/-/archive/${IRONFOX_PHOENIX_COMMIT}/Phoenix-${IRONFOX_PHOENIX_COMMIT}.tar.gz" "${IRONFOX_PHOENIX}" "${IRONFOX_PHOENIX_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up Phoenix at path: '${IRONFOX_PHOENIX}'!"
+    echo_default_text "SUCCESS: Set-up Phoenix at path: '${IRONFOX_PHOENIX}'!"
   fi
 }
 
@@ -1829,14 +1829,14 @@ function get_pip() {
     verify_dir_with_env "${IRONFOX_UV_DIR}" 'IRONFOX_UV_DIR' || return 1
   fi
 
-  echo_red_text "Downloading pip to path: '${IRONFOX_PIP_DIR}'..."
+  echo_default_text "Downloading pip to path: '${IRONFOX_PIP_DIR}'..."
   download_and_extract "https://github.com/pypa/pip/archive/${IRONFOX_PIP_COMMIT}.tar.gz" "${IRONFOX_PIP_DIR}" "${IRONFOX_PIP_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
     source "${IRONFOX_PYENV}" || return 1
-    echo_red_text "Installing pip to path: '${IRONFOX_PIP}'..."
+    echo_default_text "Installing pip to path: '${IRONFOX_PIP}'..."
     "${IRONFOX_UV}" pip install --no-editable --strict "${IRONFOX_PIP_DIR}" || return 1
-    echo_green_text "SUCCESS: Set-up pip at path: '${IRONFOX_PIP}'!"
+    echo_default_text "SUCCESS: Set-up pip at path: '${IRONFOX_PIP}'!"
   fi
 }
 
@@ -1851,7 +1851,7 @@ function get_prebuilds() {
   # Ensure we have `IRONFOX_PREBUILDS_SHA512SUM`
   verify_env "${IRONFOX_PREBUILDS_SHA512SUM}" 'IRONFOX_PREBUILDS_SHA512SUM' || return 1
 
-  echo_red_text "Downloading the IronFox prebuilds repository to path: '${IRONFOX_PREBUILDS}'..."
+  echo_default_text "Downloading the IronFox prebuilds repository to path: '${IRONFOX_PREBUILDS}'..."
   download_and_extract "https://gitlab.com/ironfox-oss/prebuilds/-/archive/${IRONFOX_PREBUILDS_COMMIT}/prebuilds-${IRONFOX_PREBUILDS_COMMIT}.tar.gz" "${IRONFOX_PREBUILDS}" "${IRONFOX_PREBUILDS_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -1859,10 +1859,10 @@ function get_prebuilds() {
     verify_exec "${IRONFOX_BASH}" 'IRONFOX_BASH' || return 1
 
     pushd "${IRONFOX_PREBUILDS}"
-    echo_red_text 'Downloading prebuild sources...'
+    echo_default_text 'Downloading prebuild sources...'
     "${IRONFOX_BASH}" "${IRONFOX_PREBUILDS}/scripts/get_sources.sh" || return 1
     popd
-    echo_green_text "SUCCESS: Set-up the IronFox prebuilds repository at path: '${IRONFOX_PREBUILDS}'!"
+    echo_default_text "SUCCESS: Set-up the IronFox prebuilds repository at path: '${IRONFOX_PREBUILDS}'!"
   fi
 }
 
@@ -1898,7 +1898,7 @@ function get_python() {
     verify_env "${IRONFOX_UV_PYTHON}" 'IRONFOX_UV_PYTHON' || return 1
 
     if [[ -d "${IRONFOX_PYENV_DIR}" ]]; then
-      echo_red_text "The Python environment is already set-up at path: '${IRONFOX_PYENV_DIR}'!"
+      echo_default_text "The Python environment is already set-up at path: '${IRONFOX_PYENV_DIR}'!"
       read -p "Do you want to re-create it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
@@ -1908,7 +1908,7 @@ function get_python() {
     fi
 
     if [[ -d "${IRONFOX_PYTHON_DIR}" ]]; then
-      echo_red_text "Found existing installation at path: '${IRONFOX_PYTHON_DIR}'!"
+      echo_default_text "Found existing installation at path: '${IRONFOX_PYTHON_DIR}'!"
       echo 'Continuing will remove this installation and related data.'
       read -p "Do you still want to continue? [y/N] " -n 1 -r
       echo
@@ -1932,28 +1932,28 @@ function get_python() {
   local -r base_output="${IRONFOX_PYTHON_DIR}/${IRONFOX_PYTHON_GIT_RELEASE}"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading Python (Linux - ARM)...'
+    echo_default_text 'Downloading Python (Linux - ARM)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-armv7-unknown-linux-gnueabihf-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-armv7-unknown-linux-gnueabihf-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_ARM}" || return 1
 
-    echo_red_text 'Downloading Python (Linux - ARM64)...'
+    echo_default_text 'Downloading Python (Linux - ARM64)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_ARM64}" || return 1
 
-    echo_red_text 'Downloading Python (Linux - PPC64)...'
+    echo_default_text 'Downloading Python (Linux - PPC64)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-ppc64le-unknown-linux-gnu-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-ppc64le-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_PPC64}" || return 1
 
-    echo_red_text 'Downloading Python (Linux - RISC-V)...'
+    echo_default_text 'Downloading Python (Linux - RISC-V)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-riscv64-unknown-linux-gnu-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-riscv64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_RISCV}" || return 1
 
-    echo_red_text 'Downloading Python (Linux - s390x)...'
+    echo_default_text 'Downloading Python (Linux - s390x)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-s390x-unknown-linux-gnu-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-s390x-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_S390X}" || return 1
 
-    echo_red_text 'Downloading Python (Linux - x86_64)...'
+    echo_default_text 'Downloading Python (Linux - x86_64)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading Python (OS X - ARM64)...'
+    echo_default_text 'Downloading Python (OS X - ARM64)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-apple-darwin-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-aarch64-apple-darwin-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_OSX_ARM64}" || return 1
 
-    echo_red_text 'Downloading Python (OS X - x86_64)...'
+    echo_default_text 'Downloading Python (OS X - x86_64)...'
     download_file "${base_url}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-apple-darwin-install_only_stripped.tar.gz" "${base_output}/cpython-${IRONFOX_PYTHON_VERSION}+${IRONFOX_PYTHON_GIT_RELEASE}-x86_64-apple-darwin-install_only_stripped.tar.gz" "${IRONFOX_PYTHON_SHA512SUM_OSX_X86_64}" || return 1
   else
     # Set our platform
@@ -2029,7 +2029,7 @@ function get_python() {
     local -r dl_output="${base_output}/${dl_archive}"
     local -r dl_url="${base_url}/${dl_archive}"
 
-    echo_red_text 'Downloading Python...'
+    echo_default_text 'Downloading Python...'
     download_file "${dl_url}" "${dl_output}" "${IRONFOX_PYTHON_SHA512SUM}" || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-ups, clean-up, and exit
@@ -2043,9 +2043,9 @@ function get_python() {
       "${IRONFOX_RM}" -rf "${IRONFOX_EXTERNAL}/temp"
       return 1
     elif [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Downloaded Python to path: '${dl_output}'!"
+      echo_default_text "SUCCESS: Downloaded Python to path: '${dl_output}'!"
 
-      echo_red_text 'Installing Python...'
+      echo_default_text 'Installing Python...'
       "${IRONFOX_UV}" python install "${IRONFOX_PYTHON_VERSION}" || local IRONFOX_PYTHON_INSTALL_FAILED=1
 
       # If the install failed, restore our back-ups, clean-up, and exit
@@ -2060,7 +2060,7 @@ function get_python() {
         return 1
       fi
 
-      echo_red_text "Creating Python environment at path: '${IRONFOX_PYENV_DIR}'..."
+      echo_default_text "Creating Python environment at path: '${IRONFOX_PYENV_DIR}'..."
       "${IRONFOX_UV}" venv "${IRONFOX_PYENV_DIR}" || local IRONFOX_PYENV_FAILED=1
 
       # If the Python env set-up failed, restore our back-up, clean-up, and exit
@@ -2070,7 +2070,7 @@ function get_python() {
         "${IRONFOX_RM}" -rf "${IRONFOX_EXTERNAL}/temp"
         return 1
       else
-        echo_green_text "SUCCESS: Set-up Python environment at path: '${IRONFOX_PYENV_DIR}'!"
+        echo_default_text "SUCCESS: Set-up Python environment at path: '${IRONFOX_PYENV_DIR}'!"
       fi
     fi
   fi
@@ -2105,7 +2105,7 @@ function get_pyyaml() {
     local pyenv_sourced=0
 
     if [[ -d "${IRONFOX_PYYAML}" ]]; then
-      echo_red_text "PyYAML is already downloaded at path: '${IRONFOX_PYYAML}'!"
+      echo_default_text "PyYAML is already downloaded at path: '${IRONFOX_PYYAML}'!"
       read -p "Do you want to re-download it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
@@ -2120,7 +2120,7 @@ function get_pyyaml() {
     fi
   fi
 
-  echo_red_text "Downloading PyYAML to path: '${IRONFOX_PYYAML}'..."
+  echo_default_text "Downloading PyYAML to path: '${IRONFOX_PYYAML}'..."
   download_and_extract "https://github.com/yaml/pyyaml/archive/${IRONFOX_PYYAML_COMMIT}.tar.gz" "${IRONFOX_PYYAML}" "${IRONFOX_PYYAML_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -2128,9 +2128,9 @@ function get_pyyaml() {
       source "${IRONFOX_PYENV}" || return 1
       local pyenv_sourced=1
     fi
-    echo_red_text 'Installing PyYAML...'
+    echo_default_text 'Installing PyYAML...'
     "${IRONFOX_UV}" pip install --no-editable --strict "${IRONFOX_PYYAML}" || return 1
-    echo_green_text "SUCCESS: Set-up PyYAML at path: '${IRONFOX_PYYAML}'!"
+    echo_default_text "SUCCESS: Set-up PyYAML at path: '${IRONFOX_PYYAML}'!"
   fi
 }
 
@@ -2161,7 +2161,7 @@ function get_rust() {
   verify_env "${IRONFOX_RUSTUP_HOME}" 'IRONFOX_RUSTUP_HOME' || return 1
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" != 1 ]] && [[ -d "${IRONFOX_CARGO_HOME}" ]]; then
-    echo_red_text "Found existing installation at path: '${IRONFOX_CARGO_HOME}'!"
+    echo_default_text "Found existing installation at path: '${IRONFOX_CARGO_HOME}'!"
     echo 'Continuing will remove this installation and related data'
     read -p "Do you still want to continue? [y/N] " -n 1 -r
     echo
@@ -2180,7 +2180,7 @@ function get_rust() {
   # rustup-init.sh
   local -r rustup_init_sh="${IRONFOX_DOWNLOADS}/rustup-init.sh"
 
-  echo_red_text 'Downloading Rust...'
+  echo_default_text 'Downloading Rust...'
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
     download_file "${base_url}" "${rustup_init_sh}" "${IRONFOX_RUSTUP_SHA512SUM}" || return 1
   else
@@ -2202,7 +2202,7 @@ function get_rust() {
       "${IRONFOX_RM}" -rf "${IRONFOX_EXTERNAL}/temp"
       return 1
     elif [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_red_text "Installing Rust to path: '${IRONFOX_CARGO_HOME}'..."
+      echo_default_text "Installing Rust to path: '${IRONFOX_CARGO_HOME}'..."
       "${IRONFOX_BASH}" -x "${rustup_init_sh}" -y --no-modify-path --no-update-default-toolchain --profile=minimal || local IRONFOX_CARGO_INSTALL_FAILED=1
 
       # If the install failed, restore our back-ups, clean-up, and exit
@@ -2235,7 +2235,7 @@ function get_rust() {
       rustup target add thumbv7neon-linux-androideabi || return 1
       rustup target add x86_64-linux-android || return 1
 
-      echo_green_text "SUCCESS: Set-up Rust at path: '${IRONFOX_CARGO_HOME}'!"
+      echo_default_text "SUCCESS: Set-up Rust at path: '${IRONFOX_CARGO_HOME}'!"
     fi
   fi
 }
@@ -2272,7 +2272,7 @@ function get_s3cmd() {
     local pyenv_sourced=0
 
     if [[ -f "${IRONFOX_S3CMD}" ]]; then
-      echo_red_text "s3cmd is already installed at path: '${IRONFOX_S3CMD}'!"
+      echo_default_text "s3cmd is already installed at path: '${IRONFOX_S3CMD}'!"
       read -p "Do you want to re-download it? [y/N] " -n 1 -r
       echo
       if [[ "${REPLY}" =~ ^[Nn]$ ]]; then
@@ -2287,7 +2287,7 @@ function get_s3cmd() {
     fi
   fi
 
-  echo_red_text "Downloading s3cmd to path: '${IRONFOX_S3CMD_DIR}'..."
+  echo_default_text "Downloading s3cmd to path: '${IRONFOX_S3CMD_DIR}'..."
   download_and_extract "https://github.com/s3tools/s3cmd/archive/${IRONFOX_S3CMD_COMMIT}.tar.gz" "${IRONFOX_S3CMD_DIR}" "${IRONFOX_S3CMD_SHA512SUM}" || return 1
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -2295,9 +2295,9 @@ function get_s3cmd() {
       source "${IRONFOX_PYENV}" || return 1
       local pyenv_sourced=1
     fi
-    echo_red_text "Installing s3cmd to path: '${IRONFOX_S3CMD}'..."
+    echo_default_text "Installing s3cmd to path: '${IRONFOX_S3CMD}'..."
     "${IRONFOX_UV}" pip install --no-editable --strict "${IRONFOX_S3CMD_DIR}" || return 1
-    echo_green_text "SUCCESS: Set-up s3cmd at path: '${IRONFOX_S3CMD}'!"
+    echo_default_text "SUCCESS: Set-up s3cmd at path: '${IRONFOX_S3CMD}'!"
   fi
 }
 
@@ -2316,16 +2316,16 @@ function get_shellcheck() {
   local -r base_url="https://github.com/koalaman/shellcheck/releases/download/${IRONFOX_SHELLCHECK_VERSION}"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading shellcheck (Linux - ARM64)...'
+    echo_default_text 'Downloading shellcheck (Linux - ARM64)...'
     download_file "${base_url}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.linux.aarch64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_LINUX_ARM64}" || return 1
 
-    echo_red_text 'Downloading shellcheck (Linux - x86_64)...'
+    echo_default_text 'Downloading shellcheck (Linux - x86_64)...'
     download_file "${base_url}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.linux.x86_64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading shellcheck (OS X - ARM64)...'
+    echo_default_text 'Downloading shellcheck (OS X - ARM64)...'
     download_file "${base_url}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.darwin.aarch64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_OSX_ARM64}" || return 1
 
-    echo_red_text 'Downloading shellcheck (OS X - x86_64)...'
+    echo_default_text 'Downloading shellcheck (OS X - x86_64)...'
     download_file "${base_url}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.darwin.x86_64.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM_OSX_X86_64}" || return 1
   else
     # Set our platform
@@ -2369,7 +2369,7 @@ function get_shellcheck() {
       fi
     fi
 
-    echo_red_text "Downloading shellcheck to path: '${IRONFOX_SHELLCHECK_DIR}'..."
+    echo_default_text "Downloading shellcheck to path: '${IRONFOX_SHELLCHECK_DIR}'..."
     download_and_extract "${base_url}/shellcheck-${IRONFOX_SHELLCHECK_VERSION}.${IRONFOX_SHELLCHECK_PLATFORM}.${IRONFOX_SHELLCHECK_ARCH}.tar.xz" "${IRONFOX_SHELLCHECK_DIR}" "${IRONFOX_SHELLCHECK_SHA512SUM}" || return 1
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -2378,7 +2378,7 @@ function get_shellcheck() {
         source "${IRONFOX_SCRIPTS}/lint-hook.sh" || return 1
       fi
 
-      echo_green_text "SUCCESS: Set-up shellcheck at path: '${IRONFOX_SHELLCHECK}'!"
+      echo_default_text "SUCCESS: Set-up shellcheck at path: '${IRONFOX_SHELLCHECK}'!"
     fi
   fi
 }
@@ -2401,16 +2401,16 @@ function get_shfmt() {
   local -r base_url="https://github.com/mvdan/sh/releases/download/${IRONFOX_SHFMT_VERSION}"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading shfmt (Linux - ARM64)...'
+    echo_default_text 'Downloading shfmt (Linux - ARM64)...'
     download_file "${base_url}/shfmt_${IRONFOX_SHFMT_VERSION}_linux_arm64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_LINUX_ARM64}" || return 1
 
-    echo_red_text 'Downloading shfmt (Linux - x86_64)...'
+    echo_default_text 'Downloading shfmt (Linux - x86_64)...'
     download_file "${base_url}/shfmt_${IRONFOX_SHFMT_VERSION}_linux_amd64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading shfmt (OS X - ARM64)...'
+    echo_default_text 'Downloading shfmt (OS X - ARM64)...'
     download_file "${base_url}/shfmt_${IRONFOX_SHFMT_VERSION}_darwin_arm64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_OSX_ARM64}" || return 1
 
-    echo_red_text 'Downloading shfmt (OS X - x86_64)...'
+    echo_default_text 'Downloading shfmt (OS X - x86_64)...'
     download_file "${base_url}/shfmt_${IRONFOX_SHFMT_VERSION}_darwin_amd64" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM_OSX_X86_64}" || return 1
   else
     # Set our platform
@@ -2454,7 +2454,7 @@ function get_shfmt() {
       fi
     fi
 
-    echo_red_text "Downloading shfmt to path: '${IRONFOX_SHFMT}'..."
+    echo_default_text "Downloading shfmt to path: '${IRONFOX_SHFMT}'..."
     download_file "${base_url}/shfmt_${IRONFOX_SHFMT_VERSION}_${IRONFOX_SHFMT_PLATFORM}_${IRONFOX_SHFMT_ARCH}" "${IRONFOX_SHFMT}" "${IRONFOX_SHFMT_SHA512SUM}" || return 1
 
     if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
@@ -2465,7 +2465,7 @@ function get_shfmt() {
         source "${IRONFOX_SCRIPTS}/lint-hook.sh" || return 1
       fi
 
-      echo_green_text "SUCCESS: Set-up shfmt at path: '${IRONFOX_SHFMT}'!"
+      echo_default_text "SUCCESS: Set-up shfmt at path: '${IRONFOX_SHFMT}'!"
     fi
   fi
 }
@@ -2481,10 +2481,10 @@ function get_uniffi() {
   # Ensure we have `IRONFOX_UNIFFI_SHA512SUM`
   verify_env "${IRONFOX_UNIFFI_SHA512SUM}" 'IRONFOX_UNIFFI_SHA512SUM' || return 1
 
-  echo_red_text "Downloading uniffi-rs to path: '${IRONFOX_UNIFFI}'..."
+  echo_default_text "Downloading uniffi-rs to path: '${IRONFOX_UNIFFI}'..."
   download_and_extract "https://github.com/mozilla/uniffi-rs/archive/${IRONFOX_UNIFFI_COMMIT}.tar.gz" "${IRONFOX_UNIFFI_DIR}" "${IRONFOX_UNIFFI_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up uniffi-rs at path: '${IRONFOX_UNIFFI_DIR}'!"
+    echo_default_text "SUCCESS: Set-up uniffi-rs at path: '${IRONFOX_UNIFFI_DIR}'!"
   fi
 }
 
@@ -2499,10 +2499,10 @@ function get_up_ac() {
   # Ensure we have `IRONFOX_UP_AC_SHA512SUM`
   verify_env "${IRONFOX_UP_AC_SHA512SUM}" 'IRONFOX_UP_AC_SHA512SUM' || return 1
 
-  echo_red_text "Downloading UnifiedPush-AC to path: '${IRONFOX_UP_AC}'..."
+  echo_default_text "Downloading UnifiedPush-AC to path: '${IRONFOX_UP_AC}'..."
   download_and_extract "https://gitlab.com/ironfox-oss/unifiedpush-ac/-/archive/${IRONFOX_UP_AC_COMMIT}/unifiedpush-ac-${IRONFOX_UP_AC_COMMIT}.tar.gz" "${IRONFOX_UP_AC}" "${IRONFOX_UP_AC_SHA512SUM}" || return 1
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up UnifiedPush-AC at path: '${IRONFOX_UP_AC}'!"
+    echo_default_text "SUCCESS: Set-up UnifiedPush-AC at path: '${IRONFOX_UP_AC}'!"
   fi
 }
 
@@ -2523,7 +2523,7 @@ function get_uv() {
     verify_env "${IRONFOX_UV_LOCAL}" 'IRONFOX_UV_LOCAL' || return 1
 
     if [[ -d "${IRONFOX_UV_DIR}" ]]; then
-      echo_red_text "Found existing installation at path: '${IRONFOX_UV_DIR}'!"
+      echo_default_text "Found existing installation at path: '${IRONFOX_UV_DIR}'!"
       echo 'Continuing will remove this installation and related data.'
       read -p "Do you still want to continue? [y/N] " -n 1 -r
       echo
@@ -2541,28 +2541,28 @@ function get_uv() {
   local -r base_url="https://github.com/astral-sh/uv/releases/download/${IRONFOX_UV_VERSION}"
 
   if [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading uv (Linux - ARM)...'
+    echo_default_text 'Downloading uv (Linux - ARM)...'
     download_file "${base_url}/uv-armv7-unknown-linux-gnueabihf.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-linux-arm.tar.gz" "${IRONFOX_UV_SHA512SUM_LINUX_ARM}" || return 1
 
-    echo_red_text 'Downloading uv (Linux - ARM64)...'
+    echo_default_text 'Downloading uv (Linux - ARM64)...'
     download_file "${base_url}/uv-aarch64-unknown-linux-gnu.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-linux-arm64.tar.gz" "${IRONFOX_UV_SHA512SUM_LINUX_ARM64}" || return 1
 
-    echo_red_text 'Downloading uv (Linux - PPC64)...'
+    echo_default_text 'Downloading uv (Linux - PPC64)...'
     download_file "${base_url}/uv-powerpc64le-unknown-linux-gnu.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-linux-ppc64.tar.gz" "${IRONFOX_UV_SHA512SUM_LINUX_PPC64}" || return 1
 
-    echo_red_text 'Downloading uv (Linux - RISC-V)...'
+    echo_default_text 'Downloading uv (Linux - RISC-V)...'
     download_file "${base_url}/uv-riscv64gc-unknown-linux-gnu.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-linux-riscv.tar.gz" "${IRONFOX_UV_SHA512SUM_LINUX_RISCV}" || return 1
 
-    echo_red_text 'Downloading uv (Linux - s390x)...'
+    echo_default_text 'Downloading uv (Linux - s390x)...'
     download_file "${base_url}/uv-s390x-unknown-linux-gnu.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-linux-s390x.tar.gz" "${IRONFOX_UV_SHA512SUM_LINUX_S390X}" || return 1
 
-    echo_red_text 'Downloading uv (Linux - x86_64)...'
+    echo_default_text 'Downloading uv (Linux - x86_64)...'
     download_file "${base_url}/uv-x86_64-unknown-linux-gnu.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-linux-x86_64.tar.gz" "${IRONFOX_UV_SHA512SUM_LINUX_X86_64}" || return 1
 
-    echo_red_text 'Downloading uv (OS X - ARM64)...'
+    echo_default_text 'Downloading uv (OS X - ARM64)...'
     download_file "${base_url}/uv-aarch64-apple-darwin.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-osx-arm64.tar.gz" "${IRONFOX_UV_SHA512SUM_OSX_ARM64}" || return 1
 
-    echo_red_text 'Downloading uv (OS X - x86_64)...'
+    echo_default_text 'Downloading uv (OS X - x86_64)...'
     download_file "${base_url}/uv-x86_64-apple-darwin.tar.gz" "${IRONFOX_EXTERNAL}/temp/uv-checksum-update-osx-x86_64.tar.gz" "${IRONFOX_UV_SHA512SUM_OSX_X86_64}" || return 1
   else
     # Set our platform
@@ -2632,7 +2632,7 @@ function get_uv() {
     # By default, we know the download hasn't failed...
     local IRONFOX_DOWNLOAD_FAILED=0
 
-    echo_red_text "Downloading uv to path: '${IRONFOX_UV_DIR}'..."
+    echo_default_text "Downloading uv to path: '${IRONFOX_UV_DIR}'..."
     download_and_extract "${base_url}/uv-${IRONFOX_UV_ARCH}-${IRONFOX_UV_PLATFORM}.tar.gz" "${IRONFOX_UV_DIR}" "${IRONFOX_UV_SHA512SUM}" || local IRONFOX_DOWNLOAD_FAILED=1
 
     # If the download failed, restore our back-up, clean-up, and exit
@@ -2643,7 +2643,7 @@ function get_uv() {
       "${IRONFOX_RM}" -rf "${IRONFOX_EXTERNAL}/temp"
       return 1
     elif [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-      echo_green_text "SUCCESS: Set-up uv at path: '${IRONFOX_UV}'!"
+      echo_default_text "SUCCESS: Set-up uv at path: '${IRONFOX_UV}'!"
     fi
   fi
 }
@@ -2667,18 +2667,18 @@ function get_wasi() {
 
   # Get WASI SDK for Linux
   if [[ "${IRONFOX_PLATFORM}" == 'linux' ]] || [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading prebuilt WASI SDK (Linux)...'
+    echo_default_text 'Downloading prebuilt WASI SDK (Linux)...'
     download_and_extract "${base_url}/linux/wasi-sdk-${IRONFOX_WASI_VERSION}-${IRONFOX_WASI_IRONFOX_REVISION}-linux.tar.xz" "${IRONFOX_WASI}" "${IRONFOX_WASI_LINUX_IRONFOX_SHA512SUM}" || return 1
   fi
 
   # Get WASI SDK for OS X
   if [[ "${IRONFOX_PLATFORM}" == 'darwin' ]] || [[ "${IRONFOX_GET_SOURCE_CHECKSUM_UPDATE}" == 1 ]]; then
-    echo_red_text 'Downloading prebuilt WASI SDK (OS X)...'
+    echo_default_text 'Downloading prebuilt WASI SDK (OS X)...'
     download_and_extract "${base_url}/osx/wasi-sdk-${IRONFOX_WASI_VERSION}-${IRONFOX_WASI_IRONFOX_REVISION}-osx.tar.xz" "${IRONFOX_WASI}" "${IRONFOX_WASI_OSX_IRONFOX_SHA512SUM}" || return 1
   fi
 
   if [[ "${IRONFOX_PERFORM_POST_DOWNLOAD}" == 1 ]]; then
-    echo_green_text "SUCCESS: Set-up the prebuilt WASI SDK at path: '${IRONFOX_WASI}'!"
+    echo_default_text "SUCCESS: Set-up the prebuilt WASI SDK at path: '${IRONFOX_WASI}'!"
   fi
 }
 

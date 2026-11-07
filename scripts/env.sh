@@ -21,7 +21,7 @@ function set_root() {
     local -r dirname='/usr/bin/dirname'
   else
     if ! command -v dirname > /dev/null 2>&1; then
-      echo "ERROR: Missing dirname!" >&2
+      echo_red_text "ERROR: Missing dirname!" >&2
       return 1
     fi
     # It isn't a known location, so we sadly have to just fall-back to the PATH
@@ -35,7 +35,7 @@ function set_root() {
     if [[ -d "${IRONFOX_ROOT}" ]]; then
       echo -n "${IRONFOX_ROOT}" > "${root_txt}" || return 1
     else
-      echo "ERROR: Unable to find a valid root directory: '${IRONFOX_ROOT}'!"
+      echo_red_text "ERROR: Unable to find a valid root directory: '${IRONFOX_ROOT}'!"
       return 1
     fi
   else
@@ -48,7 +48,7 @@ function set_root() {
       local -r cat='/usr/bin/cat'
     else
       if ! command -v cat > /dev/null 2>&1; then
-        echo "ERROR: Missing cat!" >&2
+        echo_red_text "ERROR: Missing cat!" >&2
         return 1
       fi
       # It isn't a known location, so we sadly have to just fall-back to the PATH
@@ -64,7 +64,7 @@ function set_root() {
       local -r xargs='/usr/bin/xargs'
     else
       if ! command -v xargs > /dev/null 2>&1; then
-        echo "ERROR: Missing xargs!" >&2
+        echo_red_text "ERROR: Missing xargs!" >&2
         return 1
       fi
       # It isn't a known location, so we sadly have to just fall-back to the PATH
@@ -74,7 +74,7 @@ function set_root() {
     readonly IRONFOX_ROOT=$("${cat}" "${root_txt}" | "${xargs}")
 
     if [[ ! -d "${IRONFOX_ROOT}" ]]; then
-      echo "ERROR: Unable to find a valid root directory: '${IRONFOX_ROOT}'!"
+      echo_red_text "ERROR: Unable to find a valid root directory: '${IRONFOX_ROOT}'!"
       return 1
     fi
   fi
@@ -136,9 +136,9 @@ function add_to_path() {
       "${IRONFOX_RM}" -f "${path}/${exec_name}"
     fi
     "${IRONFOX_LN}" -sf "${exec}" "${path}/${exec_name}" || return 1
-    echo_green_text "Added '${exec_name}' to PATH (from '${exec_env}')!"
+    echo_default_text "Added '${exec_name}' to PATH (from '${exec_env}')!"
   else
-    echo_red_text "WARNING: Unable to add '${exec_name}' to PATH!"
+    echo_yellow_text "WARNING: Unable to add '${exec_name}' to PATH!"
     echo "Please ensure that '${exec_env}' is set to a valid location."
   fi
 }
@@ -400,7 +400,7 @@ function set_env() {
 
     # Ensure we have `IRONFOX_ROOT`
     if [[ -z "${IRONFOX_ROOT+x}" ]] || [[ ! -d "${IRONFOX_ROOT}" ]]; then
-      echo "ERROR: 'IRONFOX_ROOT' is missing or invalid!"
+      echo_red_text "ERROR: 'IRONFOX_ROOT' is missing or invalid!"
       return 1
     fi
 
@@ -417,7 +417,7 @@ function set_env() {
 
     # Include utilities
     if [[ -z "${IRONFOX_UTILS+x}" ]] || [[ ! -f "${IRONFOX_UTILS}" ]] || [[ ! -s "${IRONFOX_UTILS}" ]]; then
-      echo "ERROR: 'IRONFOX_UTILS' is missing or invalid!"
+      echo_red_text "ERROR: 'IRONFOX_UTILS' is missing or invalid!"
       return 1
     fi
     source "${IRONFOX_UTILS}" || return 1

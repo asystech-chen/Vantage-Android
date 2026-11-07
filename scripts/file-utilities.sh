@@ -90,12 +90,12 @@ function create_archive() {
 
   # Check if the output archive already exists
   if [[ -f "${output_archive}" ]]; then
-    echo_red_text "'${output_archive}' already exists"
-    echo_red_text 'Continuing WILL override this archive'
+    echo_default_text "'${output_archive}' already exists"
+    echo_default_text 'Continuing WILL override this archive'
     read -p "Are you sure you want to proceed? [y/N] " -n 1 -r
     echo
     if [[ "${REPLY}" =~ ^[Yy]$ ]]; then
-      echo_red_text "Removing '${output_archive}'..."
+      echo_default_text "Removing '${output_archive}'..."
       "${IRONFOX_RM}" -f "${output_archive}"
     else
       return 1
@@ -136,7 +136,7 @@ function create_archive() {
   local archive_failed=0
 
   # Finally, create our archive
-  echo_red_text "Creating archive: '${output_archive}' from path: '${target_dir}'..."
+  echo_default_text "Creating archive: '${output_archive}' from path: '${target_dir}'..."
   pushd "${target_dir}" || return 1
   if [[ "${archive_format}" == 'zip' ]]; then
     # shellcheck disable=SC2035
@@ -160,7 +160,7 @@ function create_archive() {
     echo_red_text "ERROR: Unable to create archive: '${output_archive}' from path: '${target_dir}'!"
     return 1
   else
-    echo_green_text "SUCCESS: Created archive: '${output_archive}' from path: '${target_dir}'!"
+    echo_default_text "SUCCESS: Created archive: '${output_archive}' from path: '${target_dir}'!"
   fi
 }
 
@@ -247,7 +247,7 @@ function extract_archive() {
   local extraction_failed=0
 
   # Extract our archive
-  echo_red_text "Extracting archive: '${archive_path}' to path: '${target_path}'..."
+  echo_default_text "Extracting archive: '${archive_path}' to path: '${target_path}'..."
   if [[ "${archive_format}" == 'zip' ]]; then
     "${IRONFOX_UNZIP}" -q "${archive_path}" -d "${temp_archive_path}" || local extraction_failed=1
   elif [[ "${archive_format}" == 'tar.gz' ]]; then
@@ -277,6 +277,6 @@ function extract_archive() {
     echo_red_text "ERROR: Unable to extract archive: '${archive_path}' to path: '${target_path}'!"
     return 1
   else
-    echo_green_text "SUCCESS: Extracted archive: '${archive_path}' to path: '${target_path}'!"
+    echo_default_text "SUCCESS: Extracted archive: '${archive_path}' to path: '${target_path}'!"
   fi
 }

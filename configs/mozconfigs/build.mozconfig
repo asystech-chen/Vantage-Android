@@ -111,8 +111,10 @@ if [[ "${IRONFOX_DEV:-0}" == '1' ]]; then
   # Dev: lower opt level and keep incremental state for fast rebuilds.
   IRONFOX_DEV_RUST_FLAGS="${IRONFOX_RUST_FLAGS//-Copt-level=3/-Copt-level=1}"
   IRONFOX_DEV_RUST_FLAGS="${IRONFOX_DEV_RUST_FLAGS//-Cincremental=false/-Cincremental=true}"
-  export RUSTDOCFLAGS="${IRONFOX_DEV_RUST_FLAGS} -Crelro-level=full"
-  export RUSTFLAGS="${IRONFOX_DEV_RUST_FLAGS} -Crelro-level=full"
+  # Gecko's Cargo.toml/config force lto = true for the profile; a trailing
+  ## `-Clto=off` in RUSTFLAGS is the only override Cargo/rustc honours here.
+  export RUSTDOCFLAGS="${IRONFOX_DEV_RUST_FLAGS} -Crelro-level=full -Clto=off"
+  export RUSTFLAGS="${IRONFOX_DEV_RUST_FLAGS} -Crelro-level=full -Clto=off"
 else
   export RUSTDOCFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"
   export RUSTFLAGS="${IRONFOX_RUST_FLAGS} -Crelro-level=full"

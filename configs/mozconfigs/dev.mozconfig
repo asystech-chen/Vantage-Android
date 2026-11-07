@@ -18,6 +18,13 @@ export CARGO_PROFILE_RELEASE_LTO=false
 ac_add_options --disable-install-strip
 ac_add_options --disable-strip
 
+# build.mozconfig always exports STRIP_FLAGS, but Gecko declares it as
+# option(env="STRIP_FLAGS", when=strip) (moz.configure:909). With both strip
+# options disabled above, that option no longer exists and configure aborts with
+# "InvalidOptionError: STRIP_FLAGS is not available in this configuration".
+# This file is sourced after build.mozconfig, so clear it here.
+unset STRIP_FLAGS
+
 # Never auto-clobber; the dev objdir is separate and must stay incremental.
 mk_add_options AUTOCLOBBER=0
 export AUTOCLOBBER=0
