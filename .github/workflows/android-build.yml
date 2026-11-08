@@ -65,11 +65,16 @@ jobs:
           df -h "$GITHUB_WORKSPACE" | tail -1
 
       - name: 同步源码
+        env:
+          http_proxy: http://127.0.0.1:7890
+          https_proxy: http://127.0.0.1:7890
+          NO_PROXY: localhost,127.0.0.1,::1
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
           git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
-          git fetch --prune origin '+refs/heads/main:refs/remotes/origin/main'
+          git fetch --prune https://github.com/asystech-chen/Vantage-Android.git \
+            '+refs/heads/main:refs/remotes/origin/main'
           git checkout -f -B main origin/main
           git log --oneline -1
 
