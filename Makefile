@@ -9,7 +9,7 @@
 
 SHELL := /bin/bash
 
-.PHONY: help check fetch prepare prepare-dry warm dev arm64 online-dev verify clean-stamps
+.PHONY: help check fetch prepare prepare-dry warm dev arm64 online-dev verify clean-stamps artifacts clean-old
 
 help:
 	@echo 'Vantage-Android targets:'
@@ -31,10 +31,10 @@ fetch:
 	./scripts/get_sources.sh all
 
 prepare:
-	./scripts/prepare.sh
+	./scripts/prepare-build.sh
 
 prepare-dry:
-	./scripts/prepare.sh --dry-run
+	./scripts/prepare-build.sh --dry-run
 
 warm:
 	./scripts/warm-gradle.sh
@@ -46,10 +46,16 @@ arm64:
 	IRONFOX_OFFLINE=1 ./scripts/build.sh arm64
 
 online-dev:
-	./scripts/build.sh dev
+	IRONFOX_SKIP_PREFLIGHT=1 ./scripts/build.sh dev
 
 verify:
 	./scripts/offline-verify.sh dev
 
 clean-stamps:
 	rm -f build/.state/prepared-*
+
+artifacts:
+	./scripts/artifacts.sh
+
+clean-old:
+	./scripts/artifacts.sh --del

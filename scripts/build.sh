@@ -46,6 +46,23 @@ if [[ "${IRONFOX_OFFLINE}" == 1 ]]; then
   echo_default_text 'Offline mode enabled: Gradle/Cargo/uv/pip will not access the network'
 fi
 
+# Enforce the prepare/build contract for offline builds.
+if [[ "${IRONFOX_OFFLINE:-0}" == "1" ]] && [[ "${IRONFOX_SKIP_PREFLIGHT:-0}" != "1" ]]; then
+  prepared_stamp="${IRONFOX_BUILD}/.state/prepared-build"
+  if [[ ! -f "${prepared_stamp}" ]]; then
+    echo "ERROR: offline build requested without a prepared tree." >&2
+    echo "Run ./scripts/prepare-build.sh first (or make prepare)." >&2
+    exit 1
+  fi
+  current_fp="$("${IRONFOX_SCRIPTS}/prepared-fingerprint.sh" 2> /dev/null || true)"
+  if [[ -z "${current_fp}" ]] ||
+    [[ "${current_fp}" != "$(/usr/bin/cat "${prepared_stamp}" 2> /dev/null)" ]]; then
+    echo "ERROR: prepared-build stamp is stale (versions/sources/scripts changed)." >&2
+    echo "Re-run ./scripts/prepare-build.sh." >&2
+    exit 1
+  fi
+fi
+
 # Ensure we have GNU awk
 verify_exec "${IRONFOX_AWK}" 'IRONFOX_AWK' || exit 1
 

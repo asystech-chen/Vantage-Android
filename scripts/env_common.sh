@@ -703,6 +703,13 @@ if [[ -z "${IRONFOX_DATE+x}" ]] || [[ "${IRONFOX_DATE}" == "" ]] || [[ "${IRONFO
 fi
 readonly IRONFOX_DATE
 
+# df
+readonly IRONFOX_DF_DEFAULT='/bin/df'
+if [[ -z "${IRONFOX_DF+x}" ]] || [[ "${IRONFOX_DF}" == "" ]] || [[ "${IRONFOX_DF}" == "null" ]]; then
+  IRONFOX_DF="${IRONFOX_DF_DEFAULT}"
+fi
+readonly IRONFOX_DF
+
 # GNU make
 if [[ "${IRONFOX_OS}" == 'osx' ]]; then
   readonly IRONFOX_MAKE_DEFAULT='/opt/homebrew/bin/gmake'

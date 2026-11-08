@@ -49,6 +49,10 @@ fingerprint() {
     /usr/bin/cat "${IRONFOX_SCRIPTS}/versions.sh"
     /usr/bin/find "${IRONFOX_EXTERNAL}" -maxdepth 5 -name gradle-wrapper.properties \
       -print -exec /usr/bin/cat {} \; 2> /dev/null
+    /usr/bin/cat "${IRONFOX_SCRIPTS}/gradle/resolve-all.init.gradle" \
+      "${IRONFOX_SCRIPTS}/gradle/mirrors.init.gradle" 2> /dev/null
+    /usr/bin/find "${IRONFOX_GECKO}" -maxdepth 6 -name libs.versions.toml \
+      -print -exec /usr/bin/cat {} \; 2> /dev/null
   } | /usr/bin/sha256sum | /usr/bin/awk '{print $1}'
 }
 
@@ -64,6 +68,11 @@ fi
 ## is readonly in this shell, so only strip --offline from the Gradle flags below.
 flags="${IRONFOX_GRADLE_FLAGS//--offline/}"
 
+# Make sure the mirror rewrite is active before any project is configured.
+init_dir="${IRONFOX_GRADLE_HOME}/init.d"
+/usr/bin/mkdir -p "${init_dir}" || exit 1
+/bin/cp -f "${IRONFOX_SCRIPTS}/gradle/mirrors.init.gradle" "${init_dir}/vantage-mirrors.gradle" || exit 1
+
 fail=0
 
 warm() {
@@ -73,10 +82,10 @@ warm() {
   shift 3
 
   echo "==> warming ${name}"
-  if ! (cd "${dir}" && /usr/bin/timeout 900 "${IRONFOX_GRADLE}" ${flags} \
+  if ! (cd "${dir}" && /usr/bin/timeout --foreground --kill-after=10s 900 "${IRONFOX_GRADLE}" ${flags} \
     -Dorg.gradle.java.home="${java_home}" \
     -Dorg.gradle.java.installations.paths="${java_home}" "$@") \
-    > "${log_dir}/warm-${name}.log" 2>&1; then
+    < /dev/null > "${log_dir}/warm-${name}.log" 2>&1; then
     echo "ERROR: warm-up failed: ${name} (see ${log_dir}/warm-${name}.log)" >&2
     fail=1
   fi
@@ -86,10 +95,22 @@ warm() {
 warm 'gecko' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" help
 # IronFox Core (external/gecko/ironfox/android).
 warm 'ironfox-core' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" -p ironfox/android :core:tasks
+# Android Components (the project that previously missed lifecycle-livedata).
+warm 'android-components' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" \
+  -p mobile/android/android-components help
+# UnifiedPush-AC.
+warm 'up-ac' "${IRONFOX_UP_AC}" "${IRONFOX_JDK_17_HOME}" help
+# Fenix is intentionally not warmed here: its buildscript needs the local
+# glean-gradle-plugin, which the build itself publishes with a per-run
+# timestamp before building Fenix.
 # Glean's own Gradle build.
 warm 'glean' "${IRONFOX_GLEAN}" "${IRONFOX_JDK_17_HOME}" help
 # microG (gmscore).
 warm 'microg' "${IRONFOX_GMSCORE}" "${IRONFOX_JDK_21_HOME}" help
+
+# NOTE: resolving multi-module classpaths before the subproject artifacts exist
+# (the old resolve-all stage) produced 240 false failures, so it is intentionally
+# not part of warm-up. The actual build is the only reliable dependency proof.
 
 if [[ "${fail}" -ne 0 ]]; then
   /usr/bin/rm -f "${stamp}"

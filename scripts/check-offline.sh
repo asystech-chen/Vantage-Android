@@ -48,6 +48,20 @@ need_file() {
   if [[ -f "${2}" ]]; then ok "${1}"; else miss "${1} -> ${2}"; fi
 }
 
+need_version() {
+  checked=$((checked + 1))
+  local label="$1"
+  local expected="$2"
+  shift 2
+  local out
+  out="$("$@" 2>&1)"
+  if [[ "${out}" == *"${expected}"* ]]; then
+    ok "${label} (${expected})"
+  else
+    miss "${label} -> expected ${expected}, got: $(printf '%s' "${out}" | /usr/bin/head -n 1)"
+  fi
+}
+
 echo 'Vantage-Android offline readiness check'
 echo
 
@@ -74,6 +88,25 @@ echo '== Toolchain shims =='
 need_dir 'rustup stable toolchain (symlink)' "${IRONFOX_BUILD}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu"
 need_file 'rustup 1.99.1 rustc' "${IRONFOX_BUILD}/.rustup/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc"
 need_dir 'Gradle distributions' "${IRONFOX_GRADLE_CACHE}/versions"
+
+echo
+echo '== Toolchain versions =='
+need_version 'rustc' '1.99.1' "${IRONFOX_RUSTC}" --version
+need_version 'cargo' '1.99.1' "${IRONFOX_CARGO}" --version
+need_version 'JDK 25' '25.0.5' "${IRONFOX_JAVA_HOME}/bin/java" -version
+need_version 'JDK 21' '21.0.13' "${IRONFOX_JDK_21_HOME}/bin/java" -version
+need_version 'JDK 17' '17.0.21' "${IRONFOX_JDK_17_HOME}/bin/java" -version
+need_version 'Node.js' 'v26.12.1' "${IRONFOX_NODEJS}" --version
+need_version 'Python' '3.15.1' "${IRONFOX_PYTHON}" --version
+need_version 'uv' '0.13.5' "${IRONFOX_UV}" --version
+checked=$((checked + 1))
+if /usr/bin/grep -q '30.0.16248370' "${IRONFOX_ANDROID_NDK}/source.properties" 2> /dev/null; then
+  ok 'NDK r30 (30.0.16248370)'
+else
+  miss 'NDK revision -> expected 30.0.16248370'
+fi
+need_dir 'SDK platform 37.2' "${IRONFOX_ANDROID_SDK}/platforms/android-37.2"
+need_dir 'Build tools 37.0.0' "${IRONFOX_ANDROID_SDK}/build-tools/37.0.0"
 
 echo
 echo '== Dependency caches =='

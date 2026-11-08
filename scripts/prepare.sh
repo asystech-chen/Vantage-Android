@@ -133,7 +133,7 @@ for t in "${targets[@]}"; do
   fi
 
   echo "==> prebuild: ${t}"
-  if ! (cd "${IRONFOX_ROOT}" && PHOENIX_ASSUME_YES=1 ./scripts/prebuild.sh "${t}"); then
+  if ! (cd "${IRONFOX_ROOT}" && PHOENIX_ASSUME_YES=1 /usr/bin/env -u IRONFOX_SET_ENVS -u IRONFOX_CI -u CI ./scripts/prebuild.sh "${t}"); then
     rm -f "${stamp}"
     echo "ERROR: prebuild target failed: ${t}" >&2
     echo "Fix the error, then re-run: ./scripts/prepare.sh ${t}" >&2
@@ -149,7 +149,7 @@ fi
 if [[ "${dry_run}" -eq 0 ]]; then
   echo
   echo '==> warming Gradle caches'
-  "${IRONFOX_SCRIPTS}/warm-gradle.sh" || exit 1
+  /usr/bin/env -u IRONFOX_SET_ENVS -u IRONFOX_CI -u CI "${IRONFOX_SCRIPTS}/warm-gradle.sh" || exit 1
 fi
 
 echo

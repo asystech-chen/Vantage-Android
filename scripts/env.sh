@@ -243,6 +243,7 @@ function setup_path() {
   add_to_full_path "${IRONFOX_CUT}" 'IRONFOX_CUT' 'cut' || return 1
   add_to_full_path "${IRONFOX_DATE}" 'IRONFOX_DATE' 'date' || return 1
   add_to_full_path "${IRONFOX_DATE}" 'IRONFOX_DATE' 'gdate' || return 1
+  add_to_full_path "${IRONFOX_DF}" 'IRONFOX_DF' 'df' || return 1
   add_to_full_path "${IRONFOX_DIFF}" 'IRONFOX_DIFF' 'diff' || return 1
   add_to_full_path "${IRONFOX_DIRNAME}" 'IRONFOX_DIRNAME' 'dirname' || return 1
   add_to_full_path "${IRONFOX_ECHO}" 'IRONFOX_ECHO' 'echo' || return 1

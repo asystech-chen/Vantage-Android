@@ -1,0 +1,58 @@
+// Resolve only configurations that the release build actually needs.
+//
+// Usage:
+//   gradle -I scripts/gradle/resolve-all.init.gradle <task>
+//
+// Build-essential configurations are resolved strictly: any failure fails the
+// Gradle invocation. Everything else (tests, lint, debug, benchmarks, KMP
+// metadata, javadoc, coverage, ...) is skipped, so a missing test-only
+// dependency can never block a release build.
+def ignoredName = { String n ->
+    n ==~ /(?i).*(test|androidtest|lint|debug|benchmark|sources|javadoc|jacoco|coverage|kotlinklibcommonizer|metadataelements).*/
+}
+
+def essentialName = { String n ->
+    if (ignoredName(n)) {
+        return false
+    }
+    if (n ==~ /(?i)^(annotationprocessor|kapt.*|ksp.*|corelibrarydesugaring|kotlincompilerclasspath|kotlincompilerpluginclasspath.*|classpath)$/) {
+        return true
+    }
+    // release / arm64-v8aRelease / geckoviewRelease compile & runtime classpaths
+    if (n ==~ /(?i).*release.*(compile|runtime)classpath/) {
+        return true
+    }
+    // AGP artifact metadata resolution for release variants
+    if (n ==~ /(?i).*release.*aar.?metadata/) {
+        return true
+    }
+    return false
+}
+
+gradle.projectsEvaluated {
+    def fatal = []
+    def skipped = 0
+    def resolved = 0
+
+    gradle.rootProject.allprojects { project ->
+        project.configurations.findAll { it.canBeResolved }.each { configuration ->
+            def name = configuration.name
+            if (!essentialName(name)) {
+                skipped++
+                return
+            }
+            try {
+                configuration.resolve()
+                resolved++
+            } catch (Throwable t) {
+                fatal << "${project.path}:${name}: ${t.message}"
+            }
+        }
+    }
+
+    if (!fatal.isEmpty()) {
+        fatal.each { println "RESOLVE-ALL FATAL: ${it}" }
+        throw new GradleException("resolve-all: ${fatal.size()} build-essential configuration(s) failed")
+    }
+    println "RESOLVE-ALL OK: ${resolved} essential configuration(s) resolved, ${skipped} non-essential skipped"
+}

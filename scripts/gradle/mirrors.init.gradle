@@ -1,0 +1,22 @@
+// Vantage: rewrite repository URLs that Gradle cannot reach on this host.
+//
+// plugins.gradle.org and repo.maven.apache.org fail TLS handshakes from
+// Gradle's HTTP client here, while the Aliyun mirrors work directly. This
+// script is copied into $GRADLE_USER_HOME/init.d by prepare-build.sh.
+def rewriteMavenRepo = { repo ->
+    if (repo instanceof org.gradle.api.artifacts.repositories.MavenArtifactRepository) {
+        def u = repo.url.toString()
+        if (u.contains('plugins.gradle.org')) {
+            repo.setUrl('https://maven.aliyun.com/repository/gradle-plugin')
+        } else if (u.contains('repo.maven.apache.org') || u.contains('repo1.maven.org')) {
+            repo.setUrl('https://maven.aliyun.com/repository/public')
+        } else if (u.contains('maven.google.com') || u.contains('dl.google.com')) {
+            repo.setUrl('https://maven.aliyun.com/repository/google')
+        }
+    }
+}
+
+gradle.beforeProject { project ->
+    project.repositories.all(rewriteMavenRepo)
+    project.buildscript.repositories.all(rewriteMavenRepo)
+}

@@ -1268,6 +1268,10 @@ function build_microg() {
 function build_glean() {
   echo_default_text 'Building Glean...'
 
+  # Use the repo Python + cached wheels instead of bootstrapping Miniconda.
+  export GLEAN_PYTHON="${IRONFOX_PYTHON}"
+  export GLEAN_PYTHON_WHEELS_DIR="${IRONFOX_GLEAN}/glean-wheels"
+
   pushd "${IRONFOX_GLEAN}" || return 1
   "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} -Plocal=${IF_LOCAL_GLEAN_VERSION_GRADLE} :glean-native:publishToMavenLocal || return 1
   "${IRONFOX_GRADLE}" ${IRONFOX_GRADLE_FLAGS} -Dorg.gradle.java.home=${IRONFOX_JDK_17_HOME} -Dorg.gradle.java.installations.paths=${IRONFOX_JDK_17_HOME} -Plocal=${IF_LOCAL_GLEAN_VERSION_GRADLE} publishToMavenLocal || return 1
@@ -1597,6 +1601,16 @@ function _build_gecko() {
   else
     echo_default_text 'Skipping mach configure (config.status is current)'
   fi
+  # Give the packager a total so it can print `[minify] n/total` progress.
+  local omni_jar="${gecko_objdir}/dist/geckoview/assets/omni.ja"
+  if [[ -f "${omni_jar}" ]]; then
+    local minify_total
+    minify_total="$(/usr/bin/unzip -l "${omni_jar}" 2> /dev/null | /usr/bin/grep -c '\.js$')"
+    if [[ -n "${minify_total}" ]] && [[ "${minify_total}" -gt 0 ]]; then
+      export MOZ_MINIFY_TOTAL="${minify_total}"
+    fi
+  fi
+
   "${mach_env[@]}" "${IRONFOX_MACH}" build || return 1
   echo_default_text "SUCCESS: Built Gecko (${pretty_arch})"
 
