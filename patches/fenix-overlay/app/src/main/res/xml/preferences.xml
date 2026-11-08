@@ -86,16 +86,11 @@
             android:title="@string/preferences_set_as_default_browser" />
     </androidx.preference.PreferenceCategory>
 
-    <!-- 2. 外观与定制：主题、工具栏、标签栏、主页、图标、手势。 -->
+    <!-- 2. 外观与定制：工具栏、标签栏、主页、图标、手势。 -->
     <androidx.preference.PreferenceCategory
         android:title="@string/vantage_preferences_category_appearance"
         android:key="vantage_category_appearance"
         android:layout="@layout/preference_category_no_icon_style">
-        <androidx.preference.Preference
-            android:key="@string/pref_key_vantage_themes"
-            android:title="@string/vantage_themes_title"
-            app:iconSpaceReserved="false" />
-
         <androidx.preference.Preference
             android:key="@string/pref_key_customize"
             app:iconSpaceReserved="false"

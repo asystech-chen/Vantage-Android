@@ -10,31 +10,4 @@
   <string name="vantage_preferences_category_extensions_experiments">Extensions &amp; experiments</string>
   <string name="vantage_preferences_category_vantage">Vantage settings</string>
   <string name="vantage_settings_search_hint">Search settings</string>
-  <string name="pref_key_vantage_themes" translatable="false">pref_key_vantage_themes</string>
-  <string name="pref_key_vantage_themes_search" translatable="false">vantage_themes_search</string>
-  <string name="pref_key_vantage_installed_themes_category" translatable="false">vantage_installed_themes</string>
-  <string name="pref_key_vantage_themes_empty" translatable="false">vantage_themes_empty</string>
-  <string name="pref_key_vantage_theme_category" translatable="false">vantage_theme_category</string>
-  <string name="vantage_themes_title">Themes</string>
-  <string name="vantage_themes_search_category">Desktop themes</string>
-  <string name="vantage_themes_search_title">Install a desktop theme</string>
-  <string name="vantage_themes_search_summary">Search addons.mozilla.org for a Firefox desktop theme and convert it for Vantage.</string>
-  <string name="vantage_themes_search_hint">Theme name</string>
-  <string name="vantage_themes_search_action">Search</string>
-  <string name="vantage_themes_search_results_title">Search results</string>
-  <string name="vantage_themes_search_result">%1$s — %2$s</string>
-  <string name="vantage_themes_search_empty">No desktop themes found.</string>
-  <string name="vantage_themes_search_error">Could not reach addons.mozilla.org.</string>
-  <string name="vantage_themes_install_success">Theme installed.</string>
-  <string name="vantage_themes_install_error">Could not install this theme.</string>
-  <string name="vantage_themes_installed_title">Installed themes</string>
-  <string name="vantage_themes_empty">No desktop themes installed yet. Use “Install a desktop theme” above.</string>
-  <string name="vantage_themes_author">By %1$s</string>
-  <string name="vantage_themes_unknown_author">Unknown author</string>
-  <string name="vantage_themes_enabled">Active</string>
-  <string name="vantage_themes_active_delete_hint">Active · tap to delete</string>
-  <string name="vantage_themes_cancel">Cancel</string>
-  <string name="vantage_themes_delete_title">Delete theme?</string>
-  <string name="vantage_themes_delete_message">Delete “%1$s”? Its background image will be removed too.</string>
-  <string name="vantage_themes_delete">Delete</string>
 </resources>

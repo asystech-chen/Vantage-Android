@@ -500,11 +500,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                     SettingsFragmentDirections.actionSettingsFragmentToCustomizationFragment()
                 }
 
-                // Vantage: search, install and manage Firefox desktop themes.
-                resources.getString(R.string.pref_key_vantage_themes) -> {
-                    SettingsFragmentDirections.actionSettingsFragmentToVantageThemesFragment()
-                }
-
                 resources.getString(R.string.pref_key_passwords) -> {
                     SettingsMetrics.passwords.record()
                     SettingsFragmentDirections.actionSettingsFragmentToSavedLoginsAuthFragment()
@@ -1069,9 +1064,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 "pref_key_customize" to listOf(
                     "主题", "外观", "图标", "颜色", "深色", "工具栏", "标签栏", "手势",
                     "theme", "appearance", "icon", "color", "toolbar", "tab strip", "gesture",
-                ),
-                "pref_key_vantage_themes" to listOf(
-                    "桌面主题", "安装主题", "主题", "desktop theme", "install theme", "theme",
                 ),
                 "pref_key_home" to listOf("主页", "壁纸", "新标签页", "快捷方式", "home", "wallpaper", "shortcut"),
                 "pref_key_passwords" to listOf("密码", "登录", "password", "login"),

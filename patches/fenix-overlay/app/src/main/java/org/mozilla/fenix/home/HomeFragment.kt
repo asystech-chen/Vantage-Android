@@ -170,7 +170,6 @@ import org.mozilla.fenix.home.topsites.controller.TopSitesSource
 import org.mozilla.fenix.home.topsites.getTopSitesConfig
 import org.mozilla.fenix.home.ui.HomeSwipeIntegration
 import org.mozilla.fenix.home.ui.Homepage
-import org.mozilla.fenix.home.ui.VantageThemeBackground
 import org.mozilla.fenix.home.ui.WallpaperBackground
 import org.mozilla.fenix.ipprotection.store.Surface as IPProtectionSurface
 import org.mozilla.fenix.ipprotection.ui.IPProtectionBottomSheetFragment
@@ -204,7 +203,6 @@ import org.mozilla.fenix.termsofuse.store.PrivacyNoticeBannerStore
 import org.mozilla.fenix.termsofuse.store.PrivacyNoticeBannerTelemetryMiddleware
 import org.mozilla.fenix.termsofuse.store.Surface
 import org.mozilla.fenix.theme.FirefoxTheme
-import org.mozilla.fenix.theme.VantageThemeStore
 import org.mozilla.fenix.theme.usesVantageDarkPalette
 import org.mozilla.fenix.trackingprotection.TrackersBlockedFeature
 import org.mozilla.fenix.utils.Settings
@@ -739,20 +737,13 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
                                     )
                                 },
                             )
-
                         }
-
-                        // Vantage: the desktop theme's dominant colour covers the homepage in
-                        // both normal and private browsing.
-                        VantageThemeBackground()
 
                         val isNightMode =
                             (LocalConfiguration.current.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                                 Configuration.UI_MODE_NIGHT_YES
-                        val hasDesktopTheme =
-                            VantageThemeStore.get(LocalContext.current).activeTheme != null
                         if (!isPrivateMode && universalEdgeToEdge && isNightMode &&
-                            (usesVantageDarkPalette(LocalContext.current) || hasDesktopTheme)
+                            usesVantageDarkPalette(LocalContext.current)
                         ) {
                             // Vantage: paint the status bar inset with the same chrome as the
                             // tab strip / toolbar instead of letting the wallpaper show through.

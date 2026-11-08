@@ -150,7 +150,6 @@ import org.mozilla.fenix.settings.doh.DohSettingsProvider
 // import org.mozilla.fenix.startupCrash.StartupCrashActivity
 import org.mozilla.fenix.theme.DefaultThemeProvider
 import org.mozilla.fenix.theme.ThemeProvider
-import org.mozilla.fenix.theme.VantageThemeStore
 import org.mozilla.fenix.theme.isVantageLightThemeSelected
 import org.mozilla.fenix.theme.isVantageThemeSelected
 import org.mozilla.fenix.utils.Settings
@@ -861,18 +860,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
 
     private fun setDayNightTheme() {
         val settings = components.settings
-        val desktopTheme = VantageThemeStore.get(this).activeTheme
         when {
-            // Vantage: an installed desktop theme decides its own light/dark appearance.
-            desktopTheme != null -> {
-                AppCompatDelegate.setDefaultNightMode(
-                    if (desktopTheme.defaultIsDark) {
-                        AppCompatDelegate.MODE_NIGHT_YES
-                    } else {
-                        AppCompatDelegate.MODE_NIGHT_NO
-                    },
-                )
-            }
             // Vantage: the branded choices are stored separately, so they must win over the
             // stock light/dark flags. This keeps the choice across restarts without making the
             // stock radio buttons look selected in settings.

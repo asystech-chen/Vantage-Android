@@ -695,14 +695,6 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-        <!-- Vantage: desktop theme manager. -->
-        <action
-            android:id="@+id/action_settingsFragment_to_vantageThemesFragment"
-            app:destination="@id/vantageThemesFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_settingsFragment_to_privateBrowsingFragment"
             app:destination="@id/privateBrowsingFragment"
@@ -1155,11 +1147,6 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
-    <!-- Vantage: install and manage Firefox desktop themes converted for the mobile UI. -->
-    <fragment
-        android:id="@+id/vantageThemesFragment"
-        android:name="org.mozilla.fenix.settings.VantageThemesFragment"
-        android:label="@string/vantage_themes_title" />
     <fragment
         android:id="@+id/privateBrowsingFragment"
         android:name="org.mozilla.fenix.settings.PrivateBrowsingFragment"

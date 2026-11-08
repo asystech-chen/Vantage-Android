@@ -9,31 +9,4 @@
   <string name="vantage_preferences_category_extensions_experiments">扩展与实验</string>
   <string name="vantage_preferences_category_vantage">Vantage 设置</string>
   <string name="vantage_settings_search_hint">搜索设置</string>
-  <string name="pref_key_vantage_themes" translatable="false">pref_key_vantage_themes</string>
-  <string name="pref_key_vantage_themes_search" translatable="false">vantage_themes_search</string>
-  <string name="pref_key_vantage_installed_themes_category" translatable="false">vantage_installed_themes</string>
-  <string name="pref_key_vantage_themes_empty" translatable="false">vantage_themes_empty</string>
-  <string name="pref_key_vantage_theme_category" translatable="false">vantage_theme_category</string>
-  <string name="vantage_themes_title">主题</string>
-  <string name="vantage_themes_search_category">桌面主题</string>
-  <string name="vantage_themes_search_title">安装桌面主题</string>
-  <string name="vantage_themes_search_summary">在 addons.mozilla.org 搜索 Firefox 桌面主题，并转换为 Vantage 主题。</string>
-  <string name="vantage_themes_search_hint">主题名称</string>
-  <string name="vantage_themes_search_action">搜索</string>
-  <string name="vantage_themes_search_results_title">搜索结果</string>
-  <string name="vantage_themes_search_result">%1$s — %2$s</string>
-  <string name="vantage_themes_search_empty">未找到桌面主题。</string>
-  <string name="vantage_themes_search_error">无法连接到 addons.mozilla.org。</string>
-  <string name="vantage_themes_install_success">主题已安装。</string>
-  <string name="vantage_themes_install_error">无法安装此主题。</string>
-  <string name="vantage_themes_installed_title">已安装的主题</string>
-  <string name="vantage_themes_empty">还没有安装桌面主题。请使用上方的“安装桌面主题”。</string>
-  <string name="vantage_themes_author">作者：%1$s</string>
-  <string name="vantage_themes_unknown_author">未知作者</string>
-  <string name="vantage_themes_enabled">已启用</string>
-  <string name="vantage_themes_active_delete_hint">已启用 · 点击删除</string>
-  <string name="vantage_themes_cancel">取消</string>
-  <string name="vantage_themes_delete_title">删除主题？</string>
-  <string name="vantage_themes_delete_message">删除“%1$s”？其背景图片也会一并删除。</string>
-  <string name="vantage_themes_delete">删除</string>
 </resources>

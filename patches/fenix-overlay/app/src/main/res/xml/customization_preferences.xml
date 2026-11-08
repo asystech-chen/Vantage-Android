@@ -17,7 +17,6 @@
 
     <androidx.preference.PreferenceCategory
         android:layout="@layout/preference_cat_style"
-        android:key="@string/pref_key_vantage_theme_category"
         android:title="@string/preferences_theme"
         app:iconSpaceReserved="false">
         <org.mozilla.fenix.settings.RadioButtonPreference
