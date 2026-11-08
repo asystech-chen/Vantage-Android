@@ -31,7 +31,7 @@ import mozilla.components.compose.browser.toolbar.store.BrowserToolbarStore
 import mozilla.components.lib.state.ext.flowScoped
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import org.mozilla.fenix.R
-import org.mozilla.fenix.theme.usesVantageDarkPalette
+import org.mozilla.fenix.theme.usesVantageChrome
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.components.AppStore
@@ -190,7 +190,7 @@ class HomepageEdgeToEdgeFeature(
         val isNightMode =
             (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                 Configuration.UI_MODE_NIGHT_YES
-        val useVantageChrome = !isPrivateMode && isNightMode && usesVantageDarkPalette(activity)
+        val useVantageChrome = !isPrivateMode && usesVantageChrome(activity)
 
         if (!useVantageChrome) {
             view.setBackgroundColor(getStatusBarColor(settings, toolbarState))
@@ -199,13 +199,17 @@ class HomepageEdgeToEdgeFeature(
 
         view.background =
             if (settings.shouldShowTabStripAtTop && !toolbarState.isShowingResultsScreen) {
-                // Desktop Vantage: the tab strip gradient continues up into the status bar.
+                // Vantage: the tab strip gradient continues up into the status bar.
                 GradientDrawable(
                     GradientDrawable.Orientation.LEFT_RIGHT,
-                    intArrayOf(VANTAGE_TAB_STRIP_START, VANTAGE_TAB_STRIP_END),
+                    if (isNightMode) {
+                        intArrayOf(VANTAGE_TAB_STRIP_START, VANTAGE_TAB_STRIP_END)
+                    } else {
+                        intArrayOf(VANTAGE_LIGHT_TAB_STRIP_START, VANTAGE_LIGHT_TAB_STRIP_END)
+                    },
                 )
             } else {
-                ColorDrawable(VANTAGE_CHROME_SURFACE)
+                ColorDrawable(if (isNightMode) VANTAGE_CHROME_SURFACE else VANTAGE_LIGHT_CHROME_SURFACE)
             }
     }
 
@@ -244,6 +248,9 @@ class HomepageEdgeToEdgeFeature(
         // Vantage: desktop-style tab strip gradient endpoints and the chrome surface of the toolbar.
         private val VANTAGE_TAB_STRIP_START = 0xFF16406E.toInt()
         private val VANTAGE_TAB_STRIP_END = 0xFF166B47.toInt()
+        private val VANTAGE_LIGHT_TAB_STRIP_START = 0xFF79A9F7.toInt()
+        private val VANTAGE_LIGHT_TAB_STRIP_END = 0xFF55CDB4.toInt()
         private val VANTAGE_CHROME_SURFACE = 0xFF23222B.toInt()
+        private val VANTAGE_LIGHT_CHROME_SURFACE = 0xFFF4F3F7.toInt()
     }
 }

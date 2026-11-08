@@ -140,10 +140,9 @@ internal fun VantageZoomRow(
         Row(
             modifier =
                 Modifier.fillMaxWidth()
-                    // Vantage: keep the zoom controls as their own card, separated from the
-                    // flat list of menu items rendered underneath.
-                    .padding(vertical = 8.dp)
-                    .clip(shape = RoundedCornerShape(12.dp))
+                    // Vantage: match the regular menu items so the zoom controls flow into
+                    // the group above instead of looking like a detached card.
+                    .clip(shape = MaterialTheme.shapes.extraSmall)
                     .background(color = MaterialTheme.colorScheme.surfaceBright)
                     .defaultMinSize(minHeight = 52.dp)
                     .padding(horizontal = 12.dp),

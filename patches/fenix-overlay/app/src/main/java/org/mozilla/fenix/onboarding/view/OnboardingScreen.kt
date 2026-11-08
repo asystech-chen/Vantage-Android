@@ -479,8 +479,9 @@ private fun OnboardingContent(
 private fun OnboardingBackground(isVisible: Boolean, isSolidBackground: Boolean) {
     if (!isVisible) return
 
+    // Vantage: follow the system light/dark setting instead of always using the dark artwork.
     val backgroundModifier =
-        if (isSolidBackground) {
+        if (isSolidBackground || !isSystemInDarkTheme()) {
             Modifier.background(color = MaterialTheme.colorScheme.surface)
         } else {
             Modifier.paint(

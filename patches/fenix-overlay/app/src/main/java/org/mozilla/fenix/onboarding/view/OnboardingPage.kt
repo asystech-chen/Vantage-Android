@@ -95,12 +95,22 @@ private fun CardView(
     pageState: OnboardingPageState,
     isSmallDevice: Boolean,
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
     Card(
-        // Vantage: desktop-style charcoal card with a subtle border instead of a floating shadow.
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF23222B)),
+        // Vantage: desktop-style charcoal card in dark mode, light surface in light mode.
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (isDarkTheme) Color(0xFF23222B) else MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
         elevation = CardDefaults.cardElevation(0.dp),
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color(0xFF3A3945)),
+        border =
+            BorderStroke(
+                1.dp,
+                if (isDarkTheme) Color(0xFF3A3945) else MaterialTheme.colorScheme.outlineVariant,
+            ),
     ) {
         val verticalPadding = if (isSmallDevice) 0.dp else FirefoxTheme.layout.space.static300
         Column(
