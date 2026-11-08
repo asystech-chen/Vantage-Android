@@ -574,7 +574,10 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                 webExtensionMenuCount = webExtensionsCount,
                                 isFxaSignedIn = settings.ironfox.fxaEnabled && settings.signedInFxaAccount,
                                 isAllWebExtensionsDisabled = isAllWebExtensionsDisabled,
-                                showIPProtection = components.ipProtection.store.state.isEligible,
+                                // Vantage: IP Protection (Firefox VPN) eligibility is resolved from
+                                // remote Nimbus/region data, so the menu entry used to appear only
+                                // after that async check completed. Keep it out of the Vantage menu.
+                                showIPProtection = false,
                                 showPasswords = settings.isAutofillSupported && settings.shouldPromptToSaveLogins,
                                 ipProtectionMenuState = ipProtectionMenuState,
                                 onMozillaAccountButtonClick = {

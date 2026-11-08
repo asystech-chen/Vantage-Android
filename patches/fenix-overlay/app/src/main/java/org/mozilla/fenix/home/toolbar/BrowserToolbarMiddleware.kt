@@ -190,8 +190,8 @@ class BrowserToolbarMiddleware(
                 updatePageOrigin(store)
                 updateStartBrowserActions(store)
                 updateEndPageActions(store)
-                updateEndBrowserActions(store)
                 scope.launch {
+                    updateEndBrowserActions(store)
                     updateNavigationActions(store)
                 }
                 updateToolbarActionsBasedOnOrientation(store)
@@ -389,7 +389,7 @@ class BrowserToolbarMiddleware(
         store.dispatch(BrowserDisplayToolbarAction.BrowserActionsStartUpdated(buildStartBrowserActions()))
     }
 
-    private fun updateEndBrowserActions(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
+    private suspend fun updateEndBrowserActions(store: Store<BrowserToolbarState, BrowserToolbarAction>) {
         store.dispatch(BrowserActionsEndUpdated(buildEndBrowserActions()))
     }
 
@@ -436,12 +436,22 @@ class BrowserToolbarMiddleware(
             .filter { config -> config.isVisible() }
             .map { config -> buildHomeAction(config.action, Source.AddressBar.BrowserStart) }
 
-    private fun buildEndBrowserActions(): List<Action> {
+    private suspend fun buildEndBrowserActions(): List<Action> {
         val isWideWindow = isWideScreen()
         val isTallWindow = isTallScreen()
         val shouldUseExpandedToolbar = settings.shouldUseExpandedToolbar
 
-        return listOf(
+        // Vantage: the simple toolbar's user-selected shortcut (bookmark/share/new tab/...) must
+        // also appear in the homepage search bar, matching the browser toolbar.
+        val simpleShortcutAction =
+            ShortcutType.fromValue(settings.activeSimpleToolbarShortcutKey)?.toHomeToolbarAction()
+
+        return listOfNotNull(
+                simpleShortcutAction?.let {
+                    HomeToolbarActionConfig(it) {
+                        !shouldUseExpandedToolbar || !isTallWindow || isWideWindow
+                    }
+                },
                 HomeToolbarActionConfig(HomeToolbarAction.TabCounter) {
                     !shouldUseExpandedToolbar || !isTallWindow || isWideWindow
                 },
