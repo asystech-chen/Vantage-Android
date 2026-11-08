@@ -865,6 +865,13 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         } */
 
         lifecycleScope.launch(IO) {
+            // Vantage: refresh the default-browser state after returning from the system
+            // "default apps" screen, so onboarding can advance automatically once the user
+            // has set Vantage as the default browser.
+            if (components.settings.checkIfFenixIsDefaultBrowserOnAppResume()) {
+                components.appStore.dispatch(AppAction.UpdateDefaultBrowserStatus(true))
+            }
+
             // Register the [MARKETING_CHANNEL_ID] channel so that it appears in the Android Settings App.
             ensureMarketingChannelExists(applicationContext)
             if (NotificationManagerCompat.from(applicationContext).areNotificationsEnabled()) {

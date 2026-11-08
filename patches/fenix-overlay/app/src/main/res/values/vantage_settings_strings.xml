@@ -2,6 +2,8 @@
 <!-- Vantage: strings for the reorganized settings screen and its inline search field. -->
 <resources xmlns:tools="http://schemas.android.com/tools">
   <string name="pref_key_vantage_settings_search" translatable="false">vantage_settings_search</string>
+  <string name="pref_key_vantage_light_theme" translatable="false">pref_key_vantage_light_theme</string>
+  <string name="preference_vantage_light_theme">Vantage (light)</string>
   <string name="vantage_preferences_category_appearance">Appearance &amp; customization</string>
   <string name="vantage_preferences_category_account_data">Account &amp; data</string>
   <string name="vantage_preferences_category_downloads_sharing">Downloads &amp; sharing</string>

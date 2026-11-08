@@ -24,6 +24,8 @@ import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -680,6 +682,9 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                         engineSession = selectedTab?.engineState?.engineSession,
                                         onFinish = { dismiss() },
                                     )
+                                    // Vantage: keep the zoom card fused with the group above,
+                                    // but leave a gap before the regular "More" actions.
+                                    Spacer(modifier = Modifier.height(8.dp))
                                     MoreSettingsSubmenu(
                                         isReaderViewActive = isReaderViewActive,
                                         isWebCompatEnabled = isWebCompatEnabled,

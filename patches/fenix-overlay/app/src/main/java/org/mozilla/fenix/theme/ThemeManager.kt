@@ -63,10 +63,13 @@ abstract class ThemeManager {
 
             return when {
                 isVantageThemeSelected(activity) -> R.style.VantageTheme
+                isVantageLightThemeSelected(activity) -> R.style.VantageLightTheme
                 followsSystem ->
                     if (isNightMode(activity)) R.style.VantageTheme else R.style.VantageLightTheme
                 IronFoxPreferences.shouldUseOledTheme(activity) -> R.style.Vantage_OLEDTheme
-                else -> R.style.VantageLightTheme
+                // Explicit dark keeps Fenix's stock dark palette; explicit light uses Fenix's
+                // stock light palette so both white/branded choices stay independent.
+                else -> R.style.NormalTheme
             }
         }
 
@@ -89,14 +92,17 @@ abstract class ThemeManager {
                     Configuration.UI_MODE_NIGHT_NO -> {
                         updateLightSystemBars(window, context)
                         // Vantage: the top tab strip paints its own gradient over the status bar,
-                        // otherwise use the light chrome surface.
-                        window.setStatusBarColorCompat(
-                            if (context.components.settings.shouldShowTabStripAtTop) {
-                                android.graphics.Color.TRANSPARENT
-                            } else {
-                                VANTAGE_LIGHT_CHROME_SURFACE
-                            },
-                        )
+                        // otherwise use the light chrome surface. The stock light theme keeps its
+                        // own status bar colour.
+                        if (usesVantageLightPalette(context)) {
+                            window.setStatusBarColorCompat(
+                                if (context.components.settings.shouldShowTabStripAtTop) {
+                                    android.graphics.Color.TRANSPARENT
+                                } else {
+                                    VANTAGE_LIGHT_CHROME_SURFACE
+                                },
+                            )
+                        }
                     }
                     Configuration.UI_MODE_NIGHT_YES -> {
                         clearLightSystemBars(window)

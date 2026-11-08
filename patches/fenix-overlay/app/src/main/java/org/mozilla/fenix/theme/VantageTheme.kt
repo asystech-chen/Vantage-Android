@@ -17,6 +17,7 @@ import mozilla.components.compose.base.utils.ColorStop
 
 private const val VANTAGE_THEME_PREFS = "vantage_theme"
 private const val VANTAGE_THEME_SELECTED = "vantage_theme_selected"
+private const val VANTAGE_LIGHT_THEME_SELECTED = "vantage_light_theme_selected"
 
 /** Vantage: whether the branded theme was explicitly picked in the theme list. */
 fun isVantageThemeSelected(context: Context): Boolean =
@@ -28,6 +29,19 @@ fun setVantageThemeSelected(context: Context, selected: Boolean) {
     context.getSharedPreferences(VANTAGE_THEME_PREFS, Context.MODE_PRIVATE)
         .edit()
         .putBoolean(VANTAGE_THEME_SELECTED, selected)
+        .apply()
+}
+
+/** Vantage: whether the brand's white theme was explicitly picked in the theme list. */
+fun isVantageLightThemeSelected(context: Context): Boolean =
+    context.getSharedPreferences(VANTAGE_THEME_PREFS, Context.MODE_PRIVATE)
+        .getBoolean(VANTAGE_LIGHT_THEME_SELECTED, false)
+
+/** Vantage: remember/forget that the brand's white theme is the active choice. */
+fun setVantageLightThemeSelected(context: Context, selected: Boolean) {
+    context.getSharedPreferences(VANTAGE_THEME_PREFS, Context.MODE_PRIVATE)
+        .edit()
+        .putBoolean(VANTAGE_LIGHT_THEME_SELECTED, selected)
         .apply()
 }
 
@@ -44,12 +58,30 @@ fun usesVantageDarkPalette(context: Context): Boolean {
         mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
 }
 
-/** Vantage: whether the branded chrome/palette applies to the current theme (light is always branded). */
+/**
+ * Vantage: whether the branded white palette should be used.
+ *
+ * The branded white theme is the default whenever the user follows the device theme, so a
+ * fresh install on a light device starts on the Vantage white theme instead of Fenix's stock
+ * light colours. Picking "Light" explicitly keeps the stock light palette.
+ */
+fun usesVantageLightPalette(context: Context): Boolean {
+    val mode = AppCompatDelegate.getDefaultNightMode()
+    return isVantageLightThemeSelected(context) ||
+        mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
+        mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
+}
+
+/** Vantage: whether the branded chrome/palette applies to the current theme. */
 fun usesVantageChrome(context: Context): Boolean {
     val isNightMode =
         (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
             Configuration.UI_MODE_NIGHT_YES
-    return !isNightMode || usesVantageDarkPalette(context)
+    return if (isNightMode) {
+        usesVantageDarkPalette(context)
+    } else {
+        usesVantageLightPalette(context)
+    }
 }
 
 private val vantageAccentGradient =

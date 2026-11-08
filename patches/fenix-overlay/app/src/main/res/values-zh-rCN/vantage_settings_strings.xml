@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Vantage: 重构后设置页的分类标题与搜索框文案。 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
+  <string name="pref_key_vantage_light_theme" translatable="false">pref_key_vantage_light_theme</string>
+  <string name="preference_vantage_light_theme">Vantage（浅色）</string>
   <string name="vantage_preferences_category_appearance">外观与定制</string>
   <string name="vantage_preferences_category_account_data">账户与数据</string>
   <string name="vantage_preferences_category_downloads_sharing">下载与分享</string>

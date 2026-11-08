@@ -148,6 +148,15 @@ internal fun VantageZoomRow(
                     .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_vantage_zoom),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(24.dp),
+            )
+
+            Spacer(modifier = Modifier.size(width = 12.dp, height = 1.dp))
+
             Text(
                 text = "缩放",
                 style = MaterialTheme.typography.bodyLarge,

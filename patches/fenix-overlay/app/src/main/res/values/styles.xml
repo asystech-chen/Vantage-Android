@@ -557,6 +557,10 @@
     <style name="PreferenceTheme" parent="PreferenceThemeOverlay.v14.Material">
         <item name="android:fontFamily">sans-serif</item>
         <item name="switchPreferenceCompatStyle">@style/SwitchCompatPreferenceMaterialStyle</item>
+        <!-- Vantage: the preferences list paints the same surface colour as the toolbar/chrome
+             instead of falling back to a slightly different theme background. -->
+        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 
     <style name="HeaderTextStyle" parent="TextAppearance.MaterialComponents.Subtitle1">

@@ -35,6 +35,12 @@
             android:key="@string/pref_key_vantage_theme"
             android:title="@string/preference_vantage_theme" />
 
+        <!-- Vantage: the brand's white theme, independent from Fenix's stock light theme. -->
+        <org.mozilla.fenix.settings.RadioButtonPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key_vantage_light_theme"
+            android:title="@string/preference_vantage_light_theme" />
+
         <org.mozilla.fenix.settings.RadioButtonPreference
             android:defaultValue="false"
             android:key="@string/pref_key_oled_theme"

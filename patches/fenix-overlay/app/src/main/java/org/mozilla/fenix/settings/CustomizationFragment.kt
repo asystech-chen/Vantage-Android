@@ -6,7 +6,9 @@ package org.mozilla.fenix.settings
 
 import org.ironfoxoss.ironfox.utils.FenixSettingsVisibilityManager
 import org.ironfoxoss.ironfox.utils.IronFoxPreferences
+import org.mozilla.fenix.theme.isVantageLightThemeSelected
 import org.mozilla.fenix.theme.isVantageThemeSelected
+import org.mozilla.fenix.theme.setVantageLightThemeSelected
 import org.mozilla.fenix.theme.setVantageThemeSelected
 import android.content.Context
 import android.content.res.Configuration
@@ -56,6 +58,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
     private lateinit var radioAutoBatteryTheme: RadioButtonPreference
     private var vantageSlotIndex = 0
     private lateinit var radioVantageTheme: RadioButtonPreference
+    private lateinit var radioVantageLightTheme: RadioButtonPreference
     private lateinit var radioFollowDeviceTheme: RadioButtonPreference
     private val args by navArgs<CustomizationFragmentArgs>()
 
@@ -118,6 +121,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         bindFollowDeviceTheme()
         bindDarkTheme()
         bindVantageTheme()
+        bindVantageLightTheme()
         bindDarkestTheme()
         bindLightTheme()
         bindAutoBatteryTheme()
@@ -274,6 +278,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
             radioLightTheme,
             radioDarkTheme,
             radioVantageTheme,
+            radioVantageLightTheme,
             radioDarkestTheme,
             if (SDK_INT >= Build.VERSION_CODES.P) {
                 radioFollowDeviceTheme
@@ -292,12 +297,18 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         val mode = AppCompatDelegate.getDefaultNightMode()
         val isDark = mode == AppCompatDelegate.MODE_NIGHT_YES
         val vantage = isVantageThemeSelected(requireContext())
+        val vantageLight = isVantageLightThemeSelected(requireContext())
         val oled = radioDarkestTheme.isVisible && IronFoxPreferences.shouldUseOledTheme(requireContext())
         val followsSystem =
             mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
                 mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
 
-        radioLightTheme.setCheckedWithoutClickListener(mode == AppCompatDelegate.MODE_NIGHT_NO)
+        radioLightTheme.setCheckedWithoutClickListener(
+            mode == AppCompatDelegate.MODE_NIGHT_NO && !vantageLight,
+        )
+        radioVantageLightTheme.setCheckedWithoutClickListener(
+            mode == AppCompatDelegate.MODE_NIGHT_NO && vantageLight,
+        )
         radioDarkTheme.setCheckedWithoutClickListener(isDark && !vantage && !oled)
         radioVantageTheme.setCheckedWithoutClickListener(isDark && vantage)
         radioDarkestTheme.setCheckedWithoutClickListener(isDark && !vantage && oled)
@@ -307,6 +318,16 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
             radioAutoBatteryTheme.setCheckedWithoutClickListener(
                 mode == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY,
             )
+        }
+
+        // `setCheckedWithoutClickListener` persists each radio's boolean, so the branded
+        // choices would otherwise leave the stock light/dark flags off and FenixApplication
+        // would fall back to "follow device theme" on the next launch. Restore the flags that
+        // describe the effective night mode.
+        with(requireComponents.settings) {
+            shouldUseLightTheme = mode == AppCompatDelegate.MODE_NIGHT_NO
+            shouldUseDarkTheme = mode == AppCompatDelegate.MODE_NIGHT_YES
+            shouldFollowDeviceTheme = followsSystem
         }
     }
 
@@ -340,6 +361,14 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         }
     }
 
+    /** Vantage: the brand's white theme, independent from Fenix's stock light theme. */
+    private fun bindVantageLightTheme() {
+        radioVantageLightTheme = requirePreference(R.string.pref_key_vantage_light_theme)
+        radioVantageLightTheme.onClickListener {
+            setNewTheme(AppCompatDelegate.MODE_NIGHT_NO, vantageLight = true)
+        }
+    }
+
     private fun bindDarkestTheme() {
         val settings = requireComponents.settings
         radioDarkestTheme = requirePreference(R.string.pref_key_oled_theme)
@@ -359,8 +388,25 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         }
     }
 
-    private fun setNewTheme(mode: Int, vantage: Boolean = false) {
+    private fun setNewTheme(mode: Int, vantage: Boolean = false, vantageLight: Boolean = false) {
         setVantageThemeSelected(requireContext(), vantage)
+        setVantageLightThemeSelected(requireContext(), vantageLight)
+
+        // Keep Fenix's stock theme flags in sync so the branded choices survive a restart.
+        with(requireComponents.settings) {
+            when {
+                vantageLight -> {
+                    shouldUseLightTheme = true
+                    shouldUseDarkTheme = false
+                    shouldFollowDeviceTheme = false
+                }
+                vantage -> {
+                    shouldUseDarkTheme = true
+                    shouldUseLightTheme = false
+                    shouldFollowDeviceTheme = false
+                }
+            }
+        }
         if (AppCompatDelegate.getDefaultNightMode() != mode) {
             AppCompatDelegate.setDefaultNightMode(mode)
         }

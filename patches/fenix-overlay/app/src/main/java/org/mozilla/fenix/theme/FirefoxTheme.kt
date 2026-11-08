@@ -51,8 +51,9 @@ fun FirefoxTheme(
     // Vantage: the branded palette is used when Vantage is selected explicitly, or when the
     // device theme is followed and the system is currently dark.
     val useVantageTheme = theme == Theme.Dark && usesVantageDarkPalette(LocalContext.current)
-    // Vantage: the light theme is also branded (blue actions, blue -> teal tab strip).
-    val useVantageLightTheme = theme == Theme.Light
+    // Vantage: the light theme is also branded (blue actions, blue -> teal tab strip), but only
+    // when the brand's white theme is selected or the device theme is followed.
+    val useVantageLightTheme = theme == Theme.Light && usesVantageLightPalette(LocalContext.current)
 
     val colorScheme: ColorScheme =
         when {
