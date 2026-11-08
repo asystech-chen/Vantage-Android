@@ -134,9 +134,38 @@ jobs:
         run: |
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
-          # 与桌面 CI / 本地构建互斥
+
+          # 监控状态：排队 → 编译中 → 结束（含 rc 与日志路径）
+          state="build/.state/ci-build"
+          mkdir -p "$(dirname "$state")"
+          case "$VARIANT" in
+            dev-*) build_log="build/logs/build-dev.log" ;;
+            release) build_log="build/logs/build-arm64.log" ;;
+            *) build_log="build/logs/build-$VARIANT.log" ;;
+          esac
+          {
+            echo "variant=$VARIANT"
+            echo "run=${GITHUB_RUN_NUMBER}"
+            echo "phase=queued"
+            echo "queued_start=$(date +%s)"
+            echo "log=$GITHUB_WORKSPACE/$build_log"
+          } > "$state"
+
+          finish() {
+            local rc=$?
+            {
+              echo "rc=$rc"
+              echo "end=$(date +%s)"
+            } >> "$state"
+          }
+          trap finish EXIT
+
+          # 与桌面 CI / 本地构建互斥；排队时状态保持 queued
           exec 9>/run/lock/ci-build.lock
           flock -w 43200 9
+          echo "phase=running" >> "$state"
+          echo "started=$(date +%s)" >> "$state"
+
           case "$VARIANT" in
             dev-incremental) ./scripts/build.sh dev rebuild-fenix ;;
             dev-full) ./scripts/build.sh dev ;;
