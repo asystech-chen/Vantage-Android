@@ -5,6 +5,7 @@
 /build/
 /env_override.sh
 /external/
+/keystores/
 /outputs/
 /overrides.mozconfig
 /scripts/root.txt
