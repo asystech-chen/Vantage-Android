@@ -186,10 +186,6 @@ User=${runner_user}
 Group=${runner_user}
 WorkingDirectory=${runner_dir}
 Environment=HOME=${runner_home}
-# 自助更新需要访问 GitHub 下载新版本；无代理时 100s 超时会导致更新失败
-Environment=HTTP_PROXY=http://127.0.0.1:7890
-Environment=HTTPS_PROXY=http://127.0.0.1:7890
-Environment=NO_PROXY=localhost,127.0.0.1,::1
 KillMode=process
 KillSignal=SIGTERM
 TimeoutStopSec=5min
