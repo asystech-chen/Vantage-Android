@@ -125,6 +125,28 @@ else
 fi
 
 echo
+
+# 迁移后修正绝对路径：软链与 pyenv 配置里旧根目录会全部失效
+if [[ "${dry_run}" -eq 1 ]]; then
+  printf '[dry-run] 将重指 %s 个指向 %s 的软链\n' \
+    "$(/usr/bin/find "${source_dir}" -type l -lname "${source_dir}/*" 2> /dev/null | /usr/bin/wc -l)" "${source_dir}"
+  printf '[dry-run] 将替换 build/pyenv 与 _sysconfigdata 中的旧路径\n'
+else
+  old_root="${source_dir}"
+  new_root="${dest_dir}"
+  repaired=0
+  while IFS= read -r -d '' p; do
+    t="$(/usr/bin/readlink "${p}")" || continue
+    /bin/ln -sfn "${t/${old_root}/${new_root}}" "${p}" && repaired=$((repaired + 1))
+  done < <(/usr/bin/find "${new_root}" -type l -lname "${old_root}/*" -print0)
+  echo "repaired symlinks: ${repaired}"
+  /usr/bin/grep -rl --binary-files=without-match "${old_root}" \
+    "${new_root}/build/pyenv" "${new_root}"/build/uv/python/*/lib/python*/_sysconfigdata*.py 2> /dev/null |
+    while IFS= read -r f; do
+      /usr/bin/sed -i "s|${old_root}|${new_root}|g" "$f"
+    done
+fi
+
 echo '完成。验证：'
 echo "  git -C ${dest_dir} status -sb"
 echo "  getfacl ${dest_dir} | head"
