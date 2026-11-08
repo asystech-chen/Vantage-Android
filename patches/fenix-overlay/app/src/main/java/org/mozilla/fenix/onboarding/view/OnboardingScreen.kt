@@ -39,11 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -404,7 +401,6 @@ private fun OnboardingContent(
                     isLargeScreen = layout.isLarge,
                     isLandscape = layout.isLandscape,
                 ),
-            isSolidBackground = layout.isSmall,
         )
 
         Column(
@@ -476,21 +472,17 @@ private fun OnboardingContent(
 }
 
 @Composable
-private fun OnboardingBackground(isVisible: Boolean, isSolidBackground: Boolean) {
+private fun OnboardingBackground(isVisible: Boolean) {
     if (!isVisible) return
 
-    // Vantage: follow the system light/dark setting instead of always using the dark artwork.
-    val backgroundModifier =
-        if (isSolidBackground || !isSystemInDarkTheme()) {
-            Modifier.background(color = MaterialTheme.colorScheme.surface)
-        } else {
-            Modifier.paint(
-                painter = painterResource(R.drawable.nova_onboarding_background),
-                contentScale = ContentScale.Crop,
-            )
-        }
-
-    Box(modifier = Modifier.fillMaxSize().then(backgroundModifier))
+    // Vantage: always use the branded surface instead of the IronFox purple artwork, so the
+    // first launch already matches the Vantage theme.
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surface),
+    )
 }
 
 @Composable

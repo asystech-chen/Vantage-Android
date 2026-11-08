@@ -319,16 +319,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
                 mode == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY,
             )
         }
-
-        // `setCheckedWithoutClickListener` persists each radio's boolean, so the branded
-        // choices would otherwise leave the stock light/dark flags off and FenixApplication
-        // would fall back to "follow device theme" on the next launch. Restore the flags that
-        // describe the effective night mode.
-        with(requireComponents.settings) {
-            shouldUseLightTheme = mode == AppCompatDelegate.MODE_NIGHT_NO
-            shouldUseDarkTheme = mode == AppCompatDelegate.MODE_NIGHT_YES
-            shouldFollowDeviceTheme = followsSystem
-        }
     }
 
     private fun bindLightTheme() {
@@ -392,21 +382,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         setVantageThemeSelected(requireContext(), vantage)
         setVantageLightThemeSelected(requireContext(), vantageLight)
 
-        // Keep Fenix's stock theme flags in sync so the branded choices survive a restart.
-        with(requireComponents.settings) {
-            when {
-                vantageLight -> {
-                    shouldUseLightTheme = true
-                    shouldUseDarkTheme = false
-                    shouldFollowDeviceTheme = false
-                }
-                vantage -> {
-                    shouldUseDarkTheme = true
-                    shouldUseLightTheme = false
-                    shouldFollowDeviceTheme = false
-                }
-            }
-        }
         if (AppCompatDelegate.getDefaultNightMode() != mode) {
             AppCompatDelegate.setDefaultNightMode(mode)
         }
