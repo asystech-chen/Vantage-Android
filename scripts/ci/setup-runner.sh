@@ -153,7 +153,7 @@ else
       "${runner_user}" "${runner_dir}" "${repo_url}" "${runner_name}" "${runner_labels}"
   else
     token="$(/usr/bin/tr -d '[:space:]' < "${token_file}")"
-    /usr/sbin/runuser -u "${runner_user}" -- "${runner_dir}/config.sh" \
+    /usr/sbin/runuser -u "${runner_user}" -- /usr/bin/env HOME="${runner_home}" "${runner_dir}/config.sh" \
       --unattended \
       --url "${repo_url}" \
       --token "${token}" \
