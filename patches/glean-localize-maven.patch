@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Glean - Localize Maven
+
+Replaces Mozilla Maven repositories with local maven repositories.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/build.gradle b/build.gradle
+index fa83f350..c07287cb 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -16,6 +16,7 @@ buildscript {
+     ]
+ 
+     repositories {
++        mavenLocal()
+         google()
+         mavenCentral()
+         maven {
+-- 

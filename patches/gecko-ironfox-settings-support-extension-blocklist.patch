@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 05:20:13 +0000
+Subject: [PATCH] Gecko - IronFox Settings: Extension blocklist
+
+Adds a preference to enable/disable Phoenix's blocklist of malicious/unwanted/sketchy extensions.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/toolkit/components/enterprisepolicies/EnterprisePoliciesParent.sys.mjs b/toolkit/components/enterprisepolicies/EnterprisePoliciesParent.sys.mjs
+index 7c5bde49c469..724cde5aaf01 100644
+--- a/toolkit/components/enterprisepolicies/EnterprisePoliciesParent.sys.mjs
++++ b/toolkit/components/enterprisepolicies/EnterprisePoliciesParent.sys.mjs
+@@ -14,6 +14,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
+   macOSPoliciesParser:
+     "resource://gre/modules/policies/macOSPoliciesParser.sys.mjs",
+   SitePolicyUtils: "resource://gre/modules/SitePolicyUtils.sys.mjs",
++  IFPrefUtils:     "moz-src:///ironfox/utils/IFPrefUtils.sys.mjs",
+ });
+ 
+ // This is the file that will be searched for in the
+@@ -544,7 +545,7 @@ EnterprisePoliciesManager.prototype = {
+     // the "*" defaults entirely.
+     if (id in ExtensionSettings) {
+       if (ExtensionSettings[id].installation_mode === "blocked") {
+-        return false;
++        return !lazy.IFPrefUtils.getBoolPref("browser.ironfox.extensions.blocklist.enabled");
+       }
+       return true;
+     }
+-- 

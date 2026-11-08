@@ -1,0 +1,62 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 03:48:55 +0000
+Subject: [PATCH] Gecko - IronFox core
+
+Provides support for core IronFox functionality.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/moz.build b/moz.build
+index 291f569259..b5bfc19af4 100644
+--- a/moz.build
++++ b/moz.build
+@@ -363,6 +363,8 @@ SPHINX_TREES["ai-agent-tools"] = "docs/ai-agent-tools"
+ 
+ include("build/templates.mozbuild")
+ 
++DIRS += ["ironfox"]
++
+ if CONFIG["MOZ_GENERATE_SBOM"]:
+     # The document covers the whole tree rather than any one directory, and it
+     # reads the licenses.json the backend writes from the tree-wide LICENSES
+diff --git a/mobile/android/moz.configure b/mobile/android/moz.configure
+index 79a1b7c25b..917d5b8d16 100644
+--- a/mobile/android/moz.configure
++++ b/mobile/android/moz.configure
+@@ -211,6 +211,7 @@ def check_host_bin_prog(var, prog, toolchain=None):
+ check_host_bin_prog("EMBEDDED_UNIFFI_BINDGEN", "embedded-uniffi-bindgen")
+ check_host_bin_prog("NIMBUS_FML", "nimbus-fml")
+ 
++include("../../ironfox/ironfox.configure")
+ 
+ @depends(
+     moz_app_name,
+diff --git a/mobile/android/app/geckoview-prefs.js b/mobile/android/app/geckoview-prefs.js
+index 2f5b02eed2ff..cb667820c722 100644
+--- a/mobile/android/app/geckoview-prefs.js
++++ b/mobile/android/app/geckoview-prefs.js
+@@ -388,3 +388,5 @@ pref("xpinstall.whitelist.fileRequest", false);
+ pref("browser.ipProtection.enabled", true);
+ pref("browser.ipProtection.guardian.endpoint", "https://vpn.mozilla.org/");
+ pref("toolkit.ipProtection.android.authProvider", "fxa");
++
++#include ../../../ironfox/prefs/ironfox.js
+diff --git a/mobile/android/installer/package-manifest.in b/mobile/android/installer/package-manifest.in
+index b16d2c3df257..6289ff2ab764 100644
+--- a/mobile/android/installer/package-manifest.in
++++ b/mobile/android/installer/package-manifest.in
+@@ -199,3 +199,12 @@
+ #ifdef PKG_LOCALE_MANIFEST
+ #include @PKG_LOCALE_MANIFEST@
+ #endif
++
++@BINPATH@/chrome/browser@JAREXT@
++@BINPATH@/chrome/browser.manifest
++
++@BINPATH@/chrome/ironfox@JAREXT@
++@BINPATH@/chrome/ironfox.manifest
++
++@BINPATH@/defaults/autoconfig/ironfox.cfg
++@BINPATH@/defaults/policies.json
+-- 

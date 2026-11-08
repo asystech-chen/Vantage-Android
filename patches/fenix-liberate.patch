@@ -1,0 +1,429 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Tue, 17 Feb 2026 03:35:42 +0000
+Subject: [PATCH] Fenix - Liberate
+
+Removes proprietary, tracking, and other unwanted libraries/functionality.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/build.gradle b/mobile/android/fenix/app/build.gradle
+index ad28bfb8c8ff..baa5656a3613 100644
+--- a/mobile/android/fenix/app/build.gradle
++++ b/mobile/android/fenix/app/build.gradle
+@@ -681,13 +681,13 @@ dependencies {
+     implementation libs.androidx.viewpager2
+     implementation libs.androidx.work.runtime
+     implementation libs.google.material
+-    implementation libs.installreferrer
++//    implementation libs.installreferrer
+     implementation libs.kotlinx.coroutines
+     implementation libs.kotlinx.serialization.json
+     implementation libs.mozilla.glean
+-    implementation libs.play.review
++/*    implementation libs.play.review
+     implementation libs.play.review.ktx
+-    implementation libs.play.services.ads.id
++    implementation libs.play.services.ads.id */
+     implementation libs.protobuf.javalite
+     implementation libs.sentry
+     implementation libs.androidx.documentfile
+diff --git a/mobile/android/fenix/app/src/main/AndroidManifest.xml b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+index 70cf6e8802..451cc94e79 100644
+--- a/mobile/android/fenix/app/src/main/AndroidManifest.xml
++++ b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+@@ -866,7 +866,7 @@
+             </intent-filter>
+         </receiver>
+ 
+-        <receiver
++        <!-- <receiver
+           android:name="org.mozilla.fenix.messaging.QAMessageNotificationWorkerReceiver"
+           android:exported="true"
+           android:enabled="true"
+@@ -874,7 +874,7 @@
+           <intent-filter>
+             <action android:name="org.mozilla.fenix.TRIGGER_MESSAGE_WORKER" />
+           </intent-filter>
+-        </receiver>
++        </receiver> -->
+     </application>
+ 
+ </manifest>
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
+index 50d5ce2ac8..58338736a0 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Components.kt
+@@ -28,10 +28,10 @@ import mozilla.components.feature.tabdata.coordinator.TabDataCoordinator
+ import mozilla.components.lib.ai.controls.AIFeatureBlockStorage
+ import mozilla.components.lib.ai.controls.dataStore
+ import mozilla.components.lib.ai.controls.default
+-import mozilla.components.lib.crash.store.CrashAction
++/* import mozilla.components.lib.crash.store.CrashAction
+ import mozilla.components.lib.crash.store.CrashMiddleware
+ import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
+-import mozilla.components.lib.integrity.googleplay.IntegrityConsumer
++import mozilla.components.lib.integrity.googleplay.IntegrityConsumer*/
+ import mozilla.components.lib.llm.mlpa.MlpaTokenStorage
+ import mozilla.components.lib.publicsuffixlist.PublicSuffixList
+ import mozilla.components.service.fxrelay.eligibility.RelayEligibilityStore
+@@ -66,10 +66,10 @@ import org.mozilla.fenix.components.lens.LensImageSearch
+ import org.mozilla.fenix.components.listentopage.ListenToPage
+ import org.mozilla.fenix.components.llm.Llm
+ import org.mozilla.fenix.components.llm.ext.accessTokenProvider
+-import org.mozilla.fenix.components.metrics.MetricsMiddleware
++// import org.mozilla.fenix.components.metrics.MetricsMiddleware
+ import org.mozilla.fenix.components.tabs.DefaultTabRepository
+-import org.mozilla.fenix.crashes.CrashReportingAppMiddleware
+-import org.mozilla.fenix.crashes.SettingsCrashReportCache
++// import org.mozilla.fenix.crashes.CrashReportingAppMiddleware
++// import org.mozilla.fenix.crashes.SettingsCrashReportCache
+ import org.mozilla.fenix.datastore.pocketStoriesSelectedCategoriesDataStore
+ import org.mozilla.fenix.distributions.DefaultDistributionBrowserStoreProvider
+ import org.mozilla.fenix.distributions.DefaultDistributionProviderChecker
+@@ -79,18 +79,18 @@ import org.mozilla.fenix.ext.asRecentTabs
+ import org.mozilla.fenix.ext.components
+ import org.mozilla.fenix.ext.filterState
+ import org.mozilla.fenix.ext.sort
+-import org.mozilla.fenix.home.PocketMiddleware
+-import org.mozilla.fenix.home.SettingsBackedPocketSettings
++// import org.mozilla.fenix.home.PocketMiddleware
++// import org.mozilla.fenix.home.SettingsBackedPocketSettings
+ import org.mozilla.fenix.home.blocklist.BlocklistHandler
+ import org.mozilla.fenix.home.blocklist.BlocklistMiddleware
+ import org.mozilla.fenix.home.collections.migration.CollectionsMigrationRepository
+ import org.mozilla.fenix.home.collections.migration.DefaultCollectionsMigrationRepository
+-import org.mozilla.fenix.home.middleware.HomeTelemetryMiddleware
++// import org.mozilla.fenix.home.middleware.HomeTelemetryMiddleware
+ import org.mozilla.fenix.home.setup.store.DefaultSetupChecklistRepository
+ import org.mozilla.fenix.home.setup.store.SetupChecklistPreferencesMiddleware
+-import org.mozilla.fenix.home.setup.store.SetupChecklistTelemetryMiddleware
++// import org.mozilla.fenix.home.setup.store.SetupChecklistTelemetryMiddleware
+ import org.mozilla.fenix.ipprotection.store.DefaultIPProtectionPromptRepository
+-import org.mozilla.fenix.messaging.state.MessagingMiddleware
++// import org.mozilla.fenix.messaging.state.MessagingMiddleware
+ import org.mozilla.fenix.nimbus.FxNimbus
+ import org.mozilla.fenix.onboarding.FenixOnboarding
+ import org.mozilla.fenix.perf.AppLinkIntentLaunchTypeProvider
+@@ -99,7 +99,7 @@ import org.mozilla.fenix.perf.StartupActivityLog
+ import org.mozilla.fenix.perf.StartupStateProvider
+ import org.mozilla.fenix.perf.StrictModeManager
+ import org.mozilla.fenix.perf.lazyMonitored
+-import org.mozilla.fenix.reviewprompt.ReviewPromptMiddleware
++// import org.mozilla.fenix.reviewprompt.ReviewPromptMiddleware
+ import org.mozilla.fenix.search.VoiceSearchAIControlFeature
+ import org.mozilla.fenix.settings.emailmasks.middleware.DefaultEmailMasksRepository
+ import org.mozilla.fenix.settings.emailmasks.middleware.EmailMasksRepository
+@@ -336,7 +336,7 @@ class Components(
+                         ProfileMarkerMiddleware(markerName = "AppStore", profiler = core.engine.profiler),
+                         LogMiddleware(tag = "AppStore", shouldIncludeDetailedData = { Config.channel.isDebug }),
+                         BlocklistMiddleware(blocklistHandler),
+-                        PocketMiddleware(
++/*                        PocketMiddleware(
+                             lazyMonitored { core.pocketStoriesService },
+                             context.pocketStoriesSelectedCategoriesDataStore,
+                             SettingsBackedPocketSettings(settings),
+@@ -357,9 +357,9 @@ class Components(
+                                 currentTimeInMillis = currentTimeMillis,
+                             )
+                         ),
+-                        HomeTelemetryMiddleware(),
++                        HomeTelemetryMiddleware(), */
+                         SetupChecklistPreferencesMiddleware(DefaultSetupChecklistRepository(context, settings)),
+-                        SetupChecklistTelemetryMiddleware(),
++ /*                       SetupChecklistTelemetryMiddleware(),
+                         ReviewPromptMiddleware(
+                                 continuousOnboardingInProgress = {
+                                     val continuousOnboardingCompleted =
+@@ -375,7 +375,7 @@ class Components(
+                             )
+                             .also {
+                                 settings.migrateLastReviewPromptTimePrefIfNeeded(nimbus.events)
+-                            },
++                            }, */
+                         AppVisualCompletenessMiddleware(performance.visualCompletenessQueue),
+                     ),
+             )
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/SettingsSearchProviders.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/SettingsSearchProviders.kt
+index 433fc89141..627dc56c67 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/SettingsSearchProviders.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/SettingsSearchProviders.kt
+@@ -5,10 +5,10 @@
+ package org.mozilla.fenix.components
+ 
+ import org.mozilla.fenix.settings.ToolbarShortcutSettingsSearchProvider
+-import org.mozilla.fenix.settings.ai.AIControlsSearchProvider
++/* import org.mozilla.fenix.settings.ai.AIControlsSearchProvider
+ import org.mozilla.fenix.settings.datachoices.DataChoicesSearchProvider
+ import org.mozilla.fenix.settings.labs.FirefoxLabsSettingsSearchProvider
+-import org.mozilla.fenix.settings.pagesummaries.PageSummariesSettingsSearchProvider
++import org.mozilla.fenix.settings.pagesummaries.PageSummariesSettingsSearchProvider */
+ import org.mozilla.fenix.settings.settingssearch.SettingsSearchProvider
+ import org.mozilla.fenix.summarization.onboarding.SummarizationFeatureDiscoveryConfiguration
+ 
+@@ -28,9 +28,9 @@ internal fun settingsSearchProviders(
+     summarizationFeatureConfiguration: SummarizationFeatureDiscoveryConfiguration
+ ): List<SettingsSearchProvider> =
+     listOf(
+-        DataChoicesSearchProvider,
++/*        DataChoicesSearchProvider,
+         AIControlsSearchProvider,
+         PageSummariesSettingsSearchProvider(summarizationFeatureConfiguration),
+-        FirefoxLabsSettingsSearchProvider(),
++        FirefoxLabsSettingsSearchProvider(), */
+         ToolbarShortcutSettingsSearchProvider,
+     )
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/distributions/DistributionTools.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/distributions/DistributionTools.kt
+index 979e420aa7..36061cd0c1 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/distributions/DistributionTools.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/distributions/DistributionTools.kt
+@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
+ import mozilla.components.compose.base.button.FilledButton
+ import org.mozilla.fenix.R
+ import org.mozilla.fenix.components.components
+-import org.mozilla.fenix.components.metrics.InstallReferrerHandlingService
++// import org.mozilla.fenix.components.metrics.InstallReferrerHandlingService
+ import org.mozilla.fenix.distributions.DefaultDistributionProviderChecker
+ import org.mozilla.fenix.theme.FirefoxTheme
+ import org.mozilla.fenix.theme.PreviewThemeProvider
+@@ -50,7 +50,7 @@ fun DistributionTools() {
+     val playInstallReferrer: String by remember {
+         mutableStateOf(
+             """
+-                rawValue: ${InstallReferrerHandlingService.response}
++                rawValue: ""
+                 utmTerm: ${settings.utmTerm}
+                 utmMedium: ${settings.utmMedium}
+                 utmSource: ${settings.utmSource}
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/navigation/DebugDrawerRoute.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/navigation/DebugDrawerRoute.kt
+index 4a007fc83e..220b46f35d 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/navigation/DebugDrawerRoute.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/navigation/DebugDrawerRoute.kt
+@@ -8,7 +8,7 @@ import androidx.annotation.StringRes
+ import androidx.compose.runtime.Composable
+ import mozilla.components.browser.state.state.BrowserState
+ import mozilla.components.browser.state.store.BrowserStore
+-import mozilla.components.concept.integrity.IntegrityClient
++// import mozilla.components.concept.integrity.IntegrityClient
+ import mozilla.components.concept.storage.CreditCardsAddressesStorage
+ import mozilla.components.concept.storage.LoginsStorage
+ import mozilla.components.feature.ipprotection.store.IPProtectionStore
+@@ -20,19 +20,19 @@ import org.mozilla.fenix.debugsettings.addons.ui.AddonsDebugToolsScreen
+ import org.mozilla.fenix.debugsettings.addresses.AddressesDebugRegionRepository
+ import org.mozilla.fenix.debugsettings.addresses.AddressesTools
+ import org.mozilla.fenix.debugsettings.autofill.AutofillTools
+-import org.mozilla.fenix.debugsettings.cfrs.CfrTools as CfrToolsScreen
++// import org.mozilla.fenix.debugsettings.cfrs.CfrTools as CfrToolsScreen
+ import org.mozilla.fenix.debugsettings.cfrs.CfrToolsState
+ import org.mozilla.fenix.debugsettings.cfrs.CfrToolsStore
+-import org.mozilla.fenix.debugsettings.crashtools.CrashTools
++// import org.mozilla.fenix.debugsettings.crashtools.CrashTools
+ import org.mozilla.fenix.debugsettings.creditcards.CreditCardsTools
+-import org.mozilla.fenix.debugsettings.distributions.DistributionTools
++// import org.mozilla.fenix.debugsettings.distributions.DistributionTools
+ import org.mozilla.fenix.debugsettings.gleandebugtools.GleanDebugToolsStore
+-import org.mozilla.fenix.debugsettings.gleandebugtools.ui.GleanDebugToolsScreen
+-import org.mozilla.fenix.debugsettings.integrity.IntegrityTools
++// import org.mozilla.fenix.debugsettings.gleandebugtools.ui.GleanDebugToolsScreen
++// import org.mozilla.fenix.debugsettings.integrity.IntegrityTools
+ import org.mozilla.fenix.debugsettings.ipprotection.IPProtectionLocationTools as IPProtectionLocationToolsScreen
+ import org.mozilla.fenix.debugsettings.listentopage.ListenToPageTools
+ import org.mozilla.fenix.debugsettings.logins.LoginsTools
+-import org.mozilla.fenix.debugsettings.region.RegionTools
++// import org.mozilla.fenix.debugsettings.region.RegionTools
+ import org.mozilla.fenix.debugsettings.store.DebugDrawerAction
+ import org.mozilla.fenix.debugsettings.store.DebugDrawerStore
+ import org.mozilla.fenix.debugsettings.tabprocesstools.TabProcessTools
+@@ -71,7 +71,7 @@ enum class DebugDrawerRoute(
+         route = "autofill",
+         title = R.string.debug_drawer_autofill_title,
+     ),
+-    CfrTools(
++/*    CfrTools(
+         route = "cfr_tools",
+         title = R.string.debug_drawer_cfr_tools_title,
+     ),
+@@ -82,19 +82,19 @@ enum class DebugDrawerRoute(
+     RegionDebugTools(
+         route = "region_debug_tools",
+         title = R.string.debug_drawer_region_tools_title,
+-    ),
++    ), */
+     AddonsDebugTools(
+         route = "addons_debug_tools",
+         title = R.string.debug_drawer_addons_tools_title,
+     ),
+-    CrashDebugTools(
++/*    CrashDebugTools(
+         route = "crash_debug_tools",
+         title = R.string.crash_debug_tools_title,
+     ),
+     IntegrityTools(
+         route = "integrity_tools",
+         title = R.string.integrity_debug_tools_title,
+-    ),
++    ), */
+     TabGroupTools(
+         route = "tab_group_tools",
+         title = R.string.debug_drawer_tab_group_tools_title,
+@@ -103,10 +103,10 @@ enum class DebugDrawerRoute(
+         route = "tab_process_tools",
+         title = R.string.debug_drawer_tab_process_tools_title,
+     ),
+-    DistributionTools(
++/*    DistributionTools(
+         route = "distribution_tools",
+         title = R.string.debug_drawer_distribution_tools_title,
+-    ),
++    ), */
+     IPProtectionLocationTools(
+         route = "ip_protection_location_tools",
+         title = R.string.debug_drawer_ip_protection_location_tools_title,
+@@ -145,7 +145,7 @@ enum class DebugDrawerRoute(
+             addressesDebugRegionRepository: AddressesDebugRegionRepository,
+             creditCardsAddressesStorage: CreditCardsAddressesStorage,
+             clientUUID: ClientUuid,
+-            integrityClient: IntegrityClient,
++            integrityClient: Unit?,
+             inactiveTabsEnabled: Boolean,
+             tabGroupRepository: TabGroupRepository,
+             lazyIPProtectionStore: Lazy<IPProtectionStore>,
+@@ -211,7 +211,7 @@ enum class DebugDrawerRoute(
+                     }
+                 }
+ 
+-                CfrTools -> {
++/*                CfrTools -> {
+                     onClick = {
+                         debugDrawerStore.dispatch(DebugDrawerAction.NavigateTo.CfrTools)
+                     }
+@@ -236,7 +236,7 @@ enum class DebugDrawerRoute(
+                     content = {
+                         RegionTools(browserStore = browserStore)
+                     }
+-                }
++                } */
+ 
+                 AddonsDebugTools -> {
+                     onClick = {
+@@ -247,7 +247,7 @@ enum class DebugDrawerRoute(
+                     }
+                 }
+ 
+-                CrashDebugTools -> {
++/*                CrashDebugTools -> {
+                     onClick = {
+                         debugDrawerStore.dispatch(DebugDrawerAction.NavigateTo.CrashDebugTools)
+                     }
+@@ -262,7 +262,7 @@ enum class DebugDrawerRoute(
+                     content = {
+                         IntegrityTools(clientUUID, integrityClient)
+                     }
+-                }
++                } */
+ 
+                 TabGroupTools -> {
+                     onClick = {
+@@ -285,14 +285,14 @@ enum class DebugDrawerRoute(
+                     }
+                 }
+ 
+-                DistributionTools -> {
++/*                DistributionTools -> {
+                     onClick = {
+                         debugDrawerStore.dispatch(DebugDrawerAction.NavigateTo.DistributionTools)
+                     }
+                     content = {
+                         DistributionTools()
+                     }
+-                }
++                } */
+ 
+                 IPProtectionLocationTools -> {
+                     onClick = {
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/store/DebugDrawerNavigationMiddleware.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/store/DebugDrawerNavigationMiddleware.kt
+index ead961f23e..42a92606e1 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/store/DebugDrawerNavigationMiddleware.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/store/DebugDrawerNavigationMiddleware.kt
+@@ -54,23 +54,23 @@ class DebugDrawerNavigationMiddleware(
+             is DebugDrawerAction.NavigateTo.CreditCards ->
+                 navController.navigate(route = DebugDrawerRoute.CreditCards.route)
+             is DebugDrawerAction.NavigateTo.Autofill -> navController.navigate(route = DebugDrawerRoute.Autofill.route)
+-            is DebugDrawerAction.NavigateTo.CfrTools -> navController.navigate(route = DebugDrawerRoute.CfrTools.route)
++            is DebugDrawerAction.NavigateTo.CfrTools -> Unit // no-op
+             is DebugDrawerAction.NavigateTo.GleanDebugTools ->
+-                navController.navigate(route = DebugDrawerRoute.GleanDebugTools.route)
++                Unit // no-op
+             is DebugDrawerAction.NavigateTo.RegionDebugTools ->
+-                navController.navigate(route = DebugDrawerRoute.RegionDebugTools.route)
++                Unit // no-op
+             is DebugDrawerAction.NavigateTo.AddonsDebugTools ->
+                 navController.navigate(route = DebugDrawerRoute.AddonsDebugTools.route)
+             is DebugDrawerAction.NavigateTo.CrashDebugTools ->
+-                navController.navigate(route = DebugDrawerRoute.CrashDebugTools.route)
++                Unit // no-op
+             is DebugDrawerAction.NavigateTo.IntegrityDebugTools ->
+-                navController.navigate(route = DebugDrawerRoute.IntegrityTools.route)
++                Unit // no-op
+             is DebugDrawerAction.NavigateTo.TabGroupDebugTools ->
+                 navController.navigate(route = DebugDrawerRoute.TabGroupTools.route)
+             is DebugDrawerAction.NavigateTo.TabProcessTools ->
+                 navController.navigate(route = DebugDrawerRoute.TabProcessTools.route)
+             is DebugDrawerAction.NavigateTo.DistributionTools ->
+-                navController.navigate(route = DebugDrawerRoute.DistributionTools.route)
++                Unit // no-op
+             is DebugDrawerAction.NavigateTo.IPProtectionLocationTools ->
+                 navController.navigate(route = DebugDrawerRoute.IPProtectionLocationTools.route)
+             is DebugDrawerAction.NavigateTo.ListenToPageTools ->
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/ui/FenixOverlay.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/ui/FenixOverlay.kt
+index 92aa7c8b30..83d177e018 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/ui/FenixOverlay.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/debugsettings/ui/FenixOverlay.kt
+@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.map
+ import mozilla.components.browser.state.state.BrowserState
+ import mozilla.components.browser.state.state.createTab
+ import mozilla.components.browser.state.store.BrowserStore
+-import mozilla.components.concept.integrity.IntegrityClient
++// import mozilla.components.concept.integrity.IntegrityClient
+ import mozilla.components.concept.storage.CreditCardsAddressesStorage
+ import mozilla.components.concept.storage.LoginsStorage
+ import mozilla.components.feature.ipprotection.store.IPProtectionStore
+@@ -36,7 +36,7 @@ import mozilla.components.feature.listentopage.listenReducer
+ import mozilla.components.feature.tabgroups.storage.data.TabGroup
+ import mozilla.components.feature.tabgroups.storage.data.TabGroupData
+ import mozilla.components.feature.tabgroups.storage.repository.TabGroupRepository
+-import mozilla.telemetry.glean.Glean
++// import mozilla.telemetry.glean.Glean
+ import org.mozilla.fenix.R
+ import org.mozilla.fenix.components.ClientUuid
+ import org.mozilla.fenix.components.components
+@@ -110,8 +110,8 @@ fun FenixOverlay(
+             GleanDebugToolsStore(
+                 initialState =
+                     GleanDebugToolsState(
+-                        logPingsToConsoleEnabled = Glean.getLogPings(),
+-                        debugViewTag = Glean.getDebugViewTag() ?: "",
++                        logPingsToConsoleEnabled = false,
++                        debugViewTag = "",
+                     ),
+                 middlewares =
+                     listOf(
+@@ -173,7 +173,7 @@ private fun FenixOverlay(
+     addressesDebugRegionRepository: AddressesDebugRegionRepository,
+     creditCardsAddressesStorage: CreditCardsAddressesStorage,
+     clientUUID: ClientUuid,
+-    integrityClient: IntegrityClient,
++    integrityClient: Unit?,
+     tabGroupRepository: TabGroupRepository,
+     inactiveTabsEnabled: Boolean,
+     lazyIPProtectionStore: Lazy<IPProtectionStore>,
+@@ -306,7 +306,7 @@ private fun FenixOverlayPreview() {
+         addressesDebugRegionRepository = FakeAddressesDebugRegionRepository(),
+         creditCardsAddressesStorage = FakeCreditCardsAddressesStorage(),
+         clientUUID = FakeClientUuid(),
+-        integrityClient = IntegrityClient.testSuccess,
++        integrityClient = null,
+         tabGroupRepository = mockTabGroupRepository,
+         lazyIPProtectionStore = lazy { IPProtectionStore() },
+         listenStore = ListenStore(ListenState(), ::listenReducer),
+-- 

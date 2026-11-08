@@ -1,0 +1,510 @@
+package org.mozilla.fenix.onboarding.view
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollFactory
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import mozilla.components.compose.base.button.FilledButton
+import org.ironfoxoss.core.R as ironfoxR
+import org.mozilla.fenix.R as fenixR
+import org.mozilla.fenix.compose.ScrollIndicator
+import org.mozilla.fenix.ext.components
+import org.mozilla.fenix.onboarding.view.CONTENT_WEIGHT
+import org.mozilla.fenix.onboarding.view.TITLE_TOP_SPACER_WEIGHT
+import org.mozilla.fenix.onboarding.view.OnboardingPageState
+import org.mozilla.fenix.settings.doh.CustomProviderErrorState
+import org.mozilla.fenix.settings.doh.DefaultDohSettingsProvider
+import org.mozilla.fenix.settings.doh.DohSettingsState
+import org.mozilla.fenix.settings.doh.DohUrlValidator
+import org.mozilla.fenix.settings.doh.ProtectionLevel
+import org.mozilla.fenix.settings.doh.Provider
+import org.mozilla.fenix.settings.doh.UrlValidationException
+import org.mozilla.fenix.settings.doh.root.AlertDialogAddCustomProvider
+import org.mozilla.fenix.theme.FirefoxTheme
+
+private val IF_DOH_IMAGE_HEIGHT = 176.dp
+private val IF_DOH_IMAGE_HEIGHT_SMALL_DEVICE = 130.dp
+
+private sealed interface IfPreferenceDohContentState {
+  data object ModeSelection : IfPreferenceDohContentState
+  data object ProviderSelection : IfPreferenceDohContentState
+}
+
+@Composable
+fun IronFoxPreferenceDohOnboardingPage(
+  pageState: OnboardingPageState,
+) {
+  Card(
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceBright),
+    elevation = CardDefaults.cardElevation(if (!pageState.isSmallDevice) 6.dp else 0.dp),
+  ) {
+    val verticalPadding = if (pageState.isSmallDevice) 0.dp else FirefoxTheme.layout.space.static300
+    Column(
+      modifier =
+        Modifier.padding(
+          horizontal = FirefoxTheme.layout.space.static200,
+          vertical = verticalPadding,
+        ),
+      horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+      with(pageState) {
+        val scrollState = rememberScrollState()
+        if (pageState.isSmallDevice) {
+          Spacer(modifier = Modifier.height(16.dp))
+        } else {
+          Spacer(modifier = Modifier.weight(TITLE_TOP_SPACER_WEIGHT))
+        }
+
+        var contentState by remember {
+          mutableStateOf<IfPreferenceDohContentState>(
+            IfPreferenceDohContentState.ModeSelection,
+          )
+        }
+
+        val updateContentState = remember {
+          { newState: IfPreferenceDohContentState ->
+            contentState = newState
+          }
+        }
+
+        BackHandler(contentState != IfPreferenceDohContentState.ModeSelection) {
+          when (contentState) {
+            IfPreferenceDohContentState.ModeSelection -> {}
+            IfPreferenceDohContentState.ProviderSelection -> {
+              contentState = IfPreferenceDohContentState.ModeSelection
+            }
+          }
+        }
+
+        val context = LocalContext.current
+        val dohSettingsProvider = remember(context) {
+          DefaultDohSettingsProvider(
+            engine = context.components.core.engine,
+            settings = context.components.settings,
+          )
+        }
+
+        var dohSettingsState by remember(dohSettingsProvider) {
+          mutableStateOf(
+            DohSettingsState(
+              allProtectionLevels = listOf(
+                ProtectionLevel.Default,
+                ProtectionLevel.Increased,
+                ProtectionLevel.Max,
+              ),
+              selectedProtectionLevel = dohSettingsProvider.getSelectedProtectionLevel(),
+              providers = dohSettingsProvider.getDefaultProviders(),
+              selectedProvider = dohSettingsProvider.getSelectedProvider(),
+            ),
+          )
+        }
+
+        val updateDohSettingsState = remember {
+          { newState: DohSettingsState ->
+            dohSettingsState = newState
+          }
+        }
+
+        val captionText = when (contentState) {
+          IfPreferenceDohContentState.ModeSelection -> stringResource(
+            when (dohSettingsState.selectedProtectionLevel) {
+              ProtectionLevel.Default -> fenixR.string.preference_doh_default_protection_summary
+              ProtectionLevel.Increased -> fenixR.string.preference_doh_increased_protection_summary
+              ProtectionLevel.Max -> fenixR.string.preference_doh_max_protection_summary
+              ProtectionLevel.Off -> ironfoxR.string.ironfox_empty
+            },
+            stringResource(fenixR.string.app_name),
+          )
+
+          IfPreferenceDohContentState.ProviderSelection ->
+            when (val provider = dohSettingsState.selectedProvider) {
+              is Provider.BuiltIn -> provider.url
+              is Provider.Custom -> provider.url
+              null -> ""
+            }
+        }
+
+        Box(modifier = Modifier.weight(CONTENT_WEIGHT).fillMaxWidth()) {
+          CompositionLocalProvider(LocalOverscrollFactory provides null) {
+            Column(
+              modifier =
+                Modifier.fillMaxSize()
+                  .padding(end = FirefoxTheme.layout.space.static150)
+                  .verticalScroll(scrollState),
+              horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+              Header(pageState)
+
+              Column(
+                modifier = Modifier.padding(vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+              ) {
+
+                Text(
+                  text = description,
+                  textAlign = TextAlign.Center,
+                  style = FirefoxTheme.typography.body2,
+                )
+              }
+
+              Spacer(Modifier.height(32.dp))
+
+              AnimatedContent(
+                targetState = contentState,
+                contentAlignment = Alignment.Center,
+              ) { currentState ->
+                when (currentState) {
+                  IfPreferenceDohContentState.ModeSelection -> {
+                    IronFoxPreferenceDoHModeSelection(
+                      state = dohSettingsState,
+                      onUpdateState = updateDohSettingsState,
+                    )
+                  }
+
+                  IfPreferenceDohContentState.ProviderSelection -> {
+                    IronFoxPreferenceDoHProviderSelection(
+                      state = dohSettingsState,
+                      dohSettingsProvider = dohSettingsProvider,
+                      onUpdateState = updateDohSettingsState,
+                    )
+                  }
+                }
+              }
+
+              Spacer(modifier = Modifier.height(16.dp))
+
+              Text(
+                text = captionText,
+                style = FirefoxTheme.typography.caption,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+              )
+            }
+            ScrollIndicator(
+              scrollState = scrollState,
+              modifier = Modifier.align(Alignment.CenterEnd),
+              enabled = pageState.isSmallDevice,
+            )
+          }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        FilledButton(
+          text = primaryButton.text,
+          modifier =
+            Modifier.width(width = FirefoxTheme.layout.size.maxWidth.small)
+              .defaultMinSize(minHeight = FirefoxTheme.layout.size.static600),
+          onClick = {
+            applyDohSettings(
+              contentState = contentState,
+              onContentStateChange = updateContentState,
+              state = dohSettingsState,
+              dohSettingsProvider = dohSettingsProvider,
+            )
+          },
+        )
+      }
+    }
+  }
+}
+
+private fun OnboardingPageState.applyDohSettings(
+  contentState: IfPreferenceDohContentState,
+  onContentStateChange: (IfPreferenceDohContentState) -> Unit,
+  state: DohSettingsState,
+  dohSettingsProvider: DefaultDohSettingsProvider,
+) {
+  when (contentState) {
+    IfPreferenceDohContentState.ModeSelection -> {
+      if (state.selectedProtectionLevel is ProtectionLevel.Increased || state.selectedProtectionLevel is ProtectionLevel.Max) {
+        onContentStateChange(IfPreferenceDohContentState.ProviderSelection)
+      } else {
+        dohSettingsProvider.setProtectionLevel(
+          state.selectedProtectionLevel,
+          state.selectedProvider,
+        )
+        primaryButton.onClick()
+      }
+    }
+
+    IfPreferenceDohContentState.ProviderSelection -> {
+      // apply settings
+      dohSettingsProvider.setProtectionLevel(
+        state.selectedProtectionLevel,
+        state.selectedProvider,
+      )
+
+      // set custom provider, if any
+      (state.selectedProvider as? Provider.Custom?)?.also { provider ->
+        dohSettingsProvider.setCustomProvider(provider.url)
+      }
+
+      // then proceed to the next page
+      primaryButton.onClick()
+    }
+  }
+}
+
+@Suppress("UnusedReceiverParameter")
+@Composable
+private fun ColumnScope.IronFoxPreferenceDoHModeSelection(
+  state: DohSettingsState,
+  modifier: Modifier = Modifier,
+  onUpdateState: (DohSettingsState) -> Unit,
+) {
+  val onSelect = remember {
+    { newLevel: ProtectionLevel ->
+      onUpdateState(state.copy(selectedProtectionLevel = newLevel))
+    }
+  }
+
+  Column(
+    modifier = modifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    Column(
+      modifier = Modifier.width(IntrinsicSize.Max),
+    ) {
+      state.allProtectionLevels.forEach { level ->
+        val selected = remember { level == state.selectedProtectionLevel }
+        ModeSelectionRadioButton(
+          selected = selected,
+          onSelect = onSelect,
+          level = level,
+          state = state,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun ModeSelectionRadioButton(
+  selected: Boolean,
+  onSelect: (ProtectionLevel) -> Unit,
+  level: ProtectionLevel,
+  state: DohSettingsState,
+) {
+  Row(
+    modifier = Modifier
+      .height(48.dp)
+      .selectable(
+        selected = selected,
+        enabled = true,
+        onClick = { onSelect(level) },
+      )
+      .padding(8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    RadioButton(
+      selected = state.selectedProtectionLevel == level,
+      onClick = null,
+      colors = RadioButtonDefaults.colors(selectedColor = ButtonDefaults.buttonColors().containerColor),
+    )
+
+    Text(
+      text = stringResource(
+        when (level) {
+          ProtectionLevel.Default -> fenixR.string.preference_doh_default_protection
+          ProtectionLevel.Increased -> fenixR.string.preference_doh_increased_protection
+          ProtectionLevel.Max -> fenixR.string.preference_doh_max_protection
+          ProtectionLevel.Off -> ironfoxR.string.ironfox_empty
+        },
+      ),
+      style = FirefoxTheme.typography.body1,
+      modifier = Modifier.padding(start = 16.dp),
+    )
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Suppress("UnusedReceiverParameter")
+@Composable
+private fun ColumnScope.IronFoxPreferenceDoHProviderSelection(
+  state: DohSettingsState,
+  dohSettingsProvider: DefaultDohSettingsProvider,
+  modifier: Modifier = Modifier,
+  onUpdateState: (DohSettingsState) -> Unit,
+) {
+  var expanded by remember {
+    mutableStateOf(false)
+  }
+
+  val setProvider = remember {
+    { newProvider: Provider, showCustomProviderDialog: Boolean ->
+      onUpdateState(
+        state.copy(
+          selectedProvider = newProvider,
+          isCustomProviderDialogOn = showCustomProviderDialog,
+        ),
+      )
+    }
+  }
+
+  val providerName: (@Composable (Provider) -> String) = remember {
+    { provider ->
+      when (provider) {
+        is Provider.BuiltIn -> provider.name
+        is Provider.Custom -> stringResource(fenixR.string.preference_doh_provider_custom)
+      }
+    }
+  }
+
+  Column(
+    modifier = modifier,
+  ) {
+    ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = it },
+    ) {
+      OutlinedTextField(
+        modifier = Modifier.fillMaxWidth()
+          .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true),
+        value = providerName(state.selectedProvider!!),
+        onValueChange = {},
+        readOnly = true,
+        label = {
+          Text(
+            text = stringResource(fenixR.string.preference_doh_choose_provider),
+            modifier = Modifier.padding(top = 14.dp)
+          )
+        },
+        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+      )
+
+      ExposedDropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false },
+      ) {
+        state.providers.forEach { provider ->
+          DropdownMenuItem(
+            text = {
+              Text(
+                text = providerName(provider),
+                style = FirefoxTheme.typography.body1,
+                color = MaterialTheme.colorScheme.onSurface,
+              )
+            },
+            onClick = {
+              setProvider(provider, provider is Provider.Custom)
+              expanded = false
+            },
+          )
+        }
+      }
+    }
+
+    if (state.selectedProvider is Provider.Custom && state.isCustomProviderDialogOn) {
+      AlertDialogAddCustomProvider(
+        customProviderUrl = state.selectedProvider.url,
+        customProviderErrorState = state.customProviderErrorState,
+        onCustomCancelClicked = {
+          // user cancelled the dialog, reset provider to default
+          onUpdateState(
+            state.copy(
+              selectedProvider = dohSettingsProvider.getDefaultProviders().first(),
+            ),
+          )
+        },
+        onCustomAddClicked = { input ->
+          try {
+            val validUrl = DohUrlValidator.validate(input)
+            onUpdateState(
+              state.copy(
+                customProviderErrorState = CustomProviderErrorState.Valid,
+                selectedProvider = Provider.Custom(validUrl),
+                isCustomProviderDialogOn = false,
+              ),
+            )
+          } catch (e: UrlValidationException.NonHttpsUrlException) {
+            onUpdateState(
+              state.copy(
+                customProviderErrorState = CustomProviderErrorState.NonHttps,
+              ),
+            )
+          } catch (e: UrlValidationException.InvalidUrlException) {
+            onUpdateState(
+              state.copy(
+                customProviderErrorState = CustomProviderErrorState.Invalid,
+              ),
+            )
+          }
+        },
+      )
+    }
+  }
+}
+
+@Composable
+private fun Header(pageState: OnboardingPageState) {
+  Image(
+    painter = painterResource(id = pageState.imageRes),
+    contentDescription = null,
+    modifier =
+      Modifier.height(pageState.imageHeight()),
+  )
+
+  Spacer(Modifier.height(20.dp))
+
+  Text(
+    text = pageState.title,
+    textAlign = TextAlign.Center,
+    style = MaterialTheme.typography.headlineMedium,
+  )
+
+  Spacer(Modifier.height(10.dp))
+}
+
+private fun OnboardingPageState.imageHeight() =
+  if (isSmallDevice) {
+    IF_DOH_IMAGE_HEIGHT_SMALL_DEVICE
+  } else {
+    IF_DOH_IMAGE_HEIGHT
+  }

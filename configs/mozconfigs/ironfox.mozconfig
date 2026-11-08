@@ -1,0 +1,150 @@
+# shellcheck shell=bash
+# IronFox mozconfig...
+
+set -euo pipefail
+
+# Ensure our external variables are set correctly...
+
+if [[ -z "${IRONFOX_CHANNEL+x}" ]] || [[ "${IRONFOX_CHANNEL}" == "" ]] || [[ "${IRONFOX_CHANNEL}" == "null" ]]; then
+  echo "ERROR: 'IRONFOX_CHANNEL' is missing!"
+  return 1
+fi
+
+if [[ -z "${IRONFOX_GECKO+x}" ]] || [[ "${IRONFOX_GECKO}" == "" ]] || [[ "${IRONFOX_GECKO}" == "null" ]]; then
+  echo "ERROR: 'IRONFOX_GECKO' is missing!"
+  return 1
+fi
+
+if [[ -z "${IRONFOX_RELEASE+x}" ]] || [[ "${IRONFOX_RELEASE}" == "" ]] || [[ "${IRONFOX_RELEASE}" == "null" ]]; then
+  echo "ERROR: 'IRONFOX_RELEASE' is missing!"
+  return 1
+fi
+
+if [[ -z "${IRONFOX_MACH_TARGET_ARCH+x}" ]] || [[ "${IRONFOX_MACH_TARGET_ARCH}" == "" ]] || [[ "${IRONFOX_MACH_TARGET_ARCH}" == "null" ]]; then
+  echo "ERROR: 'IRONFOX_MACH_TARGET_ARCH' is missing!"
+  return 1
+fi
+
+if [[ "${IRONFOX_MACH_TARGET_ARCH}" != 'arm64' ]] && [[ "${IRONFOX_MACH_TARGET_ARCH}" != 'arm' ]] &&
+  [[ "${IRONFOX_MACH_TARGET_ARCH}" != 'x86_64' ]] && [[ "${IRONFOX_MACH_TARGET_ARCH}" != 'bundle' ]]; then
+  echo "ERROR: Invalid Mach target architecture: '${IRONFOX_MACH_TARGET_ARCH}'!"
+  return 1
+fi
+
+if [[ -z "${IRONFOX_MACH_TARGET_PROJECT+x}" ]] || [[ "${IRONFOX_MACH_TARGET_PROJECT}" == "" ]] ||
+  [[ "${IRONFOX_MACH_TARGET_PROJECT}" == "null" ]]; then
+  echo "ERROR: 'IRONFOX_MACH_TARGET_PROJECT' is missing!"
+  return 1
+fi
+
+if [[ "${IRONFOX_MACH_TARGET_PROJECT}" != 'gecko' ]] && [[ "${IRONFOX_MACH_TARGET_PROJECT}" != 'geckoview' ]] &&
+  [[ "${IRONFOX_MACH_TARGET_PROJECT}" != 'ac-core' ]] && [[ "${IRONFOX_MACH_TARGET_PROJECT}" != 'android-components' ]] &&
+  [[ "${IRONFOX_MACH_TARGET_PROJECT}" != 'ironfox-core' ]] && [[ "${IRONFOX_MACH_TARGET_PROJECT}" != 'fenix' ]]; then
+  echo "ERROR: Invalid Mach target project: '${IRONFOX_MACH_TARGET_PROJECT}'!"
+  return 1
+fi
+
+if [[ -z "${IRONFOX_MOZCONFIGS+x}" ]] || [[ "${IRONFOX_MOZCONFIGS}" == "" ]] || [[ "${IRONFOX_MOZCONFIGS}" == "null" ]]; then
+  echo "ERROR: 'IRONFOX_MOZCONFIGS' is missing!"
+  return 1
+fi
+
+# Check project-specific variables (so we can fail early)
+if [[ "${IRONFOX_MACH_TARGET_PROJECT}" == 'gecko' ]]; then
+  if [[ -z "${IRONFOX_CI+x}" ]] || [[ "${IRONFOX_CI}" == "" ]] || [[ "${IRONFOX_CI}" == "null" ]]; then
+    echo "ERROR: 'IRONFOX_CI' is missing!"
+    return 1
+  fi
+
+  if [[ -z "${IRONFOX_MACH_GECKO_STAGE+x}" ]] || [[ "${IRONFOX_MACH_GECKO_STAGE}" == "" ]] || [[ "${IRONFOX_MACH_GECKO_STAGE}" == "null" ]]; then
+    echo "ERROR: 'IRONFOX_MACH_GECKO_STAGE' is missing!"
+    return 1
+  fi
+
+  if [[ "${IRONFOX_MACH_GECKO_STAGE}" != 'build' ]] && [[ "${IRONFOX_MACH_GECKO_STAGE}" != 'package' ]]; then
+    echo "ERROR: Invalid Gecko build stage: '${IRONFOX_MACH_GECKO_STAGE}'!"
+    return 1
+  fi
+
+  if [[ -z "${IRONFOX_SB_GAPI_KEY_FILE+x}" ]] || [[ "${IRONFOX_SB_GAPI_KEY_FILE}" == "" ]]; then
+    echo "ERROR: 'IRONFOX_SB_GAPI_KEY_FILE' is missing!"
+    return 1
+  fi
+elif [[ "${IRONFOX_MACH_TARGET_PROJECT}" == 'geckoview' ]]; then
+  # (IRONFOX_MACH_GECKOVIEW_CREATE_AAR is used by `geckoview.mozconfig`)
+  if [[ -z "${IRONFOX_MACH_GECKOVIEW_CREATE_AAR+x}" ]] || [[ "${IRONFOX_MACH_GECKOVIEW_CREATE_AAR}" == "" ]] ||
+    [[ "${IRONFOX_MACH_GECKOVIEW_CREATE_AAR}" == "null" ]]; then
+    echo "ERROR: 'IRONFOX_MACH_GECKOVIEW_CREATE_AAR' is missing!"
+    return 1
+  fi
+fi
+
+# First, clean our environment
+. "${IRONFOX_MOZCONFIGS}/clean.mozconfig" || return 1
+
+# Apply our core mozconfig
+## (Options that should always apply everywhere)
+. "${IRONFOX_MOZCONFIGS}/core.mozconfig" || return 1
+
+# Branding
+if [[ "${IRONFOX_RELEASE}" == 1 ]]; then
+  . "${IRONFOX_MOZCONFIGS}/branding/ironfox.mozconfig" || return 1
+else
+  . "${IRONFOX_MOZCONFIGS}/branding/ironfox-${IRONFOX_CHANNEL}.mozconfig" || return 1
+fi
+
+# The only time Mach should build native code is if we're building Gecko (as a non-Bundle)
+IRONFOX_MACH_BUILD=0
+if [[ "${IRONFOX_MACH_TARGET_PROJECT}" == 'gecko' ]] && [[ "${IRONFOX_MACH_TARGET_ARCH}" != 'bundle' ]]; then
+  if [[ "${IRONFOX_MACH_GECKO_STAGE}" == 'build' ]]; then
+    IRONFOX_MACH_BUILD=1
+  fi
+fi
+readonly IRONFOX_MACH_BUILD
+
+if [[ "${IRONFOX_MACH_BUILD}" == 1 ]]; then
+  . "${IRONFOX_MOZCONFIGS}/build.mozconfig" || return 1
+else
+  . "${IRONFOX_MOZCONFIGS}/no-build.mozconfig" || return 1
+fi
+
+# We should only try to load the Safe Browsing API key file if we're *building* Gecko
+IRONFOX_SB=0
+if [[ "${IRONFOX_MACH_TARGET_PROJECT}" == 'gecko' ]] && [[ "${IRONFOX_MACH_BUILD}" == 1 ]]; then
+  if [[ "${IRONFOX_SB_GAPI_KEY_FILE}" != 'null' ]] || [[ "${IRONFOX_CI}" == 1 ]]; then
+    IRONFOX_SB=1
+  fi
+fi
+readonly IRONFOX_SB
+
+if [[ "${IRONFOX_SB}" == 1 ]]; then
+  ac_add_options --with-google-safebrowsing-api-keyfile="${IRONFOX_SB_GAPI_KEY_FILE}"
+else
+  ac_add_options --without-google-safebrowsing-api-keyfile
+fi
+
+# Apply project-specific options
+if [[ "${IRONFOX_MACH_TARGET_PROJECT}" == 'ac-core' ]]; then
+  # Android Components (Core) just uses the same mozconfig as Android Components
+  . "${IRONFOX_MOZCONFIGS}/projects/android-components.mozconfig" || return 1
+elif [[ "${IRONFOX_MACH_TARGET_PROJECT}" == 'gecko' ]]; then
+  # Gecko just uses the same mozconfig as GeckoView (at least for now...)
+  . "${IRONFOX_MOZCONFIGS}/projects/geckoview.mozconfig" || return 1
+else
+  . "${IRONFOX_MOZCONFIGS}/projects/${IRONFOX_MACH_TARGET_PROJECT}.mozconfig" || return 1
+fi
+
+# Set architecture-specific options
+. "${IRONFOX_MOZCONFIGS}/targets/${IRONFOX_MACH_TARGET_ARCH}.mozconfig" || return 1
+
+# Set the destination object (output) directory
+readonly IRONFOX_OBJDIR="${IRONFOX_GECKO}/obj/ironfox-${IRONFOX_CHANNEL}-${IRONFOX_MACH_TARGET_ARCH}"
+readonly MOZ_OBJDIR="${IRONFOX_OBJDIR}"
+export MOZ_OBJDIR
+mk_add_options MOZ_OBJDIR="${IRONFOX_OBJDIR}"
+mk_add_options OBJDIR="${IRONFOX_OBJDIR}"
+
+# If there is an `overrides.mozconfig` file (located at the root project directory), let's use it
+if [[ -f "${IRONFOX_ROOT}/overrides.mozconfig" ]]; then
+  . "${IRONFOX_ROOT}/overrides.mozconfig" || return 1
+fi

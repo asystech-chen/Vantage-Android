@@ -1,0 +1,34 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Fenix - Disable profiling
+
+Disables profiling functionality/integration.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/AndroidManifest.xml b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+index 9e2dbec20388..cbcb917e8712 100644
+--- a/mobile/android/fenix/app/src/main/AndroidManifest.xml
++++ b/mobile/android/fenix/app/src/main/AndroidManifest.xml
+@@ -55,15 +55,15 @@
+     This is NOT required for the adjust plugin. -->
+     <uses-permission android:name="com.adjust.preinstall.READ_PERMISSION"/>
+ 
+-    <uses-permission android:name="${applicationId}.permission.PROFILER_INTERNAL" />
++    <!-- <uses-permission android:name="${applicationId}.permission.PROFILER_INTERNAL" /> -->
+ 
+     <!-- Needed to prompt the user directly for app uninstallation as part of an
+     'uninstall survey' experiment. This is ONLY used to uninstall the Firefox application -->
+-    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" tools:node="replace" />
++    <!-- <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" tools:node="replace" /> -->
+ 
+-    <permission
++    <!-- <permission
+         android:name="${applicationId}.permission.PROFILER_INTERNAL"
+-        android:protectionLevel="signature" />
++        android:protectionLevel="signature" /> -->
+ 
+     <application
+         android:name=".FenixApplication"
+-- 

@@ -1,0 +1,6 @@
+# shellcheck shell=bash
+# Bundle
+
+set -euo pipefail
+
+ac_add_options --enable-android-bundle

@@ -1,0 +1,42 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Gecko - Support native manifests
+
+Adds support for native manifests to GeckoView.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/toolkit/components/extensions/NativeManifests.sys.mjs b/toolkit/components/extensions/NativeManifests.sys.mjs
+index 48d7d50cdec3..77c5edb84d15 100644
+--- a/toolkit/components/extensions/NativeManifests.sys.mjs
++++ b/toolkit/components/extensions/NativeManifests.sys.mjs
+@@ -30,7 +30,7 @@ export var NativeManifests = {
+ 
+   init() {
+     if (!this._initializePromise) {
+-      let platform = AppConstants.platform;
++/*      let platform = AppConstants.platform;
+       if (platform == "win") {
+         this._lookup = this._winLookup;
+       } else if (platform == "macosx" || platform == "linux") {
+@@ -44,7 +44,7 @@ export var NativeManifests = {
+         throw new Error(
+           `Native manifests are not supported on ${AppConstants.platform}`
+         );
+-      }
++      } */
+       this._initializePromise = lazy.Schemas.load(NATIVE_MANIFEST_SCHEMA);
+     }
+     return this._initializePromise;
+@@ -202,6 +202,9 @@ export var NativeManifests = {
+    *                   no valid manifest can be found for this type and name.
+    */
+   lookupManifest(type, name, context) {
++    if (AppConstants.platform == "android" && type !== "storage" && name !== "uBlock0@raymondhill.net") {
++      throw new Error(`Native manifests are not supported on ${AppConstants.platform}`);
++    }
+     return this.init().then(() => this._lookup(type, name, context));
+   },
+ };
+-- 

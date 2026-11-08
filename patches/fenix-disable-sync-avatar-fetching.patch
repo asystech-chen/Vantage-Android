@@ -1,0 +1,57 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Fenix - Disable Firefox Sync Avatar Fetching
+
+Prevents the browser from downloading the user's profile picture from Mozilla if Firefox Sync is enabled.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/menu/compose/header/MozillaAccountMenuItem.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/menu/compose/header/MozillaAccountMenuItem.kt
+index 876982af7924..969c8336ca32 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/menu/compose/header/MozillaAccountMenuItem.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/menu/compose/header/MozillaAccountMenuItem.kt
+@@ -176,9 +176,9 @@ private fun AvatarIcon(
+     if (accountState is AuthenticationProblem) {
+         WarningAvatarIcon()
+     } else {
+-        val avatarUrl = account?.avatar?.url
++        FallbackAvatarIcon()
+ 
+-        if (avatarUrl != null) {
++/*        if (avatarUrl != null) {
+             Image(
+                 url = avatarUrl,
+                 modifier = Modifier.clip(CircleShape).size(AVATAR_SIZE),
+@@ -188,7 +188,7 @@ private fun AvatarIcon(
+             )
+         } else {
+             FallbackAvatarIcon()
+-        }
++        } */
+     }
+ }
+ 
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/account/AccountPreferenceUpdater.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/account/AccountPreferenceUpdater.kt
+index 036068316c11..44a001b07adf 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/account/AccountPreferenceUpdater.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/account/AccountPreferenceUpdater.kt
+@@ -43,14 +43,14 @@ class AccountPreferenceUpdater(
+         preference.email = profile?.email
+ 
+         avatarJob?.cancel()
+-        val avatarUrl = profile?.avatar?.url
+-        if (avatarUrl == null) {
++//        val avatarUrl = profile?.avatar?.url
++        if (true) {
+             preference.icon = genericAvatar(context)
+             return
+         }
+ 
+         avatarJob = scope.launch {
+-            preference.icon = toRoundedDrawable(avatarUrl, context) ?: genericAvatar(context)
++            preference.icon = genericAvatar(context)
+         }
+     }
+ 
+-- 

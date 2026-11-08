@@ -1,0 +1,220 @@
+#!/bin/bash
+
+# Script to assist with creation of an IronFox build environment
+
+set -euo pipefail
+
+# Set-up our environment
+function setup_env() {
+  if [[ -z "${IRONFOX_SET_ENVS+x}" ]] || [[ "${IRONFOX_SET_ENVS}" != 1 ]]; then
+    # Find dirname
+    if [[ -n "${IRONFOX_DIRNAME+x}" ]] && [[ -x "${IRONFOX_DIRNAME}" ]]; then
+      local -r dirname="${IRONFOX_DIRNAME}"
+    elif [[ -x '/bin/dirname' ]]; then
+      local -r dirname='/bin/dirname'
+    elif [[ -x '/usr/bin/dirname' ]]; then
+      local -r dirname='/usr/bin/dirname'
+    else
+      if ! command -v dirname > /dev/null 2>&1; then
+        echo "ERROR: Missing dirname!" >&2
+        return 1
+      fi
+      # It isn't a known location, so we sadly have to just fall-back to the PATH
+      local -r dirname="$(dirname)"
+    fi
+
+    # Set-up our environment
+    readonly IRONFOX_ENV_SH="$("${dirname}" $0)/env.sh"
+    if [[ ! -f "${IRONFOX_ENV_SH}" ]] || [[ ! -s "${IRONFOX_ENV_SH}" ]]; then
+      echo "ERROR: '${IRONFOX_ENV_SH}' is invalid!"
+      return 1
+    fi
+    source "${IRONFOX_ENV_SH}" || return 1
+  fi
+}
+
+# Set-up our environment
+setup_env || exit 1
+
+# Set verbosity
+set_verbosity
+
+# Ensure we have sleep
+verify_exec "${IRONFOX_SLEEP}" 'IRONFOX_SLEEP' || exit 1
+
+# Ensure we have `IRONFOX_OS`
+verify_env "${IRONFOX_OS}" 'IRONFOX_OS' || exit 1
+
+SUDO=''
+if [[ "$("${IRONFOX_WHOAMI}")" != 'root' ]]; then
+  if [[ -x '/usr/bin/sudo' ]]; then
+    SUDO='/usr/bin/sudo'
+  elif [[ -x '/bin/sudo' ]]; then
+    SUDO='/bin/sudo'
+  else
+    echo "ERROR: Not running as root and 'sudo' is not available." >&2
+    exit 1
+  fi
+fi
+readonly SUDO
+
+function error_fn() {
+  echo
+  echo -e "\033[31mSomething went wrong! The script failed.\033[0m"
+  echo -e "\033[31mPlease report this (with the output message) to https://codeberg.org/ironfox-oss/bugs/issues\033[0m"
+  echo
+  exit 1
+}
+
+# Install dependencies
+echo_green_text "Installing dependencies..."
+echo_green_text "Detected operating system: '${IRONFOX_OS}'"
+
+# macOS, secureblue
+## (Both use Homebrew)
+if [[ "${IRONFOX_OS}" == 'osx' ]] || [[ "${IRONFOX_OS}" == 'secureblue' ]]; then
+  # Ensure Homebrew is installed
+  verify_env "${HOMEBREW_PREFIX}" 'HOMEBREW_PREFIX' || {
+    echo_red_text "Homebrew is not installed! Aborting..."
+    echo_red_text "Please install Homebrew and try again..."
+    echo_green_text "https://brew.sh/"
+    exit 1
+  }
+
+  export HOMEBREW_NO_ASK=1
+
+  # Ensure we're up to date
+  brew update --force || error_fn
+  echo
+  brew upgrade --greedy || error_fn
+  echo
+
+  if [[ "${IRONFOX_OS}" == 'osx' ]]; then
+    # Ensure Xcode command line tools are installed
+    if ! /usr/bin/xcode-select -p &> /dev/null; then
+      /usr/bin/xcode-select --install || error_fn
+      echo
+    fi
+
+    # Install OS X dependencies
+    brew install \
+      curl \
+      coreutils \
+      gawk \
+      git \
+      gmake \
+      gnu-sed \
+      gnu-tar \
+      gpatch \
+      lld \
+      m4 \
+      make \
+      xz \
+      zlib || error_fn
+    echo
+  fi
+
+  # Install our dependencies...
+  brew install \
+    cmake \
+    jq \
+    nasm \
+    ninja \
+    perl \
+    shasum \
+    yq || error_fn
+  echo
+
+  # For secureblue, we also need clang and zlib-devel
+  if [[ "${IRONFOX_OS}" == 'secureblue' ]]; then
+    # Ensure we're up to date
+    /usr/bin/rpm-ostree refresh-md --force || error_fn
+    echo
+    /usr/bin/ujust update-system || error_fn
+    echo
+
+    # Install clang and zlib-devel
+    /usr/bin/rpm-ostree install \
+      clang \
+      zlib-devel || error_fn
+    echo
+
+    # We now unfortunately have to restart the system :/
+    echo_red_text "To apply the clang and zlib installations, your system will now reboot."
+    "${IRONFOX_SLEEP}" 5 || error_fn
+    echo
+    echo_green_text "Press enter to continue."
+    read -r
+    /usr/bin/systemctl reboot || error_fn
+    echo
+  fi
+# Fedora
+elif [[ "${IRONFOX_OS}" == 'fedora' ]]; then
+  # Ensure we're up to date
+  ${SUDO} /usr/bin/dnf update -y --refresh || error_fn
+  echo
+
+  ${SUDO} /usr/bin/dnf install -y \
+    as \
+    bash \
+    binutils \
+    ca-certificates \
+    clang \
+    cmake \
+    cpp \
+    curl \
+    gawk \
+    gcc \
+    git \
+    jq \
+    libtool \
+    lld \
+    llvm \
+    m4 \
+    make \
+    nasm \
+    ninja-build \
+    patch \
+    perl \
+    shasum \
+    tar \
+    unzip \
+    xz \
+    yq \
+    zip \
+    zlib-devel || error_fn
+  echo
+
+# Ubuntu
+elif [[ "${IRONFOX_OS}" == 'ubuntu' ]]; then
+  # Ensure we're up to date
+  ${SUDO} /usr/bin/apt update || error_fn
+  echo
+  ${SUDO} /usr/bin/apt upgrade || error_fn
+  echo
+
+  ${SUDO} /usr/bin/apt install -y \
+    apt-transport-https \
+    cmake \
+    clang-18 \
+    curl \
+    git \
+    gpg \
+    make \
+    nasm \
+    ninja-build \
+    patch \
+    perl \
+    tar \
+    unzip \
+    xz-utils \
+    yq \
+    zlib1g-dev || error_fn
+  echo
+else
+  echo_red_text "Apologies, your operating system is currently not supported."
+  echo_red_text "If you think this is a mistake, please let us know!"
+  echo_green_text "https://codeberg.org/ironfox-oss/bugs/issues"
+  echo_red_text "Otherwise, please try again on a system running the latest version of Fedora, macOS, secureblue, or Ubuntu."
+  exit 1
+fi

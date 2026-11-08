@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 05:20:13 +0000
+Subject: [PATCH] Gecko - IronFox Settings: XPInstall
+
+Provides support for a UI setting to enable/disable the installation of add-ons.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/browser/components/enterprisepolicies/Policies.sys.mjs b/browser/components/enterprisepolicies/Policies.sys.mjs
+index da3fc401ec74..b51a8e3ada3f 100644
+--- a/browser/components/enterprisepolicies/Policies.sys.mjs
++++ b/browser/components/enterprisepolicies/Policies.sys.mjs
+@@ -32,6 +32,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
+   QuickSuggest: "moz-src:///browser/components/urlbar/QuickSuggest.sys.mjs",
+   WebsiteFilter: "resource:///modules/policies/WebsiteFilter.sys.mjs",
+   LaunchOnLogin: "resource://gre/modules/LaunchOnLogin.sys.mjs",
++  IFPrefUtils:   "moz-src:///ironfox/utils/IFPrefUtils.sys.mjs",
+ 
+   PoliciesUtils: "resource://gre/modules/PoliciesHelpers.sys.mjs",
+   addAllowDenyPermissions: "resource://gre/modules/PoliciesHelpers.sys.mjs",
+@@ -2255,8 +2256,8 @@ export var Policies = {
+         lazy.addAllowDenyPermissions("install", param.Allow, null);
+       }
+       if ("Default" in param) {
+-        lazy.PoliciesUtils.setAndLockPref("xpinstall.enabled", param.Default);
+-        if (!param.Default) {
++//        lazy.PoliciesUtils.setAndLockPref("xpinstall.enabled", param.Default);
++        if (!lazy.IFPrefUtils.getBoolPref("xpinstall.enabled")) {
+           manager.disallowFeature("installTemporaryAddon");
+           lazy.PoliciesUtils.setAndLockPref(
+             "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons",
+-- 

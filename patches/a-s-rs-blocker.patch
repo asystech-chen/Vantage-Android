@@ -1,0 +1,67 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Application Services - Remote Settings Blocker
+
+Prevents Remote Settings from downloading unwanted collections.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/components/remote_settings/src/client.rs b/components/remote_settings/src/client.rs
+index b951d45c0..f7106e898 100644
+--- a/components/remote_settings/src/client.rs
++++ b/components/remote_settings/src/client.rs
+@@ -203,6 +203,13 @@ impl<C: ApiClient> RemoteSettingsClient<C> {
+         jexl_filter: JexlFilter,
+         api_client: C,
+     ) -> Self {
++        let collection_name = if collection_name == String::from("quicksuggest-other") || collection_name == String::from("search-config-icons") ||
++         collection_name == String::from("search-config-v2") || collection_name == String::from("translations-models") ||
++         collection_name == String::from("translations-wasm") {
++            collection_name
++        } else {
++            String::from("")
++        };
+         Self {
+             collection_name,
+             inner: Mutex::new(RemoteSettingsClientInner {
+diff --git a/components/remote_settings/src/service.rs b/components/remote_settings/src/service.rs
+index 7410a068b..32b9d9b2e 100644
+--- a/components/remote_settings/src/service.rs
++++ b/components/remote_settings/src/service.rs
+@@ -143,7 +143,7 @@ impl RemoteSettingsService {
+                     }
+                 }
+             }
+-            if synced_collections.insert(collection_name.to_string()) {
++            if (collection_name == String::from("quicksuggest-other") || collection_name == String::from("translations-models") || collection_name == String::from("translations-wasm")) && synced_collections.insert(collection_name.to_string()) {
+                 trace!("syncing collection: {collection_name}");
+                 let start_time = std::time::Instant::now();
+                 let sync_result = client.sync();
+@@ -186,17 +186,23 @@ impl ClientState {
+         storage_dir: &Utf8Path,
+         collection_name: String,
+     ) -> Arc<RemoteSettingsClient> {
++        let overridden_collection_name = if collection_name == String::from("quicksuggest-other") || collection_name == String::from("search-config-icons") || collection_name == String::from("search-config-v2") || collection_name == String::from("translations-models") || collection_name == String::from("translations-wasm") {
++            collection_name
++        } else {
++            String::from("")
++        };
++
+         // Allow using in-memory databases for testing of external crates.
+         let storage = if storage_dir == ":memory:" {
+             Storage::new(storage_dir.to_path_buf())
+         } else {
+-            Storage::new(storage_dir.join(format!("{collection_name}.sql")))
++            Storage::new(storage_dir.join(format!("{overridden_collection_name}.sql")))
+         };
+ 
+         let client = Arc::new(RemoteSettingsClient::new(
+             self.config.base_url.clone(),
+             self.config.bucket_name.clone(),
+-            collection_name.clone(),
++            overridden_collection_name.clone(),
+             self.config.app_context.clone(),
+             storage,
+         ));
+-- 

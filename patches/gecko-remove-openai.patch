@@ -1,0 +1,70 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Wed, 4 Feb 2026 04:27:07 +0000
+Subject: [PATCH] Gecko - Remove OpenAI
+
+Removes the OpenAI backend from Mozilla's ML (machine learning) component.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/toolkit/components/aboutinference/content/aboutInference.js b/toolkit/components/aboutinference/content/aboutInference.js
+index 01533ad4c9f2..041bdcaeaeaf 100644
+--- a/toolkit/components/aboutinference/content/aboutInference.js
++++ b/toolkit/components/aboutinference/content/aboutInference.js
+@@ -381,7 +381,7 @@ const INFERENCE_PAD_PRESETS = {
+     device: "cpu",
+     backend: "onnx",
+   },
+-  openai: {
++/*  openai: {
+     inputArgs: [
+       {
+         role: "system",
+@@ -400,7 +400,7 @@ const INFERENCE_PAD_PRESETS = {
+     apiKey: "ollama",
+     baseURL: "http://localhost:11434/v1",
+     backend: "openai",
+-  },
++  }, */
+ };
+ 
+ const PREDEFINED = Object.keys(INFERENCE_PAD_PRESETS);
+diff --git a/toolkit/components/ml/content/EngineProcess.sys.mjs b/toolkit/components/ml/content/EngineProcess.sys.mjs
+index 025d5aaacf8e..8007123c2ddb 100644
+--- a/toolkit/components/ml/content/EngineProcess.sys.mjs
++++ b/toolkit/components/ml/content/EngineProcess.sys.mjs
+@@ -27,7 +27,7 @@ export const BACKENDS = Object.freeze({
+   llamaCpp: "llama.cpp",
+   bestLlama: "best-llama",
+   bestOnnx: "best-onnx",
+-  openai: "openai",
++//  openai: "openai",
+   staticEmbeddings: "static-embeddings",
+ });
+ 
+diff --git a/toolkit/components/ml/content/backends/Pipeline.mjs b/toolkit/components/ml/content/backends/Pipeline.mjs
+index a4b997e9bc4d..4565f3e097be 100644
+--- a/toolkit/components/ml/content/backends/Pipeline.mjs
++++ b/toolkit/components/ml/content/backends/Pipeline.mjs
+@@ -12,7 +12,7 @@ ChromeUtils.defineESModuleGetters(
+     LlamaCppPipeline:
+       "chrome://global/content/ml/backends/LlamaCppPipeline.mjs",
+     PipelineOptions: "chrome://global/content/ml/EngineProcess.sys.mjs",
+-    OpenAIPipeline: "chrome://global/content/ml/backends/OpenAIPipeline.mjs",
++//    OpenAIPipeline: "chrome://global/content/ml/backends/OpenAIPipeline.mjs",
+     StaticEmbeddingsPipeline:
+       "chrome://global/content/ml/backends/StaticEmbeddingsPipeline.mjs",
+   },
+@@ -48,9 +48,9 @@ export async function getBackend(consumer, wasm, options) {
+     case "llama.cpp":
+       factory = lazy.LlamaCppPipeline.initialize;
+       break;
+-    case "openai":
++/*    case "openai":
+       factory = lazy.OpenAIPipeline.initialize;
+-      break;
++      break; */
+     case "static-embeddings":
+       factory = lazy.StaticEmbeddingsPipeline.initialize;
+       break;
+-- 

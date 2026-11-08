@@ -1,0 +1,56 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 05:15:52 +0000
+Subject: [PATCH] Fenix - IronFox Settings: Firefox Translations
+
+Provides support for a UI setting to enable/disable Firefox Translations.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/browser/BrowserFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/browser/BrowserFragment.kt
+index fb3fb7211084..e98044f2faed 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/browser/BrowserFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/browser/BrowserFragment.kt
+@@ -357,7 +357,7 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler, SystemIns
+             view = rootView,
+         )
+ 
+-        if (FxNimbus.features.translations.value().mainFlowToolbarEnabled) {
++        if (requireContext().components.settings.ironfox.translationsEnabled) {
+             translationsBinding.set(
+                 feature = TranslationsBinding(
+                     browserStore = rootView.context.components.core.store,
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
+index 45a68358d157..d41bf8375662 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
+@@ -393,7 +393,7 @@ class Core(
+                     scope = MainScope(),
+                     automaticallyInitialize = false,
+                     isTranslationsEnabled = {
+-                        TranslationsEnabledSettings.dataStore(context).isEnabled.first()
++                        context.components.settings.ironfox.translationsEnabled && TranslationsEnabledSettings.dataStore(context).isEnabled.first()
+                     },
+                 ),
+                 AboutHomeMiddleware(homepageTitle = context.getString(R.string.tab_tray_homepage_tab)),
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/translations/settings/TranslationSettings.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/translations/settings/TranslationSettings.kt
+index 9c560fdec7faf..e09c19e6449bb 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/translations/settings/TranslationSettings.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/translations/settings/TranslationSettings.kt
+@@ -70,13 +70,13 @@ fun TranslationSettings(
+ 
+     Surface {
+         LazyColumn {
+-            item {
++/*            item {
+                 TranslationsControlSwitchItem(
+                     enabled = state.translationsEnabled,
+                     onFeatureControlToggled = onFeatureControlToggled,
+                     onNavigateToUrl = onNavigateToUrl,
+                 )
+-            }
++            } */
+ 
+             items(state.switchItems) { item: TranslationSwitchItem ->
+                 SwitchListItem(
+-- 

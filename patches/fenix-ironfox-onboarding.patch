@@ -1,0 +1,528 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Tue, 10 Mar 2026 01:00:42 +0000
+Subject: [PATCH] Fenix - IronFox onboarding
+
+Adds IronFox-specific onboarding screens.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/onboarding.fml.yaml b/mobile/android/fenix/app/onboarding.fml.yaml
+index 73b46a4a7e60..a251d9db6d37 100644
+--- a/mobile/android/fenix/app/onboarding.fml.yaml
++++ b/mobile/android/fenix/app/onboarding.fml.yaml
+@@ -58,6 +58,57 @@ features:
+                   body-line-one-text: nova_onboarding_marketing_body
+                   body-line-one-link-text: nova_onboarding_marketing_body_link_text
+ 
++            if-preference-doh:
++              card-type: if-preference-doh
++              enabled: true
++              title: ironfox_onboarding_preferences_title
++              body: ironfox_onboarding_doh_caption
++              image-res: ic_launcher_foreground
++              ordering: 10000
++              primary-button-label: nova_onboarding_continue_button
++
++            if-preferences:
++              card-type: if-preferences
++              enabled: true
++              title: ironfox_onboarding_preferences_title
++              body: ironfox_onboarding_preferences_description
++              image-res: ic_launcher_foreground
++              ordering: 10005
++              primary-button-label: nova_onboarding_continue_button
++              extra-data:
++                if-preferences-data:
++                  - switch-type: js-jit
++                    switch-label: ironfox_onboarding_jit_enabled
++                    switch-caption: ironfox_onboarding_jit_enabled_caption
++                    switch-description: ironfox_onboarding_jit_enabled_description
++                  - switch-type: safe-browsing
++                    switch-label: ironfox_onboarding_safe_browsing_enabled
++                    switch-caption: ironfox_onboarding_safe_browsing_enabled_caption
++                    switch-description: ironfox_onboarding_safe_browsing_enabled_description
++                  - switch-type: spoof-english
++                    switch-label: ironfox_onboarding_spoof_english
++                    switch-caption: ironfox_onboarding_spoof_english_caption
++                    switch-description: ironfox_onboarding_spoof_english_description
++                  - switch-type: install-ublock
++                    switch-label: ironfox_onboarding_install_ublock
++                    switch-caption: ironfox_onboarding_install_ublock_caption
++                    switch-description: ironfox_onboarding_install_ublock_description
++
++            if-preference-updater:
++              card-type: if-preference-updater
++              enabled: true
++              title: ironfox_onboarding_preferences_title
++              body: ironfox_onboarding_preferences_description
++              image-res: ic_launcher_foreground
++              ordering: 10010
++              primary-button-label: nova_onboarding_continue_button
++              extra-data:
++                if-preference-updater-data:
++                  - switch-type: updater
++                    switch-label: ironfox_onboarding_updater_switch
++                    switch-caption: ironfox_onboarding_updater_title
++                    switch-description: ironfox_onboarding_updater_description
++
+   continuous-onboarding:
+     description: >
+       Feature to enable the continuous onboarding flow. This feature reduces the number of upfront
+@@ -148,6 +199,16 @@ objects:
+         description: >
+           An optional marketing data for the onboarding card.
+         default: null
++      if-preferences-data:
++        type: List<IfPreferencesData>
++        description: >
++          A list of preferences for the IronFox preferences onboarding card.
++        default: [ ]
++      if-preference-updater-data:
++        type: List<IfPreferenceUpdaterData>
++        description: >
++          A list of preferences for the IronFox updater preferences onboarding card.
++        default: [ ]
+ 
+   CustomizationToolbarData:
+     description: An object to describe the placement of the toolbar.
+@@ -248,6 +309,46 @@ objects:
+         description: The text for line three of the body.
+         default: ""
+ 
++  IfPreferencesData:
++    description: An object to describe the IronFox preferences onboarding card.
++    fields:
++      switch-label:
++        type: Text
++        description: The text for the preference switch.
++        default: ""
++      switch-caption:
++        type: Text
++        description: The text for the brief caption of the switch.
++        default: ""
++      switch-description:
++        type: Text
++        description: The text for the long description of the switch.
++        default: ""
++      switch-type:
++        type: IfOnboardingPreferenceType
++        description: The type of preference.
++        default: default
++
++  IfPreferenceUpdaterData:
++    description: An object to describe the IronFox updater preferences onboarding card.
++    fields:
++      switch-label:
++        type: Text
++        description: The text for the preference switch.
++        default: ""
++      switch-caption:
++        type: Text
++        description: The text for the brief caption of the switch.
++        default: ""
++      switch-description:
++        type: Text
++        description: The text for the long description of the switch.
++        default: ""
++      switch-type:
++        type: IfOnboardingPreferenceUpdaterType
++        description: The type of preference.
++        default: default
++
+ enums:
+ 
+   OnboardingCardType:
+@@ -267,6 +368,34 @@ enums:
+         description: Page to display the terms of services.
+       marketing-data:
+         description: Allows user to opt out of marketing data collection.
++      if-preference-doh:
++        description: Allows user to configure DNS-over-HTTPS.
++      if-preferences:
++        description: Allows user to configure IronFox-specific preferences.
++      if-preference-updater:
++        description: Allows user to configure the built-in app updater.
++
++  IfOnboardingPreferenceType:
++    description: An enum to describe an IronFox preference option.
++    variants:
++      default:
++        description: Default value for preference type. NEVER use this.
++      js-jit:
++        description: Whether to enable JavaScript JIT.
++      safe-browsing:
++        description: Whether to enable safe browsing.
++      spoof-english:
++        description: Whether to request English versions of web pages for enhanced privacy.
++      install-ublock:
++        description: Whether to install uBlock Origin.
++
++  IfOnboardingPreferenceUpdaterType:
++    description: An enum to describe an IronFox updater preference option.
++    variants:
++      default:
++        description: Default value for preference type. NEVER use this.
++      updater:
++        description: Whether to check for IronFox updates automatically.
+ 
+   ToolbarType:
+     description: An enum to describe a toolbar placement option.
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
+index 3c71fd5f01a1..dcd975a24095 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/FenixApplication.kt
+@@ -363,6 +363,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
+         setupLeakCanary()
+ 
+         if (components.fenixOnboarding.userHasBeenOnboarded()) {
++            components.settings.ironfox.ironFoxOnboardingCompleted = true
+             startMetricsIfEnabled(
+                 logger = logger,
+                 analytics = components.analytics,
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/OnboardingFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/OnboardingFragment.kt
+index 65d97c0775b6..943d5cefa715 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/OnboardingFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/OnboardingFragment.kt
+@@ -4,6 +4,7 @@
+ 
+ package org.mozilla.fenix.onboarding
+ 
++import org.ironfoxoss.ironfox.utils.GeckoSettingsBridge
+ import android.annotation.SuppressLint
+ import android.appwidget.AppWidgetManager
+ import android.content.Context
+@@ -189,6 +190,8 @@ class OnboardingFragment : Fragment() {
+         }
+     }
+ 
++    private val ifOnboardingFeature = ViewBoundFeatureWrapper<IFOnboardingPageAdditionSupport>()
++
+     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+         addMarketingFeature.set(
+             feature = MarketingPageAdditionSupport(
+@@ -201,6 +204,14 @@ class OnboardingFragment : Fragment() {
+             owner = this,
+             view = view,
+         )
++        ifOnboardingFeature.set(
++            feature = IFOnboardingPageAdditionSupport(
++                pagesToDisplay = pagesToDisplay,
++                lifecycleOwner = viewLifecycleOwner,
++            ),
++            owner = this,
++            view = view,
++        )
+         super.onViewCreated(view, savedInstanceState)
+     }
+ 
+@@ -335,6 +346,7 @@ class OnboardingFragment : Fragment() {
+             },
+             currentIndex = { index ->
+                 requireComponents.settings.onboardingCurrentPageIndex = index
++                ifOnboardingFeature.withFeature { it.currentPageIndex = index }
+             },
+             onNavigateToNextPage = {
+                 telemetryRecorder.onNavigatedToNextPage()
+@@ -385,17 +397,19 @@ class OnboardingFragment : Fragment() {
+         requireComponents.fenixOnboarding.finish()
+ 
+         val settings = requireComponents.settings
++        settings.ironfox.ironFoxOnboardingCompleted = true
++        GeckoSettingsBridge.setIronFoxPrefs(requireContext(), requireComponents.core.engine)
+         settings.recordOnboardingCompleted()
+         settings.onboardingCurrentPageIndex = 0
+ 
+         // Telemetry and daily usage ping get enabled after ToU acceptance.
+-        startMetricsIfEnabled(
++/*        startMetricsIfEnabled(
+             logger = logger,
+             analytics = requireComponents.analytics,
+             isTelemetryEnabled = false,
+             isMarketingTelemetryEnabled = settings.isMarketingTelemetryEnabled,
+             isDailyUsagePingEnabled = false,
+-        )
++        ) */
+ 
+         findNavController().nav(
+             id = R.id.onboardingFragment,
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingMapper.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingMapper.kt
+index 2525976c8137..3175aa0a2cca 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingMapper.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingMapper.kt
+@@ -4,6 +4,11 @@
+ 
+ package org.mozilla.fenix.onboarding.view
+ 
++import java.lang.UnsupportedOperationException
++import org.mozilla.fenix.nimbus.IfOnboardingPreferenceType
++import org.mozilla.fenix.nimbus.IfOnboardingPreferenceUpdaterType
++import org.mozilla.fenix.nimbus.IfPreferencesData
++import org.mozilla.fenix.nimbus.IfPreferenceUpdaterData
+ import org.mozilla.fenix.nimbus.CustomizationToolbarData
+ import org.mozilla.fenix.nimbus.MarketingData
+ import org.mozilla.fenix.nimbus.OnboardingCardData
+@@ -105,6 +110,8 @@ private fun OnboardingCardData.toPageUiData() = cardType?.let { type ->
+         toolbarOptions = extraData?.customizationToolbarData?.takeIf { it.isNotEmpty() }?.toOnboardingToolbarOptions(),
+         termsOfService = extraData?.termOfServiceData?.toOnboardingTermsOfService(),
+         marketingData = extraData?.marketingData?.toOnboardingMarketingData(),
++        ifPreferencesData = extraData?.ifPreferencesData?.toOnboardingIfPreferenceOptions(),
++        ifPreferenceUpdaterData = extraData?.ifPreferenceUpdaterData?.toOnboardingIfPreferenceUpdaterOptions(),
+     )
+ }
+ 
+@@ -117,6 +124,9 @@ private fun OnboardingCardType.toPageUiDataType() =
+         OnboardingCardType.TOOLBAR_PLACEMENT -> OnboardingPageUiData.Type.TOOLBAR_PLACEMENT
+         OnboardingCardType.TERMS_OF_SERVICE -> OnboardingPageUiData.Type.TERMS_OF_SERVICE
+         OnboardingCardType.MARKETING_DATA -> OnboardingPageUiData.Type.MARKETING_DATA
++        OnboardingCardType.IF_PREFERENCE_DOH -> OnboardingPageUiData.Type.IF_PREFERENCE_DOH
++        OnboardingCardType.IF_PREFERENCES -> OnboardingPageUiData.Type.IF_PREFERENCES
++        OnboardingCardType.IF_PREFERENCE_UPDATER -> OnboardingPageUiData.Type.IF_PREFERENCE_UPDATER
+     }
+ 
+ private fun List<CustomizationToolbarData>.toOnboardingToolbarOptions() = map { it.toOnboardingCustomizeToolbar() }
+@@ -161,6 +171,41 @@ private fun ToolbarType.toToolbarOptionType() =
+         ToolbarType.TOOLBAR_TOP -> ToolbarOptionType.TOOLBAR_TOP
+         ToolbarType.TOOLBAR_BOTTOM -> ToolbarOptionType.TOOLBAR_BOTTOM
+     }
++ 
++private fun List<IfPreferencesData>.toOnboardingIfPreferenceOptions() = map { it.toOnboardingIfPreferenceOption() }
++
++private fun IfPreferencesData.toOnboardingIfPreferenceOption() = with(this) {
++    IfPreferenceOption(
++        label = switchLabel,
++        caption = switchCaption,
++        description = switchDescription,
++        preferenceType = switchType.toIfPreferenceType(),
++    )
++}
++
++private fun IfOnboardingPreferenceType.toIfPreferenceType() = when (this) {
++    IfOnboardingPreferenceType.JS_JIT -> IfPreferenceType.JS_JIT
++    IfOnboardingPreferenceType.SAFE_BROWSING -> IfPreferenceType.SAFE_BROWSING
++    IfOnboardingPreferenceType.SPOOF_ENGLISH -> IfPreferenceType.SPOOF_ENGLISH
++    IfOnboardingPreferenceType.INSTALL_UBLOCK -> IfPreferenceType.INSTALL_UBLOCK
++    IfOnboardingPreferenceType.DEFAULT -> throw UnsupportedOperationException("Unsupported IfOnboardingPreferenceType: default")
++}
++
++private fun List<IfPreferenceUpdaterData>.toOnboardingIfPreferenceUpdaterOptions() = map { it.toOnboardingIfPreferenceUpdaterOption() }
++
++private fun IfPreferenceUpdaterData.toOnboardingIfPreferenceUpdaterOption() = with(this) {
++    IfPreferenceUpdaterOption(
++        label = switchLabel,
++        caption = switchCaption,
++        description = switchDescription,
++        preferenceType = switchType.toIfPreferenceUpdaterType(),
++    )
++}
++
++private fun IfOnboardingPreferenceUpdaterType.toIfPreferenceUpdaterType() = when (this) {
++    IfOnboardingPreferenceUpdaterType.UPDATER -> IfPreferenceUpdaterType.UPDATER
++    IfOnboardingPreferenceUpdaterType.DEFAULT -> throw UnsupportedOperationException("Unsupported IfOnboardingPreferenceUpdaterType: default")
++}
+ 
+ /**
+  * Mapper to convert [OnboardingPageUiData] to [OnboardingPageState] that is a param for [OnboardingPage] composable.
+@@ -180,6 +225,9 @@ internal fun mapToOnboardingPageState(
+     onCustomizeToolbarButtonClick: () -> Unit,
+     onTermsOfServiceButtonClick: () -> Unit,
+     onMarketingDataContinueClick: () -> Unit = {},
++    onIfPreferenceDohButtonClick: () -> Unit,
++    onIfPreferencesButtonClick: () -> Unit,
++    onIfPreferenceUpdaterButtonClick: () -> Unit,
+ ): OnboardingPageState =
+     when (onboardingPageUiData.type) {
+         OnboardingPageUiData.Type.DEFAULT_BROWSER ->
+@@ -237,6 +285,30 @@ internal fun mapToOnboardingPageState(
+                 onNegativeButtonClick = {}, // No negative button option for marketing data.
+                 isSmallDevice = isSmallDevice,
+             )
++
++        OnboardingPageUiData.Type.IF_PREFERENCE_DOH ->
++            createOnboardingPageState(
++                onboardingPageUiData = onboardingPageUiData,
++                onPositiveButtonClick = onIfPreferenceDohButtonClick,
++                onNegativeButtonClick = {}, // No negative button option for IronFox preferences.
++                isSmallDevice = isSmallDevice,
++            )
++
++        OnboardingPageUiData.Type.IF_PREFERENCES ->
++            createOnboardingPageState(
++                onboardingPageUiData = onboardingPageUiData,
++                onPositiveButtonClick = onIfPreferencesButtonClick,
++                onNegativeButtonClick = {}, // No negative button option for IronFox preferences.
++                isSmallDevice = isSmallDevice,
++            )
++
++        OnboardingPageUiData.Type.IF_PREFERENCE_UPDATER ->
++            createOnboardingPageState(
++                onboardingPageUiData = onboardingPageUiData,
++                onPositiveButtonClick = onIfPreferenceUpdaterButtonClick,
++                onNegativeButtonClick = {}, // No negative button option for IronFox preferences.
++                isSmallDevice = isSmallDevice,
++            )
+     }
+ 
+ private fun createOnboardingPageState(
+@@ -257,5 +329,7 @@ private fun createOnboardingPageState(
+         toolbarOptions = onboardingPageUiData.toolbarOptions,
+         termsOfService = onboardingPageUiData.termsOfService,
+         marketingData = onboardingPageUiData.marketingData,
++        ifPreferenceOptions = onboardingPageUiData.ifPreferencesData,
++        ifPreferenceUpdaterOptions = onboardingPageUiData.ifPreferenceUpdaterData,
+         isSmallDevice = isSmallDevice,
+     )
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageState.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageState.kt
+index 83cbeedac17d..2449d249f029 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageState.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageState.kt
+@@ -4,6 +4,8 @@
+ 
+ package org.mozilla.fenix.onboarding.view
+ 
++import org.mozilla.fenix.nimbus.IfPreferencesData
++import org.mozilla.fenix.nimbus.IfPreferenceUpdaterData
+ import androidx.annotation.DrawableRes
+ import org.mozilla.fenix.nimbus.MarketingCardVariant
+ 
+@@ -30,6 +32,8 @@ data class OnboardingPageState(
+     val termsOfService: OnboardingTermsOfService? = null,
+     val toolbarOptions: List<ToolbarOption>? = null,
+     val marketingData: OnboardingMarketingData? = null,
++    val ifPreferenceOptions: List<IfPreferenceOption>? = null,
++    val ifPreferenceUpdaterOptions: List<IfPreferenceUpdaterOption>? = null,
+     val onRecordImpressionEvent: () -> Unit = {},
+     val isSmallDevice: Boolean = false,
+ )
+@@ -47,6 +51,33 @@ data class ToolbarOption(
+     val label: String,
+ )
+ 
++data class IfPreferenceOption(
++    val label: String,
++    val caption: String,
++    val description: String,
++    val preferenceType: IfPreferenceType,
++)
++
++enum class IfPreferenceType(val id: String) {
++    DEFAULT("default"),
++    JS_JIT("js_jit"),
++    SAFE_BROWSING("safe_browsing"),
++    SPOOF_ENGLISH("spoof_english"),
++    INSTALL_UBLOCK("install_ublock"),
++}
++
++data class IfPreferenceUpdaterOption(
++    val label: String,
++    val caption: String,
++    val description: String,
++    val preferenceType: IfPreferenceUpdaterType,
++)
++
++enum class IfPreferenceUpdaterType(val id: String) {
++    DEFAULT("default"),
++    UPDATER("updater"),
++}
++
+ /**
+  * Types of toolbar placement options available.
+  *
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageUiData.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageUiData.kt
+index 79a2a84c731f..db1ef08cad8a 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageUiData.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingPageUiData.kt
+@@ -18,6 +18,8 @@ data class OnboardingPageUiData(
+     val toolbarOptions: List<ToolbarOption>? = null,
+     val termsOfService: OnboardingTermsOfService? = null,
+     val marketingData: OnboardingMarketingData? = null,
++    val ifPreferencesData: List<IfPreferenceOption>? = null,
++    val ifPreferenceUpdaterData: List<IfPreferenceUpdaterOption>? = null,
+ ) {
+     /**
+      * Model for different types of Onboarding Pages.
+@@ -32,6 +34,9 @@ data class OnboardingPageUiData(
+         TOOLBAR_PLACEMENT(telemetryId = "toolbar_placement"),
+         TERMS_OF_SERVICE(telemetryId = "terms_of_service"),
+         MARKETING_DATA(telemetryId = "marketing_data"),
++        IF_PREFERENCE_DOH(telemetryId = "if_preference_doh"),
++        IF_PREFERENCES(telemetryId = "if_preferences"),
++        IF_PREFERENCE_UPDATER(telemetryId = "if_preference_updater"),
+     }
+ }
+ 
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingScreen.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingScreen.kt
+index 8e36d42a548f..3612a7498e4b 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingScreen.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/onboarding/view/OnboardingScreen.kt
+@@ -244,6 +244,15 @@ fun OnboardingScreen(
+             onMarketingDataSkipClick()
+             scrollToNextPageOrDismiss()
+         },
++        onIfPreferenceDohButtonClick = {
++            scrollToNextPageOrDismiss()
++        },
++        onIfPreferencesButtonClick = {
++            scrollToNextPageOrDismiss()
++        },
++        onIfPreferenceUpdaterButtonClick = {
++            scrollToNextPageOrDismiss()
++        },
+         onboardingStore = onboardingStore,
+     )
+ }
+@@ -369,6 +378,9 @@ private fun OnboardingContent(
+     onMarketingDataLearnMoreClick: () -> Unit,
+     onMarketingDataContinueClick: (allowMarketingDataCollection: Boolean) -> Unit,
+     onMarketingDataSkipClick: () -> Unit,
++    onIfPreferenceDohButtonClick: () -> Unit,
++    onIfPreferencesButtonClick: () -> Unit,
++    onIfPreferenceUpdaterButtonClick: () -> Unit,
+ ) {
+     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+         val layout = getOnboardingLayout(this)
+@@ -415,6 +427,9 @@ private fun OnboardingContent(
+                         onAddFirefoxWidgetSkipClick = onSkipFirefoxWidgetClick,
+                         onCustomizeToolbarButtonClick = onCustomizeToolbarButtonClick,
+                         onTermsOfServiceButtonClick = onAgreeAndConfirmTermsOfService,
++                        onIfPreferenceDohButtonClick = onIfPreferenceDohButtonClick,
++                        onIfPreferencesButtonClick = onIfPreferencesButtonClick,
++                        onIfPreferenceUpdaterButtonClick = onIfPreferenceUpdaterButtonClick,
+                         isSmallDevice = layout.isSmall,
+                     )
+ 
+@@ -512,6 +527,10 @@ private fun OnboardingPageForType(
+                 state,
+                 termsOfServiceEventHandler,
+             )
++
++        OnboardingPageUiData.Type.IF_PREFERENCE_DOH -> IronFoxPreferenceDohOnboardingPage(state)
++        OnboardingPageUiData.Type.IF_PREFERENCES -> IronFoxPreferencesOnboardingPage(state)
++        OnboardingPageUiData.Type.IF_PREFERENCE_UPDATER -> IronFoxPreferenceUpdaterOnboardingPage(state)
+     }
+ }
+ 
+@@ -691,6 +710,9 @@ private fun OnboardingScreenPreview() {
+             onMarketingDataSkipClick = {},
+             onNotificationPermissionButtonClick = {},
+             onNotificationPermissionSkipClick = {},
++            onIfPreferenceDohButtonClick = {},
++            onIfPreferencesButtonClick = {},
++            onIfPreferenceUpdaterButtonClick = {},
+         )
+     }
+ }
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/doh/root/DohSettingsScreen.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/doh/root/DohSettingsScreen.kt
+index b586b4dc3364..a78aeec72074 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/doh/root/DohSettingsScreen.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/doh/root/DohSettingsScreen.kt
+@@ -437,7 +437,7 @@ private fun buildProviderMenuItems(
+ }
+ 
+ @Composable
+-private fun AlertDialogAddCustomProvider(
++internal fun AlertDialogAddCustomProvider(
+     customProviderUrl: String,
+     customProviderErrorState: CustomProviderErrorState,
+     onCustomCancelClicked: () -> Unit,
+-- 

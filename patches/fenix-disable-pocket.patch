@@ -1,0 +1,24 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Fenix - Disable Pocket
+
+Disables integration with Pocket.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/pocket/ContentRecommendationsFeatureHelper.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/pocket/ContentRecommendationsFeatureHelper.kt
+index 5a16d189988d..f12c82ff8ce8 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/pocket/ContentRecommendationsFeatureHelper.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/home/pocket/ContentRecommendationsFeatureHelper.kt
+@@ -21,7 +21,7 @@ object ContentRecommendationsFeatureHelper {
+      * otherwise.
+      */
+     fun isContentRecommendationsFeatureEnabled(context: Context): Boolean {
+-        val locale = LocaleManager.getCurrentLocale(context) ?: getSystemDefault()
+-        return isContentRecommendationsLocaleSupported(locale)
++//        val locale = LocaleManager.getCurrentLocale(context) ?: getSystemDefault()
++        return false
+     }
+ }
+-- 

@@ -1,0 +1,495 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] Application Services - Remove Glean
+
+Removes the Glean SDK.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/components/nimbus/android/src/main/java/org/mozilla/experiments/nimbus/Nimbus.kt b/components/nimbus/android/src/main/java/org/mozilla/experiments/nimbus/Nimbus.kt
+index 5a7aaab55..2b900c888 100644
+--- a/components/nimbus/android/src/main/java/org/mozilla/experiments/nimbus/Nimbus.kt
++++ b/components/nimbus/android/src/main/java/org/mozilla/experiments/nimbus/Nimbus.kt
+@@ -26,11 +26,11 @@ import kotlinx.coroutines.async
+ import kotlinx.coroutines.launch
+ import kotlinx.coroutines.withContext
+ import mozilla.appservices.remotesettings.RemoteSettingsService
+-import mozilla.telemetry.glean.Glean
++// // import mozilla.telemetry.glean.Glean
+ import org.json.JSONObject
+-import org.mozilla.experiments.nimbus.GleanMetrics.NimbusEvents
+-import org.mozilla.experiments.nimbus.GleanMetrics.NimbusHealth
+-import org.mozilla.experiments.nimbus.GleanMetrics.Pings
++// /* import org.mozilla.experiments.nimbus.GleanMetrics.NimbusEvents
++// import org.mozilla.experiments.nimbus.GleanMetrics.NimbusHealth
++// import org.mozilla.experiments.nimbus.GleanMetrics.Pings */
+ import org.mozilla.experiments.nimbus.internal.AppContext
+ import org.mozilla.experiments.nimbus.internal.AvailableExperiment
+ import org.mozilla.experiments.nimbus.internal.DatabaseLoadExtraDef
+@@ -95,7 +95,7 @@ open class Nimbus(
+ 
+     private val metricsHandler = object : MetricsHandler {
+         override fun recordDatabaseLoad(event: DatabaseLoadExtraDef) {
+-            NimbusEvents.databaseLoad.record(
++/*            NimbusEvents.databaseLoad.record(
+                 NimbusEvents.DatabaseLoadExtra(
+                     corrupt = event.corrupt,
+                     initialVersion = event.initialVersion?.toInt(),
+@@ -103,20 +103,20 @@ open class Nimbus(
+                     migratedVersion = event.migratedVersion?.toInt(),
+                     migrationError = event.migrationError,
+                 ),
+-            )
++            ) */
+         }
+         override fun recordDatabaseMigration(event: DatabaseMigrationExtraDef) {
+-            NimbusEvents.databaseMigration.record(
++/*            NimbusEvents.databaseMigration.record(
+                 NimbusEvents.DatabaseMigrationExtra(
+                     reason = event.reason,
+                     fromVersion = event.fromVersion.toInt(),
+                     toVersion = event.toVersion.toInt(),
+                     error = event.error,
+                 ),
+-            )
++            ) */
+         }
+         override fun recordEnrollmentStatuses(enrollmentStatusExtras: List<EnrollmentStatusExtraDef>) {
+-            for (extra in enrollmentStatusExtras) {
++/*            for (extra in enrollmentStatusExtras) {
+                 NimbusEvents.enrollmentStatus.record(
+                     NimbusEvents.EnrollmentStatusExtra(
+                         branch = extra.branch,
+@@ -127,42 +127,42 @@ open class Nimbus(
+                         conflictSlug = extra.conflictSlug,
+                     ),
+                 )
+-            }
++            } */
+         }
+ 
+         override fun recordFeatureActivation(event: FeatureExposureExtraDef) {
+-            NimbusEvents.activation.record(
++/*            NimbusEvents.activation.record(
+                 NimbusEvents.ActivationExtra(
+                     experiment = event.slug,
+                     branch = event.branch,
+                     featureId = event.featureId,
+                 ),
+-            )
++            ) */
+         }
+ 
+         override fun recordFeatureExposure(event: FeatureExposureExtraDef) {
+-            NimbusEvents.exposure.record(
++/*            NimbusEvents.exposure.record(
+                 NimbusEvents.ExposureExtra(
+                     experiment = event.slug,
+                     branch = event.branch,
+                     featureId = event.featureId,
+                 ),
+-            )
++            ) */
+         }
+ 
+         override fun recordMalformedFeatureConfig(event: MalformedFeatureConfigExtraDef) {
+-            NimbusEvents.malformedFeature.record(
++/*            NimbusEvents.malformedFeature.record(
+                 NimbusEvents.MalformedFeatureExtra(
+                     experiment = event.slug,
+                     branch = event.branch,
+                     featureId = event.featureId,
+                     partId = event.part,
+                 ),
+-            )
++            ) */
+         }
+ 
+         override fun submitTargetingContext() {
+-            org.mozilla.experiments.nimbus.GleanMetrics.Pings.nimbusTargetingContext.submit()
++// //            org.mozilla.experiments.nimbus.GleanMetrics.Pings.nimbusTargetingContext.submit()
+         }
+     }
+ 
+@@ -231,11 +231,11 @@ open class Nimbus(
+         try {
+             nimbusClient.getFeatureConfigVariables(featureId)?.let { JSONObject(it) }
+         } catch (e: NimbusException.DatabaseNotReady) {
+-            NimbusHealth.cacheNotReadyForFeature.record(
++/*            NimbusHealth.cacheNotReadyForFeature.record(
+                 NimbusHealth.CacheNotReadyForFeatureExtra(
+                     featureId = featureId,
+                 ),
+-            )
++            ) */
+             null
+         } catch (e: Throwable) {
+             reportError("getFeatureConfigVariablesJson", e)
+@@ -311,9 +311,9 @@ open class Nimbus(
+     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+     internal fun fetchExperimentsOnThisThread() = withCatchAll("fetchExperiments") {
+         try {
+-            NimbusHealth.fetchExperimentsTime.measure {
+-                nimbusClient.fetchExperiments()
+-            }
++            nimbusClient.fetchExperiments()
++//                nimbusClient.fetchExperiments()
++//            }
+             updateObserver {
+                 it.onExperimentsFetched()
+             }
+@@ -349,7 +349,7 @@ open class Nimbus(
+                 val time = measureTimeMillis {
+                     enrollmentChangeEvents = nimbusClient.applyPendingExperiments()
+                 }
+-                NimbusHealth.applyPendingExperimentsTime.accumulateSingleSample(time)
++//                NimbusHealth.applyPendingExperimentsTime.accumulateSingleSample(time)
+ 
+                 // SAFETY: events is only null at declaration time and is
+                 // immediately assigned a non-null value inside the
+@@ -407,13 +407,13 @@ open class Nimbus(
+     ) {
+         val experiments = nimbusClient.getActiveExperiments()
+ 
+-        if (initial) {
++/*        if (initial) {
+             // During initialization we need to report the experiment status of
+             // all pre-existing experiments.
+             for (experiment in experiments) {
+                 Glean.setExperimentActive(experiment.slug, experiment.branchSlug)
+             }
+-        }
++        } */
+ 
+         if (initial || enrollmentChangeEvents.isNotEmpty()) {
+             // During initialization we need to inform the application when we've
+@@ -619,19 +619,19 @@ open class Nimbus(
+     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+     internal fun recordExperimentTelemetry(experiments: List<EnrolledExperiment>) {
+         // Call Glean.setExperimentActive() for each active experiment.
+-        experiments.forEach { experiment ->
++/*        experiments.forEach { experiment ->
+             // For now, we will just record the experiment id and the branch id. Once we can call
+             // Glean from Rust, this will move to the nimbus-sdk Rust core.
+             Glean.setExperimentActive(
+                 experiment.slug,
+                 experiment.branchSlug,
+             )
+-        }
++        } */
+     }
+ 
+     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+     internal fun recordExperimentTelemetryEvents(enrollmentChangeEvents: List<EnrollmentChangeEvent>) {
+-        enrollmentChangeEvents.forEach { event ->
++/*        enrollmentChangeEvents.forEach { event ->
+             when (event.change) {
+                 EnrollmentChangeEventType.ENROLLMENT -> {
+                     NimbusEvents.enrollment.record(
+@@ -693,7 +693,7 @@ open class Nimbus(
+                     )
+                 }
+             }
+-        }
++        } */
+     }
+ 
+     // The exposure event should be recorded when the expected treatment (or no-treatment, such as
+diff --git a/components/logins/android/src/main/java/mozilla/appservices/logins/DatabaseLoginsStorage.kt b/components/logins/android/src/main/java/mozilla/appservices/logins/DatabaseLoginsStorage.kt
+index f8a9f86b1..b29d2d6dc 100644
+--- a/components/logins/android/src/main/java/mozilla/appservices/logins/DatabaseLoginsStorage.kt
++++ b/components/logins/android/src/main/java/mozilla/appservices/logins/DatabaseLoginsStorage.kt
+@@ -14,9 +14,9 @@ package mozilla.appservices.logins
+  */
+ 
+ import mozilla.appservices.db_crypto.KeyManager
+-import mozilla.telemetry.glean.private.CounterMetricType
++/* import mozilla.telemetry.glean.private.CounterMetricType
+ import mozilla.telemetry.glean.private.LabeledMetricType
+-import org.mozilla.appservices.logins.GleanMetrics.LoginsStore as LoginsStoreMetrics
++import org.mozilla.appservices.logins.GleanMetrics.LoginsStore as LoginsStoreMetrics */
+ 
+ /**
+  * An artifact of the uniffi conversion - a thin-ish wrapper around a
+@@ -135,13 +135,13 @@ class DatabaseLoginsStorage(dbPath: String, keyManager: KeyManager) : AutoClosea
+ 
+     @Throws(LoginsApiException::class)
+     fun deleteUndecryptableLoginsAndRecordMetrics() {
+-        val result = store.deleteUndecryptableRecordsForRemoteReplacement()
++/*        val result = store.deleteUndecryptableRecordsForRemoteReplacement()
+         if (result.localDeleted > 0u) {
+             LoginsStoreMetrics.localUndecryptableDeleted.add(result.localDeleted.toInt())
+         }
+         if (result.mirrorDeleted > 0u) {
+             LoginsStoreMetrics.mirrorUndecryptableDeleted.add(result.mirrorDeleted.toInt())
+-        }
++        } */
+     }
+ }
+ 
+@@ -151,12 +151,12 @@ enum class KeyRegenerationEventReason {
+ 
+ fun recordKeyRegenerationEvent(reason: KeyRegenerationEventReason) {
+     // Avoid the deprecation warning when calling  `record()` without the optional EventExtras param
+-    @Suppress("DEPRECATION")
++/*    @Suppress("DEPRECATION")
+     when (reason) {
+         KeyRegenerationEventReason.Lost -> LoginsStoreMetrics.keyRegeneratedLost.record()
+         KeyRegenerationEventReason.Corrupt -> LoginsStoreMetrics.keyRegeneratedCorrupt.record()
+         KeyRegenerationEventReason.Other -> LoginsStoreMetrics.keyRegeneratedOther.record()
+-    }
++    } */
+ }
+ 
+ /**
+@@ -169,8 +169,8 @@ fun recordKeyRegenerationEvent(reason: KeyRegenerationEventReason) {
+  * This is a convenience wrapper to measure the two in one shot.
+  */
+ class LoginsStoreCounterMetrics(
+-    val count: CounterMetricType,
+-    val errCount: LabeledMetricType<CounterMetricType>,
++//    val count: CounterMetricType,
++//    val errCount: LabeledMetricType<CounterMetricType>,
+ ) {
+     inline fun <U> measure(callback: () -> U): U {
+         return measureIgnoring({ false }, callback)
+@@ -181,7 +181,7 @@ class LoginsStoreCounterMetrics(
+         shouldIgnore: (Exception) -> Boolean,
+         callback: () -> U,
+     ): U {
+-        count.add()
++//        count.add()
+         try {
+             return callback()
+         } catch (e: Exception) {
+@@ -190,19 +190,19 @@ class LoginsStoreCounterMetrics(
+             }
+             when (e) {
+                 is LoginsApiException.NoSuchRecord -> {
+-                    errCount["no_such_record"].add()
++                    // no-op
+                 }
+                 is LoginsApiException.Interrupted -> {
+-                    errCount["interrupted"].add()
++                    // no-op
+                 }
+                 is LoginsApiException.InvalidRecord -> {
+-                    errCount["invalid_record"].add()
++                    // no-op
+                 }
+                 is LoginsApiException -> {
+-                    errCount["storage_error"].add()
++                    // no-op
+                 }
+                 else -> {
+-                    errCount["__other__"].add()
++                    // no-op
+                 }
+             }
+             throw e
+diff --git a/components/places/build.rs b/components/places/build.rs
+index 3a29758ef..b865f01be 100644
+--- a/components/places/build.rs
++++ b/components/places/build.rs
+@@ -4,10 +4,10 @@
+ 
+ fn main() {
+     uniffi::generate_scaffolding("./src/places.udl").unwrap();
+-    build_metrics();
++//    build_metrics();
+ }
+ 
+-fn build_metrics() {
++/* fn build_metrics() {
+     let format = if cfg!(feature = "glean-fog") {
+         "rust"
+     } else {
+@@ -19,4 +19,4 @@ fn build_metrics() {
+         .format(format)
+         .generate()
+         .expect("Error generating Glean Rust bindings");
+-}
++} */
+diff --git a/components/places/Cargo.toml b/components/places/Cargo.toml
+index c8a720743..6f9d618c7 100644
+--- a/components/places/Cargo.toml
++++ b/components/places/Cargo.toml
+@@ -9,7 +9,7 @@ exclude = ["/android", "/ios"]
+ [features]
+ # Use Firefox-on-Glean to publish metrics (Desktop)
+ # Note: if set, we will not use `glean-sym`
+-glean-fog = ["dep:glean"]
++# glean-fog = ["dep:glean"]
+ 
+ [dependencies]
+ sync15 = { path = "../sync15" }
+@@ -34,8 +34,8 @@ sync-guid = { path = "../support/guid", features = ["rusqlite_support", "random"
+ thiserror = "2"
+ anyhow = "1.0"
+ uniffi = { version = "0.32" }
+-glean = { version = "70", optional = true }
+-glean-sym = "70"
++# glean = { version = "70", optional = true }
++# glean-sym = "70"
+ 
+ [dev-dependencies]
+ error-support = { path = "../support/error", features = ["testing"] }
+@@ -44,4 +44,4 @@ sql-support = { path = "../support/sql" }
+ 
+ [build-dependencies]
+ uniffi = { version = "0.32", features=["build"]}
+-glean-build = { git = "https://github.com/mozilla/glean", tag = "v70.0.0" }
++# glean-build = { git = "https://github.com/mozilla/glean", tag = "v70.0.0" }
+diff --git a/components/places/src/ffi.rs b/components/places/src/ffi.rs
+index cf69997e5..016082bd7 100644
+--- a/components/places/src/ffi.rs
++++ b/components/places/src/ffi.rs
+@@ -8,7 +8,7 @@ use crate::api::matcher::{self, search_frecent, SearchParams};
+ pub use crate::api::places_api::places_api_new;
+ pub use crate::error::{warn, Result};
+ pub use crate::error::{ApiResult, PlacesApiError};
+-use crate::glean_metrics;
++// use crate::glean_metrics;
+ pub use crate::import::common::HistoryMigrationResult;
+ use crate::import::import_ios_history;
+ use crate::storage;
+@@ -347,44 +347,44 @@ impl PlacesConnection {
+ 
+     #[handle_error(crate::Error)]
+     pub fn run_maintenance(&self, options: PlacesRunMaintenanceOptions) -> ApiResult<()> {
+-        let timer_id = glean_metrics::places_manager::run_maintenance_time.start();
++//        let timer_id = glean_metrics::places_manager::run_maintenance_time.start();
+ 
+         self.run_maintenance_prune(options.db_size_limit, options.prune_limit)?;
+         self.run_maintenance_vacuum()?;
+         self.run_maintenance_optimize()?;
+         self.run_maintenance_checkpoint()?;
+ 
+-        glean_metrics::places_manager::run_maintenance_time.stop_and_accumulate(timer_id);
++//        glean_metrics::places_manager::run_maintenance_time.stop_and_accumulate(timer_id);
+ 
+         Ok(())
+     }
+ 
+     fn run_maintenance_prune(&self, db_size_limit: u32, prune_limit: u32) -> Result<()> {
+-        let timer_id = glean_metrics::places_manager::run_maintenance_prune_time.start();
++//        let timer_id = glean_metrics::places_manager::run_maintenance_prune_time.start();
+         let res =
+             self.with_conn(|conn| storage::run_maintenance_prune(conn, db_size_limit, prune_limit));
+-        glean_metrics::places_manager::run_maintenance_prune_time.stop_and_accumulate(timer_id);
++//        glean_metrics::places_manager::run_maintenance_prune_time.stop_and_accumulate(timer_id);
+         res
+     }
+ 
+     fn run_maintenance_vacuum(&self) -> Result<()> {
+-        let timer_id = glean_metrics::places_manager::run_maintenance_vacuum_time.start();
++//        let timer_id = glean_metrics::places_manager::run_maintenance_vacuum_time.start();
+         let res = self.with_conn(storage::run_maintenance_vacuum);
+-        glean_metrics::places_manager::run_maintenance_vacuum_time.stop_and_accumulate(timer_id);
++//        glean_metrics::places_manager::run_maintenance_vacuum_time.stop_and_accumulate(timer_id);
+         res
+     }
+ 
+     fn run_maintenance_optimize(&self) -> Result<()> {
+-        let timer_id = glean_metrics::places_manager::run_maintenance_optimize_time.start();
++//        let timer_id = glean_metrics::places_manager::run_maintenance_optimize_time.start();
+         self.with_conn(storage::run_maintenance_optimize)?;
+-        glean_metrics::places_manager::run_maintenance_optimize_time.stop_and_accumulate(timer_id);
++//        glean_metrics::places_manager::run_maintenance_optimize_time.stop_and_accumulate(timer_id);
+         Ok(())
+     }
+ 
+     fn run_maintenance_checkpoint(&self) -> Result<()> {
+-        let timer_id = glean_metrics::places_manager::run_maintenance_chk_pnt_time.start();
++//        let timer_id = glean_metrics::places_manager::run_maintenance_chk_pnt_time.start();
+         let res = self.with_conn(storage::run_maintenance_checkpoint);
+-        glean_metrics::places_manager::run_maintenance_chk_pnt_time.stop_and_accumulate(timer_id);
++//        glean_metrics::places_manager::run_maintenance_chk_pnt_time.stop_and_accumulate(timer_id);
+         res
+     }
+ 
+diff --git a/components/places/src/lib.rs b/components/places/src/lib.rs
+index 1c95dd898..6bcb4e8dc 100644
+--- a/components/places/src/lib.rs
++++ b/components/places/src/lib.rs
+@@ -38,9 +38,9 @@ pub use crate::types::*;
+ 
+ pub use ffi::*;
+ 
+-pub mod glean_metrics {
++/* pub mod glean_metrics {
+     include!(concat!(env!("OUT_DIR"), "/glean_metrics.rs"));
+-}
++} */
+ 
+ uniffi::custom_type!(Guid, String, {
+     remote,
+diff --git a/components/places/src/storage/mod.rs b/components/places/src/storage/mod.rs
+index 42bacacf5..eb1cd3795 100644
+--- a/components/places/src/storage/mod.rs
++++ b/components/places/src/storage/mod.rs
+@@ -15,7 +15,7 @@ use crate::error::{Error, InvalidPlaceInfo, Result};
+ use crate::ffi::HistoryVisitInfo;
+ use crate::ffi::TopFrecentSiteInfo;
+ use crate::frecency::{calculate_frecency, DEFAULT_FRECENCY_SETTINGS};
+-use crate::glean_metrics;
++// use crate::glean_metrics;
+ use crate::types::{SyncStatus, UnknownFields, VisitType};
+ use interrupt_support::SqlInterruptScope;
+ use rusqlite::types::{FromSql, FromSqlResult, ToSql, ToSqlOutput, ValueRef};
+@@ -247,8 +247,8 @@ pub fn run_maintenance_prune(conn: &PlacesDb, db_size_limit: u32, prune_limit: u
+     if should_prune {
+         history::prune_older_visits(conn, prune_limit)?;
+     }
+-    glean_metrics::places_manager::db_size_after_maintenance
+-        .accumulate((conn.get_db_size()? / 1024) as i64);
++//    glean_metrics::places_manager::db_size_after_maintenance
++//        .accumulate((conn.get_db_size()? / 1024) as i64);
+     Ok(())
+ }
+ 
+diff --git a/components/places/android/src/main/java/mozilla/appservices/places/PlacesConnection.kt b/components/places/android/src/main/java/mozilla/appservices/places/PlacesConnection.kt
+index 3c8140348..434012fb9 100644
+--- a/components/places/android/src/main/java/mozilla/appservices/places/PlacesConnection.kt
++++ b/components/places/android/src/main/java/mozilla/appservices/places/PlacesConnection.kt
+@@ -29,9 +29,9 @@ import mozilla.appservices.places.uniffi.TopFrecentSiteInfo
+ import mozilla.appservices.places.uniffi.VisitObservation
+ import mozilla.appservices.places.uniffi.VisitType
+ import mozilla.appservices.places.uniffi.placesApiNew
+-import mozilla.appservices.sync15.SyncTelemetryPing
++/* import mozilla.appservices.sync15.SyncTelemetryPing
+ import mozilla.telemetry.glean.private.CounterMetricType
+-import mozilla.telemetry.glean.private.LabeledMetricType
++import mozilla.telemetry.glean.private.LabeledMetricType */
+ import java.lang.ref.WeakReference
+ import mozilla.appservices.places.uniffi.PlacesApi as UniffiPlacesApi
+ import mozilla.appservices.places.uniffi.PlacesConnection as UniffiPlacesConnection
+@@ -791,13 +791,13 @@ data class HistoryMetadataKey(
+  * This is a convenience wrapper to measure the two in one shot.
+  */
+ class PlacesManagerCounterMetrics(
+-    val count: CounterMetricType,
+-    val errCount: LabeledMetricType<CounterMetricType>,
++//    val count: CounterMetricType,
++//    val errCount: LabeledMetricType<CounterMetricType>,
+ ) {
+-    @Suppress("ComplexMethod", "TooGenericExceptionCaught")
++//    @Suppress("ComplexMethod", "TooGenericExceptionCaught")
+     inline fun <U> measure(callback: () -> U): U {
+-        count.add()
+-        try {
++        return callback()
++/*        try {
+             return callback()
+         } catch (e: Exception) {
+             when (e) {
+@@ -824,6 +824,6 @@ class PlacesManagerCounterMetrics(
+                 }
+             }
+             throw e
+-        }
++        } */
+     }
+ }
+-- 

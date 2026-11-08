@@ -1,0 +1,31 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 20:19:20 +0000
+Subject: [PATCH] GeckoView - Disable crash reporting
+
+Disables and prevents the collection/submission of crash reports.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/geckoview/src/main/AndroidManifest_overlay.jinja b/mobile/android/geckoview/src/main/AndroidManifest_overlay.jinja
+index c6a17be3b541..fe66b5a8695d 100644
+--- a/mobile/android/geckoview/src/main/AndroidManifest_overlay.jinja
++++ b/mobile/android/geckoview/src/main/AndroidManifest_overlay.jinja
+@@ -12,14 +12,14 @@
+     <application
+             android:zygotePreloadName="org.mozilla.gecko.process.ZygotePreload"
+             tools:targetApi="q">
+-        <service
++        <!-- <service
+                 android:name="org.mozilla.gecko.crashhelper.CrashHelper"
+                 android:enabled="true"
+                 android:exported="false"
+                 android:isolatedProcess="false"
+                 android:process=":crashhelper{{ tag }}"
+                 android:stopWithTask="true">
+-        </service>
++        </service> -->
+         <service
+                 android:name="org.mozilla.gecko.media.MediaManager"
+                 android:enabled="true"
+-- 

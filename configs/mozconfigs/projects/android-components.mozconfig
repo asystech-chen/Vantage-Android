@@ -1,0 +1,7 @@
+# shellcheck shell=bash
+# IronFox Android Components mozconfig
+
+set -euo pipefail
+
+# Target Android Components
+ac_add_options --enable-ironfox-subproject='android-components'

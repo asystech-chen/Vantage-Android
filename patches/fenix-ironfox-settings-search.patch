@@ -1,0 +1,47 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 05:15:52 +0000
+Subject: [PATCH] Fenix - IronFox settings search
+
+Allows users to search for IronFox-specific UI settings.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/DefaultFenixSettingsIndexer.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/DefaultFenixSettingsIndexer.kt
+index 3072be9e99e7..aac967c7eb75 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/DefaultFenixSettingsIndexer.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/DefaultFenixSettingsIndexer.kt
+@@ -373,6 +373,7 @@ class DefaultFenixSettingsIndexer(
+                 if (includeAutofillPreferences) {
+                     add(PreferenceFileInformation.SaveLoginsPreferences)
+                 }
++                add(PreferenceFileInformation.IronFoxPreferences)
+             }
+ 
+         /**
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/PreferenceFileInformation.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/PreferenceFileInformation.kt
+index 08049f328a85..b4a48df5c8c0 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/PreferenceFileInformation.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/settingssearch/PreferenceFileInformation.kt
+@@ -5,6 +5,7 @@
+ package org.mozilla.fenix.settings.settingssearch
+ 
+ import org.mozilla.fenix.R
++import org.ironfoxoss.core.R as ironfoxR
+ 
+ /**
+  * Data class for a settings search item navigation information based on the xml file it comes from.
+@@ -202,4 +203,12 @@ sealed class PreferenceFileInformation(
+             categoryHeaderResourceId = R.string.preferences_category_advanced,
+             fragmentId = R.id.firefoxLabsFragment,
+         )
++
++    object IronFoxPreferences :
++        PreferenceFileInformation(
++            xmlResourceId = R.xml.ironfox_preferences,
++            topBreadcrumbResourceId = ironfoxR.string.if_preferences,
++            categoryHeaderResourceId = ironfoxR.string.if_title,
++            fragmentId = R.id.ironFoxSettingsFragment,
++        )
+ }
+-- 

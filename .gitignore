@@ -1,0 +1,11 @@
+*.code-workspace
+.DS_Store
+/.vscode/
+/artifacts/
+/build/
+/env_override.sh
+/external/
+/outputs/
+/overrides.mozconfig
+/scripts/root.txt
+/wip/

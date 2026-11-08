@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Sun, 05 Jul 2026 05:15:52 +0000
+Subject: [PATCH] Fenix - IronFox Settings: Accessibility services
+
+Provides support for a UI setting to enable/disable accessibility services.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt
+index 83e0f40483b7..ca17852a0bfd 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/utils/Settings.kt
+@@ -1515,7 +1515,7 @@ class Settings(
+             accessibilityManager?.getEnabledAccessibilityServiceList(0)?.let { activeServices ->
+                 for (service in activeServices) {
+                     if (service.capabilities.and(CAPABILITY_CAN_PERFORM_GESTURES) == 1) {
+-                        return true
++                        return ironfox.accessibilityEnabled
+                     }
+                 }
+             }
+@@ -1527,7 +1527,7 @@ class Settings(
+         get() {
+             val accessibilityManager =
+                 appContext.getSystemService(Context.ACCESSIBILITY_SERVICE) as? AccessibilityManager
+-            return accessibilityManager?.isTouchExplorationEnabled ?: false
++            return ironfox.accessibilityEnabled && (accessibilityManager?.isTouchExplorationEnabled ?: false)
+         }
+ 
+     val accessibilityServicesEnabled: Boolean
+-- 

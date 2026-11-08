@@ -1,0 +1,27 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Tue, 17 Feb 2026 05:35:54 +0000
+Subject: [PATCH] Gecko - IronFox settings
+
+Adds support for IronFox-specific preferences to control various functionality.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/toolkit/components/resistfingerprinting/nsRFPService.cpp b/toolkit/components/resistfingerprinting/nsRFPService.cpp
+index 9554fbb21b..ed93e4e1de 100644
+--- a/toolkit/components/resistfingerprinting/nsRFPService.cpp
++++ b/toolkit/components/resistfingerprinting/nsRFPService.cpp
+@@ -351,6 +351,12 @@ bool nsRFPService::IsRFPEnabledFor(
+     return aOverriddenFingerprintingSettings.ref().contains(aTarget);
+   }
+ 
++  if (aTarget == RFPTarget::DisableWebGL) {
++    return Preferences::GetBool("browser.ironfox.webgl.disabled") && IsTargetActiveForMode(aTarget, mode);
++  }
++  if (aTarget == RFPTarget::JSDateTimeUTC) {
++    return Preferences::GetBool("browser.ironfox.fingerprintingProtection.timezoneSpoofing.enabled") && IsTargetActiveForMode(aTarget, mode);
++  }
+   return IsTargetActiveForMode(aTarget, mode);
+ }
+ 
+-- 

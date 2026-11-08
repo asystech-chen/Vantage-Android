@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: celenity <celenity@celenity.dev>
+Date: Tue, 17 Feb 2026 04:56:55 +0000
+Subject: [PATCH] Gecko - IronFox Settings: WebGL
+
+Provides support for a UI setting to enable/disable WebGL (including on a per-site basis), as a custom RFP target.
+
+Signed-off-by: celenity <celenity@celenity.dev>
+---
+diff --git a/dom/canvas/ClientWebGLContext.cpp b/dom/canvas/ClientWebGLContext.cpp
+index 12492d606cc2..0fd90c1a8b19 100644
+--- a/dom/canvas/ClientWebGLContext.cpp
++++ b/dom/canvas/ClientWebGLContext.cpp
+@@ -883,6 +883,10 @@ bool ClientWebGLContext::CreateHostContext(const uvec2& requestedSize) {
+         .options = options,
+     };
+ 
++    if (ShouldResistFingerprinting(RFPTarget::DisableWebGL)) {
++      return Err("WebGL is currently disabled.");
++    }
++
+     // -
+ 
+     auto useOop = IsWebglOutOfProcessEnabled();
+diff --git a/toolkit/components/resistfingerprinting/RFPTargets.inc b/toolkit/components/resistfingerprinting/RFPTargets.inc
+index 8be14ed3ba46..3395d760d7ff 100644
+--- a/toolkit/components/resistfingerprinting/RFPTargets.inc
++++ b/toolkit/components/resistfingerprinting/RFPTargets.inc
+@@ -114,6 +114,7 @@ ITEM_VALUE(WebGLVendorRandomize,        79)
+ ITEM_VALUE(WebGLRendererConstant,       80)
+ // How IME software in use chooses to style composition (exposed via EditContext)
+ ITEM_VALUE(IMEStyle,                    81)
++ITEM_VALUE(DisableWebGL,                82)
+ 
+ /*
+  * In certain cases, we precompute the value of ShouldRFP for e.g. a Document.
+-- 

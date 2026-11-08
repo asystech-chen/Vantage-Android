@@ -1,0 +1,127 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Akash Yadav <itsaky01@gmail.com>
+Date: Tue, 23 Dec 2025 08:13:01 +0000
+Subject: [PATCH] Fenix - OLED Theme
+
+Adds support for a true OLED black theme.
+
+Signed-off-by: Akash Yadav <itsaky01@gmail.com>
+---
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
+index aff32cbcd7f3..fd0a5a8a793f 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/components/Core.kt
+@@ -161,6 +161,11 @@ class Core(
+ ) {
+     /** The browser engine component initialized based on the build configuration (see build variants). */
+     val engine: Engine by lazyMonitored {
++        val clearColor = if (context.components.settings.shouldUseOledTheme) {
++            R.color.fx_mobile_surface_oled
++        } else {
++            R.color.fx_mobile_surface
++        }
+         val defaultSettings =
+             DefaultSettings(
+                 requestInterceptor = requestInterceptor,
+@@ -178,7 +183,7 @@ class Core(
+                 clearColor =
+                     ContextCompat.getColor(
+                         context,
+-                        R.color.fx_mobile_surface,
++                        clearColor,
+                     ),
+                 httpsOnlyMode = context.components.settings.getHttpsOnlyMode(),
+                 dohSettingsMode = context.components.settings.getDohSettingsMode(),
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/customtabs/FennecWebAppIntentProcessor.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/customtabs/FennecWebAppIntentProcessor.kt
+index b8007c652e2a..b6c8381975b0 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/customtabs/FennecWebAppIntentProcessor.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/customtabs/FennecWebAppIntentProcessor.kt
+@@ -31,6 +31,8 @@ import org.json.JSONException
+ import org.json.JSONObject
+ import org.mozilla.fenix.R
+ import org.mozilla.fenix.perf.runBlockingIncrement
++import com.google.android.material.R as materialR
++import org.mozilla.fenix.theme.ThemeManager
+ 
+ /** Legacy processor for Progressive Web App shortcut intents created by Fennec. */
+ class FennecWebAppIntentProcessor(
+@@ -139,7 +141,7 @@ class FennecWebAppIntentProcessor(
+             colorSchemes =
+                 ColorSchemes(
+                     defaultColorSchemeParams =
+-                        ColorSchemeParams(toolbarColor = ContextCompat.getColor(context, R.color.fx_mobile_surface))
++                        ColorSchemeParams(toolbarColor = ThemeManager.resolveAttributeColor(materialR.attr.colorSurface, context))
+                 )
+         )
+     }
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/CustomizationFragment.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/CustomizationFragment.kt
+index 8eaf185575f0..048c411c1510 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/CustomizationFragment.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/settings/CustomizationFragment.kt
+@@ -285,8 +285,9 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
+     }
+ 
+     private fun setNewTheme(mode: Int) {
+-        if (AppCompatDelegate.getDefaultNightMode() == mode) return
+-        AppCompatDelegate.setDefaultNightMode(mode)
++        if (AppCompatDelegate.getDefaultNightMode() != mode) {
++            AppCompatDelegate.setDefaultNightMode(mode)
++        }
+         activity?.recreate()
+         with(requireComponents.core) {
+             engine.settings.preferredColorScheme = getPreferredColorScheme()
+diff --git a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/theme/ThemeManager.kt b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/theme/ThemeManager.kt
+index 904191f39554..89462cad381f 100644
+--- a/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/theme/ThemeManager.kt
++++ b/mobile/android/fenix/app/src/main/java/org/mozilla/fenix/theme/ThemeManager.kt
+@@ -26,9 +26,14 @@ import org.mozilla.fenix.HomeActivity
+ import org.mozilla.fenix.R
+ import org.mozilla.fenix.browser.browsingmode.BrowsingMode
+ import org.mozilla.fenix.customtabs.ExternalAppBrowserActivity
++import androidx.annotation.AttrRes
++import androidx.annotation.ColorInt
++import androidx.core.content.ContextCompat
++import org.ironfoxoss.ironfox.utils.IronFoxPreferences
+ 
+ abstract class ThemeManager {
+ 
++    protected abstract val activity: Activity
+     abstract var currentTheme: BrowsingMode
+ 
+     /** Returns the style resource corresponding to the [currentTheme]. */
+@@ -36,7 +41,11 @@ abstract class ThemeManager {
+     val currentThemeResource
+         get() =
+             when (currentTheme) {
+-                BrowsingMode.Normal -> R.style.NormalTheme
++                BrowsingMode.Normal -> if (IronFoxPreferences.shouldUseOledTheme(activity)) {
++                    R.style.IronFox_OLEDTheme
++                } else {
++                    R.style.NormalTheme
++                }
+                 BrowsingMode.Private -> R.style.PrivateTheme
+             }
+ 
+@@ -91,6 +100,12 @@ abstract class ThemeManager {
+             return typedValue.resourceId
+         }
+ 
++        @ColorInt
++        fun resolveAttributeColor(@AttrRes attribute: Int, context: Context): Int {
++            val resourceId = resolveAttribute(attribute, context)
++            return ContextCompat.getColor(context, resourceId)
++        }
++
+         /**
+          * Resolves the attribute to a color.
+          *
+@@ -132,7 +147,7 @@ abstract class ThemeManager {
+ 
+ class DefaultThemeManager(
+     currentTheme: BrowsingMode,
+-    private val activity: Activity,
++    override val activity: Activity,
+ ) : ThemeManager() {
+     override var currentTheme: BrowsingMode = currentTheme
+         set(value) {
+-- 
