@@ -167,9 +167,9 @@ jobs:
           echo "started=$(date +%s)" >> "$state"
 
           case "$VARIANT" in
-            dev-incremental) ./scripts/build.sh dev rebuild-fenix ;;
-            dev-full) ./scripts/build.sh dev ;;
-            release) ./scripts/build.sh arm64 ;;
+            dev-incremental) ./scripts/build.sh dev rebuild-fenix 2>&1 | tee build/logs/ci-build-step.log ;;
+            dev-full) ./scripts/build.sh dev 2>&1 | tee build/logs/ci-build-step.log ;;
+            release) ./scripts/build.sh arm64 2>&1 | tee build/logs/ci-build-step.log ;;
             *) echo "❌ 未知构建类型: $VARIANT"; exit 1 ;;
           esac
 
