@@ -8,6 +8,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import mozilla.components.compose.base.theme.AcornColors
 import mozilla.components.compose.base.theme.AcornGradientScheme
@@ -55,8 +56,20 @@ fun FirefoxTheme(
     // when the brand's white theme is selected or the device theme is followed.
     val useVantageLightTheme = theme == Theme.Light && usesVantageLightPalette(LocalContext.current)
 
+    // Vantage: an installed Firefox desktop theme wins over both the stock and the branded
+    // palettes. Private browsing keeps its own palette.
+    val context = LocalContext.current
+    val desktopTheme = rememberDesktopTheme(theme)
+    val desktopPalette = desktopTheme?.let {
+        VantageThemeStore.get(context).paletteFor(
+            it,
+            theme != Theme.Light,
+        )
+    }
+
     val colorScheme: ColorScheme =
         when {
+            desktopPalette != null -> desktopPalette.colorScheme
             useVantageTheme -> vantageDarkColorScheme()
             useVantageLightTheme -> vantageLightColorScheme()
             else ->
@@ -70,6 +83,7 @@ fun FirefoxTheme(
 
     val gradients: AcornGradientScheme =
         when {
+            desktopPalette != null -> desktopPalette.gradientScheme
             useVantageTheme -> vantageAcornGradientScheme
             useVantageLightTheme -> vantageLightAcornGradientScheme
             else ->
@@ -97,6 +111,16 @@ fun FirefoxTheme(
             content = content,
         )
     }
+}
+
+/** Vantage: the installed desktop theme that overrides the palette, or `null` when none applies. */
+@Composable
+private fun rememberDesktopTheme(theme: Theme): VantageTheme? {
+    // Vantage: private browsing also follows the installed desktop theme.
+    val context = LocalContext.current
+    val store = remember(context) { VantageThemeStore.get(context) }
+    val activeThemeId = store.activeThemeId
+    return remember(activeThemeId) { store.activeTheme }
 }
 
 @Composable

@@ -56,6 +56,16 @@ abstract class ThemeManager {
     @get:StyleRes
     private val normalThemeResource: Int
         get() {
+            // Vantage: an installed desktop theme is layered on top of the branded XML theme.
+            val desktopTheme = VantageThemeStore.get(activity).activeTheme
+            if (desktopTheme != null) {
+                return if (desktopTheme.defaultIsDark) {
+                    R.style.VantageTheme
+                } else {
+                    R.style.VantageLightTheme
+                }
+            }
+
             val mode = AppCompatDelegate.getDefaultNightMode()
             val followsSystem =
                 mode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
@@ -85,6 +95,11 @@ abstract class ThemeManager {
     fun applyStatusBarTheme(activity: Activity) = applyStatusBarTheme(activity.window, activity)
 
     private fun applyStatusBarTheme(window: Window, context: Context) {
+        // Vantage: an installed desktop theme also colours the system bars in private mode.
+        if (VantageThemeStore.get(context).activeTheme != null) {
+            applyDesktopThemeSystemBars(window, context)
+            return
+        }
         when (currentTheme) {
             BrowsingMode.Normal -> {
                 when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
@@ -134,6 +149,29 @@ abstract class ThemeManager {
 
     fun setActivityTheme(activity: Activity) {
         activity.setTheme(currentThemeResource)
+    }
+
+    /** Vantage: paints the system bars with the installed desktop theme's chrome colour. */
+    private fun applyDesktopThemeSystemBars(window: Window, context: Context) {
+        val isNightMode =
+            (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_YES
+        window.createWindowInsetsController().apply {
+            isAppearanceLightStatusBars = !isNightMode
+            isAppearanceLightNavigationBars = !isNightMode
+        }
+        val chrome =
+            VantageThemeStore.get(context).activeChromeColor(isNightMode)
+                ?: android.graphics.Color.BLACK
+
+        window.setStatusBarColorCompat(
+            if (context.components.settings.shouldShowTabStripAtTop) {
+                android.graphics.Color.TRANSPARENT
+            } else {
+                chrome
+            },
+        )
+        window.setNavigationBarColorCompat(chrome)
     }
 
     companion object {

@@ -6,6 +6,8 @@ package org.mozilla.fenix.settings
 
 import org.ironfoxoss.ironfox.utils.FenixSettingsVisibilityManager
 import org.ironfoxoss.ironfox.utils.IronFoxPreferences
+import org.mozilla.fenix.theme.VantageTheme
+import org.mozilla.fenix.theme.VantageThemeStore
 import org.mozilla.fenix.theme.isVantageLightThemeSelected
 import org.mozilla.fenix.theme.isVantageThemeSelected
 import org.mozilla.fenix.theme.setVantageLightThemeSelected
@@ -60,6 +62,8 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
     private lateinit var radioVantageTheme: RadioButtonPreference
     private lateinit var radioVantageLightTheme: RadioButtonPreference
     private lateinit var radioFollowDeviceTheme: RadioButtonPreference
+    /** Vantage: dynamically built entries for installed desktop themes. */
+    private val installedThemePreferences = mutableListOf<RadioButtonPreference>()
     private val args by navArgs<CustomizationFragmentArgs>()
 
     // Cached reactive feature state used when (re)building preferences.
@@ -125,6 +129,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         bindDarkestTheme()
         bindLightTheme()
         bindAutoBatteryTheme()
+        setupInstalledThemes()
         setupRadioGroups()
         syncThemeSelection()
         setupToolbarCategory()
@@ -285,7 +290,41 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
             } else {
                 radioAutoBatteryTheme
             },
+            *installedThemePreferences.toTypedArray(),
         )
+    }
+
+    /** Vantage: adds the installed desktop themes to the theme category as radio entries. */
+    private fun setupInstalledThemes() {
+        val category =
+            requirePreference<PreferenceCategory>(R.string.pref_key_vantage_theme_category)
+
+        val staleEntries =
+            (0 until category.preferenceCount)
+                .map { category.getPreference(it) }
+                .filter {
+                    it.key?.startsWith(VantageThemesFragment.INSTALLED_THEME_KEY_PREFIX) == true
+                }
+        staleEntries.forEach { category.removePreference(it) }
+        installedThemePreferences.clear()
+
+        VantageThemeStore.get(requireContext()).installedThemes.forEach { theme ->
+            val preference =
+                RadioButtonPreference(requireContext()).apply {
+                    key = VantageThemesFragment.INSTALLED_THEME_KEY_PREFIX + theme.id
+                    title = theme.name
+                    summary =
+                        if (theme.author.isNotBlank()) {
+                            getString(R.string.vantage_themes_author, theme.author)
+                        } else {
+                            getString(R.string.vantage_themes_unknown_author)
+                        }
+                    isPersistent = false
+                    onClickListener { applyInstalledTheme(theme) }
+                }
+            installedThemePreferences += preference
+            category.addPreference(preference)
+        }
     }
 
     /**
@@ -294,6 +333,16 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
      * state from the actual night mode + branded-theme flag on every bind instead.
      */
     private fun syncThemeSelection() {
+        val activeInstalledId = VantageThemeStore.get(requireContext()).activeThemeId
+        val hasInstalledTheme = activeInstalledId != null
+        installedThemePreferences.forEach { preference ->
+            preference.setCheckedWithoutClickListener(
+                hasInstalledTheme &&
+                    preference.key ==
+                    VantageThemesFragment.INSTALLED_THEME_KEY_PREFIX + activeInstalledId,
+            )
+        }
+
         val mode = AppCompatDelegate.getDefaultNightMode()
         val isDark = mode == AppCompatDelegate.MODE_NIGHT_YES
         val vantage = isVantageThemeSelected(requireContext())
@@ -304,21 +353,50 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
                 mode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
 
         radioLightTheme.setCheckedWithoutClickListener(
-            mode == AppCompatDelegate.MODE_NIGHT_NO && !vantageLight,
+            !hasInstalledTheme && mode == AppCompatDelegate.MODE_NIGHT_NO && !vantageLight,
         )
         radioVantageLightTheme.setCheckedWithoutClickListener(
-            mode == AppCompatDelegate.MODE_NIGHT_NO && vantageLight,
+            !hasInstalledTheme && mode == AppCompatDelegate.MODE_NIGHT_NO && vantageLight,
         )
-        radioDarkTheme.setCheckedWithoutClickListener(isDark && !vantage && !oled)
-        radioVantageTheme.setCheckedWithoutClickListener(isDark && vantage)
-        radioDarkestTheme.setCheckedWithoutClickListener(isDark && !vantage && oled)
+        radioDarkTheme.setCheckedWithoutClickListener(
+            !hasInstalledTheme && isDark && !vantage && !oled,
+        )
+        radioVantageTheme.setCheckedWithoutClickListener(!hasInstalledTheme && isDark && vantage)
+        radioDarkestTheme.setCheckedWithoutClickListener(
+            !hasInstalledTheme && isDark && !vantage && oled,
+        )
         if (SDK_INT >= Build.VERSION_CODES.P) {
-            radioFollowDeviceTheme.setCheckedWithoutClickListener(followsSystem)
+            radioFollowDeviceTheme.setCheckedWithoutClickListener(
+                !hasInstalledTheme && followsSystem,
+            )
         } else {
             radioAutoBatteryTheme.setCheckedWithoutClickListener(
-                mode == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY,
+                !hasInstalledTheme && mode == AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY,
             )
         }
+    }
+
+    /** Vantage: activates an installed desktop theme and switches the app to its appearance. */
+    private fun applyInstalledTheme(theme: VantageTheme) {
+        val context = requireContext()
+        VantageThemeStore.get(context).setActiveTheme(theme.id)
+        setVantageThemeSelected(context, false)
+        setVantageLightThemeSelected(context, false)
+
+        val mode =
+            if (theme.defaultIsDark) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        if (AppCompatDelegate.getDefaultNightMode() != mode) {
+            AppCompatDelegate.setDefaultNightMode(mode)
+        }
+        activity?.recreate()
+        with(requireComponents.core) {
+            engine.settings.preferredColorScheme = getPreferredColorScheme()
+        }
+        requireComponents.useCases.sessionUseCases.reload.invoke()
     }
 
     private fun bindLightTheme() {
@@ -379,6 +457,8 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
     }
 
     private fun setNewTheme(mode: Int, vantage: Boolean = false, vantageLight: Boolean = false) {
+        // Vantage: picking a built-in theme drops any installed desktop theme.
+        VantageThemeStore.get(requireContext()).setActiveTheme(null)
         setVantageThemeSelected(requireContext(), vantage)
         setVantageLightThemeSelected(requireContext(), vantageLight)
 

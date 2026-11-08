@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -66,18 +69,45 @@ internal fun VantageHomeSearchBar(onSearch: (String) -> Unit) {
     var engine by remember { mutableStateOf(store.state.search.selectedOrDefaultSearchEngine) }
     var showEnginePicker by remember { mutableStateOf(false) }
 
-    Row(
+    // Vantage: an active desktop theme paints its image as the search bar background.
+    val themeImage = rememberVantageThemeImage(isDark = isSystemInDarkTheme())
+
+    Box(
         modifier =
             Modifier
                 // Vantage: fixed width instead of stretching proportionally on tablets.
                 .widthIn(max = 420.dp)
+                .fillMaxWidth()
                 .border(
                     width = 1.dp,
                     color = MaterialTheme.colorScheme.outline,
                     shape = searchBarShape,
                 )
-                .clip(shape = searchBarShape)
-                .background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+                .clip(shape = searchBarShape),
+    ) {
+        if (themeImage != null) {
+            Image(
+                bitmap = themeImage,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize(),
+            )
+            // Keep the text readable regardless of which part of the image is visible.
+            Box(
+                modifier =
+                    Modifier.matchParentSize().background(Color.Black.copy(alpha = 0.20f)),
+            )
+        } else {
+            Box(
+                modifier =
+                    Modifier.matchParentSize()
+                        .background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
+            )
+        }
+
+    Row(
+        modifier =
+            Modifier
                 .fillMaxWidth()
                 .padding(all = FirefoxTheme.layout.space.static50),
         verticalAlignment = Alignment.CenterVertically,
@@ -147,6 +177,7 @@ internal fun VantageHomeSearchBar(onSearch: (String) -> Unit) {
                 Text(text = "\u00d7")
             }
         }
+    }
     }
 
     if (showEnginePicker) {

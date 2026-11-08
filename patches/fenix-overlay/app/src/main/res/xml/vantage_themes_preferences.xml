@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vantage: install and manage Firefox desktop themes converted for the mobile UI. -->
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.PreferenceCategory
+        android:layout="@layout/preference_cat_style"
+        android:title="@string/vantage_themes_search_category"
+        app:iconSpaceReserved="false">
+
+        <androidx.preference.Preference
+            android:key="@string/pref_key_vantage_themes_search"
+            android:persistent="false"
+            android:summary="@string/vantage_themes_search_summary"
+            android:title="@string/vantage_themes_search_title"
+            app:iconSpaceReserved="false" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:key="@string/pref_key_vantage_installed_themes_category"
+        android:layout="@layout/preference_cat_style"
+        android:title="@string/vantage_themes_installed_title"
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.Preference
+        android:key="@string/pref_key_vantage_themes_empty"
+        android:persistent="false"
+        android:selectable="false"
+        android:title="@string/vantage_themes_empty"
+        app:iconSpaceReserved="false" />
+</androidx.preference.PreferenceScreen>
