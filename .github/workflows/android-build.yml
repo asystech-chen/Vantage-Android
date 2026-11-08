@@ -1,0 +1,180 @@
+name: Android Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      variant:
+        description: '构建类型（dev-incremental 最快，release 为完整发布构建）'
+        type: choice
+        options:
+          - dev-incremental
+          - dev-full
+          - release
+        default: dev-incremental
+      sign:
+        description: 'dev 构建使用发布签名（release 始终签名）'
+        type: boolean
+        default: false
+      prepare:
+        description: '先运行 prepare-build.sh（首次或源码/脚本变更后）'
+        type: boolean
+        default: false
+      publish:
+        description: 'release 构建后上传到 GitHub Release'
+        type: boolean
+        default: false
+      tag:
+        description: '发布 tag，例如 v159.0（publish=true 时必填）'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: [self-hosted, vantage-android]
+    timeout-minutes: 900
+    env:
+      IRONFOX_SIGN_SKIP_ADB: '1'
+      IRONFOX_LOG_BUILD: '1'
+      IRONFOX_LOG_SIGN: '1'
+      IRONFOX_OFFLINE: '1'
+      KEYSTORE_DIR: /home/chen/.vantage-android-keys
+    steps:
+      - name: 检查触发者
+        run: |
+          if [ "${{ github.actor }}" != "asystech-chen" ]; then
+            echo "❌ 仅仓库所有者可触发构建"
+            exit 1
+          fi
+
+      - name: 检查工作区
+        run: |
+          set -euo pipefail
+          if [ ! -d "$GITHUB_WORKSPACE/.git" ] || [ ! -d "$GITHUB_WORKSPACE/external/gecko" ]; then
+            echo "❌ 工作区未就绪: $GITHUB_WORKSPACE"
+            echo "请先运行: sudo ./scripts/ci/move-workspace.sh"
+            exit 1
+          fi
+          echo "工作区: $GITHUB_WORKSPACE"
+          df -h "$GITHUB_WORKSPACE" | tail -1
+
+      - name: 同步源码
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
+          git fetch --prune origin '+refs/heads/main:refs/remotes/origin/main'
+          git checkout -f -B main origin/main
+          git log --oneline -1
+
+      - name: 检查签名密钥
+        if: inputs.variant == 'release' || inputs.sign
+        run: |
+          set -euo pipefail
+          for f in vantage-release.keystore .storepass .keypass; do
+            if [ ! -r "$KEYSTORE_DIR/$f" ]; then
+              echo "❌ 缺少或不可读: $KEYSTORE_DIR/$f"
+              exit 1
+            fi
+          done
+
+      - name: 设置构建参数
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.variant }}" = "release" ]; then
+            echo "IRONFOX_RELEASE=1" >> "$GITHUB_ENV"
+            echo "IRONFOX_SIGN=1" >> "$GITHUB_ENV"
+          else
+            echo "IRONFOX_RELEASE=0" >> "$GITHUB_ENV"
+            if [ "${{ inputs.sign }}" = "true" ]; then
+              echo "IRONFOX_SIGN=1" >> "$GITHUB_ENV"
+            else
+              echo "IRONFOX_SIGN=0" >> "$GITHUB_ENV"
+            fi
+          fi
+          if [ "${{ inputs.variant }}" = "release" ] || [ "${{ inputs.sign }}" = "true" ]; then
+            echo "IRONFOX_ANDROID_KEYSTORE=$KEYSTORE_DIR/vantage-release.keystore" >> "$GITHUB_ENV"
+            echo "IRONFOX_ANDROID_KEYSTORE_PASS_FILE=$KEYSTORE_DIR/.storepass" >> "$GITHUB_ENV"
+            echo "IRONFOX_ANDROID_KEYSTORE_KEY_PASS_FILE=$KEYSTORE_DIR/.keypass" >> "$GITHUB_ENV"
+            echo "IRONFOX_ANDROID_KEYSTORE_KEY_ALIAS=vantage-release" >> "$GITHUB_ENV"
+          fi
+
+      - name: 准备构建树
+        if: inputs.prepare
+        env:
+          IRONFOX_OFFLINE: '0'
+          http_proxy: http://127.0.0.1:7890
+          https_proxy: http://127.0.0.1:7890
+          no_proxy: localhost,127.0.0.1,::1,maven.aliyun.com,mirrors.aliyun.com,registry.npmmirror.com
+          NO_PROXY: localhost,127.0.0.1,::1,maven.aliyun.com,mirrors.aliyun.com,registry.npmmirror.com
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          ./scripts/prepare-build.sh
+
+      - name: 离线就绪检查
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          ./scripts/check-offline.sh
+
+      - name: 构建
+        env:
+          VARIANT: ${{ inputs.variant }}
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          # 与桌面 CI / 本地构建互斥
+          exec 9>/run/lock/ci-build.lock
+          flock -w 43200 9
+          case "$VARIANT" in
+            dev-incremental) ./scripts/build.sh dev rebuild-fenix ;;
+            dev-full) ./scripts/build.sh dev ;;
+            release) ./scripts/build.sh arm64 ;;
+            *) echo "❌ 未知构建类型: $VARIANT"; exit 1 ;;
+          esac
+
+      - name: 收集产物
+        id: artifacts
+        run: |
+          set -euo pipefail
+          cd "$GITHUB_WORKSPACE"
+          shopt -s nullglob
+          apks=(outputs/apk/*.apk)
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "❌ 构建结束但没有 APK"
+            exit 1
+          fi
+          sha256sum "${apks[@]}" > outputs/SHA256SUMS
+          cat outputs/SHA256SUMS
+
+      - name: 上传 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vantage-${{ inputs.variant }}-${{ github.run_number }}
+          path: |
+            outputs/apk/*.apk
+            outputs/SHA256SUMS
+          if-no-files-found: error
+
+      - name: 上传 GitHub Release
+        if: inputs.variant == 'release' && inputs.publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${{ inputs.tag }}"
+          if [ -z "$TAG" ]; then
+            echo "❌ publish=true 时必须填写 tag"
+            exit 1
+          fi
+          cd "$GITHUB_WORKSPACE"
+          gh release view "$TAG" >/dev/null 2>&1 ||
+            gh release create "$TAG" --title "Vantage Android $TAG" --notes "Vantage-Android $TAG"
+          gh release upload "$TAG" outputs/apk/*.apk outputs/SHA256SUMS --clobber
