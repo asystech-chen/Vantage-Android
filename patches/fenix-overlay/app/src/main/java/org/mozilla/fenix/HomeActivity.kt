@@ -62,6 +62,7 @@ import mozilla.components.browser.state.selector.getNormalOrPrivateTabs
 import mozilla.components.browser.state.selector.selectedTab
 import mozilla.components.browser.state.state.ActiveOptionsPage
 import mozilla.components.browser.state.state.WebExtensionState
+import mozilla.components.concept.engine.Engine
 import mozilla.components.concept.engine.EngineSession
 import mozilla.components.concept.engine.EngineView
 import mozilla.components.concept.storage.HistoryMetadataKey
@@ -506,6 +507,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
         components.publicSuffixList.prefetch()
 
+        // Vantage: new installs and existing installs still on the old DoH default get
+        // "Increased protection". A one-time flag keeps later explicit choices untouched.
+        applyVantageDohDefault()
+
         // Changing a language on the Language screen restarts the activity, but the activity keeps
         // the old layout direction. We have to update the direction manually.
         window.decorView.layoutDirection = Locale.getDefault().layoutDirection
@@ -771,6 +776,28 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         pendingSendToDevicesTab?.let {
             outState.putParcelable(PENDING_SEND_TO_DEVICES_TAB_KEY, it)
         }
+    }
+
+    /**
+     * Vantage: DNS-over-HTTPS defaults to "Increased protection".
+     *
+     * A one-time flag applies this to existing installs that still use the old default value,
+     * while leaving any later explicit choice untouched.
+     */
+    private fun applyVantageDohDefault() {
+        val prefs = components.settings.preferences
+        val migrationKey = "vantage_doh_increased_default_applied"
+        if (prefs.getBoolean(migrationKey, false)) {
+            return
+        }
+
+        val dohKey = getString(R.string.pref_key_doh_settings_mode)
+        val storedMode = prefs.all[dohKey] as? Int
+        if (storedMode == null || storedMode == 0) {
+            components.settings.setDohSettingsMode(Engine.DohSettingsMode.INCREASED)
+        }
+        components.core.engine.settings.dohSettingsMode = components.settings.getDohSettingsMode()
+        prefs.edit().putBoolean(migrationKey, true).apply()
     }
 
     @VisibleForTesting

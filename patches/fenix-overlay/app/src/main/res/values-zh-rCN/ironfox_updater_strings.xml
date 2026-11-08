@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <!-- Updates settings -->
+  <string name="updater_title">更新</string>
+  <string name="updater_enabled_title">自动检查更新</string>
+  <string name="updater_enabled_summary">Vantage 会向 Vantage 发布服务器检查新版本，并在安装前询问您。</string>
+  <string name="updater_interval_title">检查间隔</string>
+  <string name="updater_interval_summary">Vantage 检查更新的频率（小时）</string>
+  <string name="updater_direct_downloads_title">直接下载更新</string>
+  <string name="updater_direct_downloads_summary">使用 Vantage 下载并安装更新，而不是打开 %1$s。Android 可能会要求您确认从其他来源更新。</string>
+  <string name="updater_auto_download_title">自动下载更新</string>
+  <string name="updater_auto_download_summary">发现更新后，Vantage 会立即通过任何网络连接（包括移动数据）下载。更新包最大约 200 MB。</string>
+  <string name="updater_auto_download_needs_direct_summary">请先开启“直接下载更新”。</string>
+  <string name="updater_auto_download_confirm_title">自动下载更新？</string>
+  <string name="updater_auto_download_confirm_message">发现更新后，Vantage 会立即通过任何网络连接（包括移动数据）下载。更新包最大约 200 MB。安装时机仍由您决定。</string>
+  <string name="updater_auto_download_confirm_enable">开启</string>
+  <string name="updater_insecure_http_title">允许不安全的 HTTP 连接</string>
+  <string name="updater_insecure_http_summary">允许更新器使用纯 HTTP。仅用于测试本地更新服务器。</string>
+  <string name="updater_insecure_http_blocked_summary">“仅 HTTPS”模式会阻止纯 HTTP。请在“隐私与安全”中为所有标签页关闭该模式后再使用。</string>
+  <string name="updater_source_title">更新来源</string>
+  <string name="updater_source_direct">Vantage（直接下载）</string>
+  <string name="updater_status_title">状态</string>
+  <string name="updater_check_now_title">检查更新</string>
+  <string name="updater_status_never">尚未检查</string>
+  <string name="updater_status_last_checked">上次检查于 %1$s</string>
+  <string name="updater_status_available">发现版本 %1$s，点击更新。</string>
+  <string name="updater_status_checking">正在检查…</string>
+  <string name="updater_status_downloading">正在下载更新…</string>
+  <string name="updater_status_error">无法检查更新：%1$s</string>
+
+  <!-- Update dialog -->
+  <string name="updater_dialog_title">有可用更新</string>
+  <string name="updater_dialog_message">Vantage %1$s 已可用。</string>
+  <string name="updater_dialog_store_message">Vantage %1$s 已可用。打开 %2$s 进行更新；如果商店中尚未列出，请刷新商店。</string>
+  <string name="updater_dialog_ready_message">Vantage %1$s 已下载完成，可以安装。</string>
+  <string name="updater_dialog_install">安装</string>
+  <string name="updater_dialog_update">更新</string>
+  <string name="updater_dialog_open_store">打开 %1$s</string>
+  <string name="updater_dialog_later">稍后</string>
+  <string name="updater_dialog_release_notes">发行说明</string>
+
+  <!-- Store no longer installed -->
+  <string name="updater_store_gone_title">%1$s 不可用</string>
+  <string name="updater_store_gone_message">Vantage 是从 %1$s 安装的，但该商店已不存在。是否直接下载并安装更新？</string>
+  <string name="updater_store_gone_download">下载</string>
+
+  <!-- Install permission -->
+  <string name="updater_unknown_sources_title">允许安装更新</string>
+  <string name="updater_unknown_sources_message">Android 需要您授权，Vantage 才能安装更新。请在下一屏幕允许，然后返回此处。</string>
+  <string name="updater_unknown_sources_continue">继续</string>
+
+  <!-- Download notification -->
+  <string name="updater_notification_channel">Vantage 更新</string>
+  <string name="updater_notification_downloading">正在下载 Vantage 更新</string>
+
+  <!-- Failures -->
+  <string name="updater_failure_title">更新失败</string>
+  <string name="updater_failure_blocked">系统阻止了此次更新。</string>
+  <string name="updater_failure_incompatible">此更新与您的设备不兼容。</string>
+  <string name="updater_failure_conflict">此更新与已安装的应用冲突。其他来源可能负责 Vantage 的更新。</string>
+  <string name="updater_failure_invalid">无法验证此更新。</string>
+  <string name="updater_failure_storage">存储空间不足，无法安装更新。</string>
+  <string name="updater_failure_aborted">更新已取消或中断。</string>
+  <string name="updater_failure_verification_hint">部分设备仅允许安装来自已验证开发者的应用。了解更多：https://github.com/asystech-chen/Vantage-Android</string>
+  <string name="updater_try_again">重试</string>
+  <string name="updater_close">关闭</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vantage: keep the dark homepage background dark while light mode stays pure white. -->
+<resources>
+    <color name="vantage_home_gradient_start">#FF0A1A3B</color>
+    <color name="vantage_home_gradient_end">#FF293564</color>
+</resources>

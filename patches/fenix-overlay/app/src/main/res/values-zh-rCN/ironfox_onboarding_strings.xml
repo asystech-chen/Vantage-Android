@@ -15,4 +15,7 @@
     <string name="ironfox_onboarding_spoof_english">伪装语言设置为 en-US</string>
     <string name="ironfox_onboarding_spoof_english_caption">伪装设备的语言设置，增强隐私保护。</string>
     <string name="ironfox_onboarding_spoof_english_description">请求网页的英语 (en-US) 版本。这有助于减少浏览器的独特性，加强对指纹识别技术的保护，这种技术会根据用户的语言偏好来识别用户。</string>
+    <string name="ironfox_onboarding_updater_title">保持更新</string>
+    <string name="ironfox_onboarding_updater_description">Vantage 会检查新版本，并在安装前询问您。您可以随时在 Vantage 设置中关闭此功能。</string>
+    <string name="ironfox_onboarding_updater_switch">自动检查更新</string>
 </resources>

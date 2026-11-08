@@ -40,6 +40,9 @@
     <color name="vantage_on_background">#FFF5F4F8</color>
     <color name="vantage_outline">#FF4A4954</color>
     <color name="vantage_outline_variant">#FF35343D</color>
+    <!-- Vantage: pure white homepage background instead of IronFox's pink gradient. -->
+    <color name="vantage_home_gradient_start">#FFFFFFFF</color>
+    <color name="vantage_home_gradient_end">#FFFFFFFF</color>
 
     <style name="VantageTheme" parent="NormalTheme">
         <item name="colorPrimary">@color/vantage_primary</item>

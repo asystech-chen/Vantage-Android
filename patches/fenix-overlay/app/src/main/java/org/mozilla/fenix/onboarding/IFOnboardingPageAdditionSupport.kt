@@ -36,6 +36,9 @@ class IFOnboardingPageAdditionSupport(
     job = lifecycleOwner.lifecycleScope.launch(ioContext) {
       // Remove unwanted onboarding pages
       pagesToDisplay.removeIfPageNotReached(currentPageIndex)
+      // Vantage: DoH is configured by the "Increased protection" default instead of onboarding,
+      // so drop the DoH card (its protection-level and provider steps) from the flow.
+      pagesToDisplay.removeAll { it.type == OnboardingPageUiData.Type.IF_PREFERENCE_DOH }
       // Vantage: make sure the personalisation step is always part of the flow.
       pagesToDisplay.ensurePreferencesPage()
     }
