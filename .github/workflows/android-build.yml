@@ -138,11 +138,8 @@ jobs:
           # 监控状态：排队 → 编译中 → 结束（含 rc 与日志路径）
           state="build/.state/ci-build"
           mkdir -p "$(dirname "$state")"
-          case "$VARIANT" in
-            dev-*) build_log="build/logs/build-dev.log" ;;
-            release) build_log="build/logs/build-arm64.log" ;;
-            *) build_log="build/logs/build-$VARIANT.log" ;;
-          esac
+          # 以 tee 捕获的步骤日志为准，避免误读上一次构建遗留的旧日志
+          build_log="build/logs/ci-build-step.log"
           {
             echo "variant=$VARIANT"
             echo "run=${GITHUB_RUN_NUMBER}"
