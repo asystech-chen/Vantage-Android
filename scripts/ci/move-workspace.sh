@@ -145,6 +145,13 @@ else
     while IFS= read -r f; do
       /usr/bin/sed -i "s|${old_root}|${new_root}|g" "$f"
     done
+
+  # Gecko 等构建树的生成文件里同样是绝对路径，必须一起重写
+  echo '==> rewriting generated build paths'
+  /usr/bin/grep -rlZ --binary-files=without-match "${old_root}" \
+    "${new_root}/external/gecko/obj" "${new_root}/external/gecko/build" \
+    "${new_root}/external/gecko/local.properties" "${new_root}"/external/*/build 2> /dev/null |
+    /usr/bin/xargs -0 -r /usr/bin/sed -i "s|${old_root}|${new_root}|g"
 fi
 
 echo '完成。验证：'
