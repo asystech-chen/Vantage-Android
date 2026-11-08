@@ -79,6 +79,7 @@ fail=0
 # （缺失时 Gecko/IronFox Core/Android Components 三个项目都会在配置阶段失败）
 export IRONFOX_MACH_TARGET_ARCH="${IRONFOX_MACH_TARGET_ARCH:-arm64}"
 export IRONFOX_MACH_TARGET_PROJECT="${IRONFOX_MACH_TARGET_PROJECT:-gecko}"
+export IRONFOX_MACH_GECKO_STAGE="${IRONFOX_MACH_GECKO_STAGE:-build}"
 
 warm() {
   local name="$1"
@@ -99,9 +100,9 @@ warm() {
 # Gecko root project: covers the android export / geckoview plugin classpaths.
 warm 'gecko' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" help
 # IronFox Core (external/gecko/ironfox/android).
-warm 'ironfox-core' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" -p ironfox/android :core:tasks
+IRONFOX_MACH_TARGET_PROJECT='ironfox-core' warm 'ironfox-core' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" -p ironfox/android :core:tasks
 # Android Components (the project that previously missed lifecycle-livedata).
-warm 'android-components' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" \
+IRONFOX_MACH_TARGET_PROJECT='android-components' warm 'android-components' "${IRONFOX_GECKO}" "${IRONFOX_JDK_17_HOME}" \
   -p mobile/android/android-components help
 # UnifiedPush-AC.
 warm 'up-ac' "${IRONFOX_UP_AC}" "${IRONFOX_JDK_17_HOME}" help
