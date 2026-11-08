@@ -116,7 +116,6 @@ jobs:
           IRONFOX_OFFLINE: '0'
           http_proxy: http://127.0.0.1:7890
           https_proxy: http://127.0.0.1:7890
-          no_proxy: localhost,127.0.0.1,::1,maven.aliyun.com,mirrors.aliyun.com,registry.npmmirror.com
           NO_PROXY: localhost,127.0.0.1,::1,maven.aliyun.com,mirrors.aliyun.com,registry.npmmirror.com
         run: |
           set -euo pipefail
