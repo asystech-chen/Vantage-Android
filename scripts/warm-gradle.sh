@@ -75,6 +75,11 @@ init_dir="${IRONFOX_GRADLE_HOME}/init.d"
 
 fail=0
 
+# mozconfig 评估需要目标架构/项目变量；build.sh 会设置，预热阶段要自己给
+# （缺失时 Gecko/IronFox Core/Android Components 三个项目都会在配置阶段失败）
+export IRONFOX_MACH_TARGET_ARCH="${IRONFOX_MACH_TARGET_ARCH:-arm64}"
+export IRONFOX_MACH_TARGET_PROJECT="${IRONFOX_MACH_TARGET_PROJECT:-gecko}"
+
 warm() {
   local name="$1"
   local dir="$2"
