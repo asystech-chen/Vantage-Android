@@ -5,7 +5,7 @@
 
 set -uo pipefail
 
-script_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
+script_dir="$(cd -- "$(/usr/bin/dirname -- "$0")" && pwd)"
 if ! source "${script_dir}/env.sh" > /dev/null 2>&1; then
   echo "ERROR: failed to source ${script_dir}/env.sh" >&2
   exit 1

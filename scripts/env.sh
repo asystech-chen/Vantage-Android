@@ -71,7 +71,9 @@ function set_root() {
       local -r xargs="$(xargs)"
     fi
 
-    readonly IRONFOX_ROOT=$("${cat}" "${root_txt}" | "${xargs}")
+    # 不依赖 PATH 里的 cat/xargs/echo：受限 PATH（build/path）下的包装脚本
+    # 可能依赖未导出的变量，导致根目录被读成空。
+    readonly IRONFOX_ROOT="$(< "${root_txt}")"
 
     if [[ ! -d "${IRONFOX_ROOT}" ]]; then
       echo_red_text "ERROR: Unable to find a valid root directory: '${IRONFOX_ROOT}'!"
@@ -388,8 +390,8 @@ function clean_env_local() {
   # Ensure we have rm
   verify_exec "${IRONFOX_RM}" 'IRONFOX_RM' || return 1
 
-  if [[ -f "$(dirname $0)/env_local.sh" ]]; then
-    "${IRONFOX_RM}" -f "$(dirname $0)/env_local.sh"
+  if [[ -f "$(/usr/bin/dirname "$0")/env_local.sh" ]]; then
+    "${IRONFOX_RM}" -f "$(/usr/bin/dirname "$0")/env_local.sh"
   fi
 }
 
