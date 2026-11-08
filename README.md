@@ -1,15 +1,5 @@
 # Vantage（Android）
 
-<div align="center">
-
-<img src="assets/ironfox.png"
-  alt="Vantage"
-  height="200">
-
-</div>
-
-> ⚠️ 上方为 IronFox 占位图标，Vantage 品牌图标制作中，后续替换。
-
 **Vantage** 是一款面向 Android 的 Firefox 浏览器。我们的目标是做「**更好用的 Firefox**」——
 保留 Firefox 完整生态（扩展、账号同步、全语言支持），融合桌面版 Vantage 的隐私理念与品牌风格，
 为中文用户提供开箱即用的体验。
