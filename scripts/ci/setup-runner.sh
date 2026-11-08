@@ -131,7 +131,7 @@ fi
 run /usr/bin/install -d -o "${runner_user}" -g "${runner_user}" -m 0755 "${runner_dir}"
 run /usr/bin/install -d -o "${runner_user}" -g "${runner_user}" -m 0755 "${ci_data_root}"
 run /usr/bin/install -o root -g root -m 0666 /dev/null "${lock_file}"
-# ci 需要在 /home/chen 下可穿透（仅 x，不可列目录），否则 config.sh 无法执行
+# ci 需要在 /home/chen 下可穿透；注册时临时提为 rx（.NET 会校验目录可读）
 run /usr/bin/setfacl -m "u:${runner_user}:x" /home/chen
 
 # --- runner binaries ---------------------------------------------------------
@@ -154,6 +154,8 @@ else
     printf '[dry-run] runuser -u %s -- %s/config.sh --unattended --url %s --token <token> --name %s --labels %s --work _work --replace\n' \
       "${runner_user}" "${runner_dir}" "${repo_url}" "${runner_name}" "${runner_labels}"
   else
+    # .NET 运行时会校验整条路径的目录可读性；注册期间临时给 rx，完成后收回为 x
+    /usr/bin/setfacl -m "u:${runner_user}:rx" /home/chen
     token="$(/usr/bin/tr -d '[:space:]' < "${token_file}")"
     /usr/sbin/runuser -u "${runner_user}" -- /usr/bin/env HOME="${runner_home}" "${runner_dir}/config.sh" \
       --unattended \
@@ -163,6 +165,7 @@ else
       --labels "${runner_labels}" \
       --work '_work' \
       --replace || exit 1
+    /usr/bin/setfacl -m "u:${runner_user}:x" /home/chen
   fi
 fi
 
