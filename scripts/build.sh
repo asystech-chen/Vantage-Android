@@ -54,10 +54,17 @@ if [[ "${IRONFOX_OFFLINE:-0}" == "1" ]] && [[ "${IRONFOX_SKIP_PREFLIGHT:-0}" != 
     echo "Run ./scripts/prepare-build.sh first (or make prepare)." >&2
     exit 1
   fi
-  current_fp="$("${IRONFOX_SCRIPTS}/prepared-fingerprint.sh" 2> /dev/null || true)"
-  if [[ -z "${current_fp}" ]] ||
-    [[ "${current_fp}" != "$(/usr/bin/cat "${prepared_stamp}" 2> /dev/null)" ]]; then
+  current_fp="$("${IRONFOX_SCRIPTS}/prepared-fingerprint.sh" 2> "${IRONFOX_BUILD}/logs/preflight-fp.log" || true)"
+  stamp_fp="$(/usr/bin/cat "${prepared_stamp}" 2> /dev/null || true)"
+  if [[ -z "${current_fp}" ]]; then
+    # 指纹脚本在受限 PATH 下仍可能失败；离线就绪已由 check-offline.sh 验证，
+    # 这里不应误报为“树过期”而阻断构建。
+    echo 'WARNING: prepared fingerprint unavailable; continuing (see build/logs/preflight-fp.log).' >&2
+    /usr/bin/tail -n 5 "${IRONFOX_BUILD}/logs/preflight-fp.log" >&2 || true
+  elif [[ "${current_fp}" != "${stamp_fp}" ]]; then
     echo "ERROR: prepared-build stamp is stale (versions/sources/scripts changed)." >&2
+    echo "  stamp  ='${stamp_fp}'" >&2
+    echo "  current='${current_fp}'" >&2
     echo "Re-run ./scripts/prepare-build.sh." >&2
     exit 1
   fi

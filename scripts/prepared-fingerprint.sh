@@ -6,10 +6,14 @@
 set -uo pipefail
 
 script_dir="$(cd -- "$(/usr/bin/dirname -- "$0")" && pwd)"
-if ! source "${script_dir}/env.sh" > /dev/null 2>&1; then
+env_log="$(/usr/bin/mktemp)"
+if ! source "${script_dir}/env.sh" > "${env_log}" 2>&1; then
   echo "ERROR: failed to source ${script_dir}/env.sh" >&2
+  /bin/cat "${env_log}" >&2 || true
+  /usr/bin/rm -f "${env_log}"
   exit 1
 fi
+/usr/bin/rm -f "${env_log}"
 set +e
 set +u
 
