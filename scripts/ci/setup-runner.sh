@@ -131,14 +131,16 @@ fi
 run /usr/bin/install -d -o "${runner_user}" -g "${runner_user}" -m 0755 "${runner_dir}"
 run /usr/bin/install -d -o "${runner_user}" -g "${runner_user}" -m 0755 "${ci_data_root}"
 run /usr/bin/install -o root -g root -m 0666 /dev/null "${lock_file}"
+# ci 需要在 /home/chen 下可穿透（仅 x，不可列目录），否则 config.sh 无法执行
+run /usr/bin/setfacl -m "u:${runner_user}:x" /home/chen
 
 # --- runner binaries ---------------------------------------------------------
-if [[ -f "${runner_dir}/config.sh" ]]; then
+if [[ -f "${runner_dir}/config.sh" ]] && [[ -f "${runner_dir}/bin/Runner.Listener" ]]; then
   echo "runner 已解压，跳过: ${runner_dir}"
 else
   run /usr/bin/tar -xzf "${runner_tarball}" -C "${runner_dir}"
-  run /usr/bin/chown -R "${runner_user}:${runner_user}" "${runner_dir}"
 fi
+run /usr/bin/chown -R "${runner_user}:${runner_user}" "${runner_dir}"
 
 # --- registration ------------------------------------------------------------
 if [[ -f "${runner_dir}/.runner" ]]; then
@@ -176,7 +178,7 @@ Description=GitHub Actions Runner (${repo_url##*/}, ${runner_name})
 After=network-online.target
 
 [Service]
-ExecStart=${runner_dir}/runsvc.sh
+ExecStart=${runner_dir}/bin/runsvc.sh
 User=${runner_user}
 Group=${runner_user}
 WorkingDirectory=${runner_dir}
