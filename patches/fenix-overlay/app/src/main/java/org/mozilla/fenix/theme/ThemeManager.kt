@@ -44,8 +44,19 @@ abstract class ThemeManager {
         get() =
             when (currentTheme) {
                 BrowsingMode.Normal -> normalThemeResource
-                BrowsingMode.Private -> R.style.PrivateTheme
+                BrowsingMode.Private -> privateThemeResource
             }
+
+    /**
+     * Vantage: private browsing reuses the normal browsing theme.
+     *
+     * Upstream forces a dedicated (always dark, violet) private theme. Vantage keeps the
+     * private home page visually identical to the normal one, so the same palette is used
+     * for both modes and the white theme stays white in private tabs.
+     */
+    @get:StyleRes
+    private val privateThemeResource: Int
+        get() = normalThemeResource
 
     /**
      * Vantage: resolve the XML theme for normal browsing.
@@ -85,8 +96,10 @@ abstract class ThemeManager {
     fun applyStatusBarTheme(activity: Activity) = applyStatusBarTheme(activity.window, activity)
 
     private fun applyStatusBarTheme(window: Window, context: Context) {
+        // Vantage: private browsing shares the normal palette, so system bars are handled
+        // identically for both browsing modes.
         when (currentTheme) {
-            BrowsingMode.Normal -> {
+            BrowsingMode.Normal, BrowsingMode.Private -> {
                 when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
                     Configuration.UI_MODE_NIGHT_UNDEFINED, // We assume light here per Android doc's recommendation
                     Configuration.UI_MODE_NIGHT_NO -> {
@@ -123,11 +136,6 @@ abstract class ThemeManager {
                         updateNavigationBar(window, context)
                     }
                 }
-            }
-            BrowsingMode.Private -> {
-                clearLightSystemBars(window)
-                setStatusBarColor(window, context)
-                updateNavigationBar(window, context)
             }
         }
     }

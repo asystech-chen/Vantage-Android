@@ -110,4 +110,105 @@
         <item name="colorOutline">@color/vantage_light_outline</item>
         <item name="colorOutlineVariant">@color/vantage_light_outline_variant</item>
     </style>
+
+    <!--
+        Vantage: private-browsing theme that follows the branded dark palette.
+
+        Private mode is always dark, but when the user picked a Vantage theme
+        (dark or white) the branded palette is applied instead of Fenix's stock
+        violet private theme so the private surface stays consistent with the
+        rest of the browser. Every design-system attribute that the stock
+        PrivateThemeBase paints purple is overridden here with Vantage colours.
+    -->
+    <style name="VantagePrivateTheme" parent="PrivateThemeBase">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+
+        <!-- Material3 colour tokens -->
+        <item name="colorPrimary">@color/vantage_primary</item>
+        <item name="colorOnPrimary">@color/vantage_on_primary</item>
+        <item name="colorPrimaryContainer">@color/vantage_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/vantage_on_primary_container</item>
+        <item name="colorSecondary">@color/vantage_secondary</item>
+        <item name="colorOnSecondary">@color/vantage_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/vantage_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/vantage_on_secondary_container</item>
+        <item name="colorTertiary">@color/vantage_tertiary</item>
+        <item name="colorOnTertiary">@color/vantage_on_primary</item>
+        <item name="colorTertiaryContainer">@color/vantage_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/vantage_on_tertiary_container</item>
+        <item name="android:colorBackground">@color/vantage_background</item>
+        <item name="android:windowBackground">@color/vantage_background</item>
+        <item name="colorSurface">@color/vantage_surface</item>
+        <item name="colorOnSurface">@color/vantage_on_surface</item>
+        <item name="colorOnBackground">@color/vantage_on_background</item>
+        <item name="colorSurfaceVariant">@color/vantage_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/vantage_on_surface_variant</item>
+        <item name="colorSurfaceContainerLowest">@color/vantage_surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/vantage_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/vantage_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/vantage_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/vantage_surface_container_highest</item>
+        <item name="colorSurfaceContainerSelected">@color/vantage_surface_container_selected</item>
+        <item name="colorOutline">@color/vantage_outline</item>
+        <item name="colorOutlineVariant">@color/vantage_outline_variant</item>
+
+        <!-- Controls -->
+        <item name="colorAccent">@color/vantage_primary</item>
+        <item name="android:colorAccent">@color/vantage_primary</item>
+        <item name="colorControlActivated">@color/vantage_primary</item>
+        <item name="android:colorControlActivated">@color/vantage_primary</item>
+        <item name="colorControlNormal">@color/vantage_on_surface</item>
+        <item name="android:colorControlNormal">@color/vantage_on_surface</item>
+        <item name="android:listChoiceIndicatorSingle">@drawable/vantage_radiobutton</item>
+        <item name="android:textColorLink">@color/vantage_primary</item>
+
+        <!-- Design-system layers (cards, menus, dialogs, search) -->
+        <item name="layer2">@color/vantage_surface_container</item>
+        <item name="layer3">@color/vantage_surface_container_high</item>
+
+        <!-- Accent family (was violet in the stock private theme) -->
+        <item name="accent">@color/vantage_primary</item>
+        <item name="accentBright">@color/vantage_secondary</item>
+        <item name="accentHighContrast">@color/vantage_secondary</item>
+        <item name="neutral">@color/vantage_on_surface</item>
+        <item name="neutralFaded">@color/vantage_on_surface_variant</item>
+        <item name="accentUsedOnDarkBackground">@color/vantage_primary</item>
+
+        <!-- Toolbar / tab strip chrome -->
+        <item name="toolbarStartGradient">@color/vantage_surface</item>
+        <item name="toolbarCenterGradient">@color/vantage_surface</item>
+        <item name="toolbarEndGradient">@color/vantage_surface</item>
+        <item name="fillLinkFromClipboard">@color/vantage_secondary</item>
+        <item name="addOnPrivateBrowsingExteriorCircleBackground">@color/vantage_primary</item>
+        <item name="awesomeBarIndicatorColor">@color/vantage_secondary</item>
+        <item name="awesomeBarIndicatorBookmarkColor">@color/vantage_primary</item>
+        <item name="selectPromptHeaderTextColor">@color/vantage_primary</item>
+
+        <!-- Text / icon on colour surfaces -->
+        <item name="textOnColorPrimary">@color/vantage_on_primary</item>
+        <item name="textActionPrimaryDisabled">@color/vantage_on_surface_variant</item>
+        <item name="iconOnColor">@color/vantage_on_primary</item>
+        <item name="actionPrimaryDisabled">@color/vantage_outline</item>
+
+        <!-- Shared widget colours -->
+        <item name="mozac_primary_text_color">@color/vantage_on_surface</item>
+        <item name="mozac_caption_text_color">@color/vantage_on_surface_variant</item>
+        <item name="mozac_widget_favicon_background_color">@color/vantage_surface_container</item>
+        <item name="mozac_widget_favicon_border_color">@color/vantage_outline_variant</item>
+        <item name="mozacPromptLoginEditTextCursorColor">@color/vantage_primary</item>
+
+        <!-- Private-mode identity: use the normal (white) wordmark/logo and the
+             Vantage blue -> teal bottom bar gradient instead of the stock
+             purple private assets. -->
+        <item name="fenixLogo">@drawable/ic_logo_wordmark_normal</item>
+        <item name="fenixWordmarkText">@drawable/ic_wordmark_text_normal</item>
+        <item name="fenixWordmarkLogo">@drawable/ic_wordmark_logo</item>
+        <item name="bottomBarBackground">@drawable/private_home_bottom_bar_background_gradient</item>
+        <item name="bottomBarBackgroundTop">@drawable/private_home_bottom_bar_background_gradient_top</item>
+        <item name="mozac_ic_private_mode_circle_fill_background_color">@color/vantage_primary</item>
+        <item name="mozac_ic_private_mode_circle_fill_icon_color">@color/vantage_on_primary</item>
+
+        <item name="tabCounterTintColor">?attr/colorOnSurface</item>
+    </style>
 </resources>

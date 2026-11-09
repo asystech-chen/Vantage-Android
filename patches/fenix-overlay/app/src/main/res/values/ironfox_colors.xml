@@ -10,4 +10,10 @@
   <color name="vantage_accent_secondary">#22d3ee</color>
   <!-- Splash backdrop, matches the theme background so the orb sits on theme colour. -->
   <color name="vantage_splash_background">#F7F9FC</color>
+
+  <!-- Vantage: 48dp private-mode circle-fill icon recoloured from violet to brand blue.
+       (The 72dp drawable is overridden in res/drawable/ to use theme attributes instead;
+       the 20/24dp variants use @color/mozac_ui_icons_fill, not private-specific colours.) -->
+  <color name="mozac_ic_private_mode_circle_fill_48_background_color">@color/vantage_primary</color>
+  <color name="mozac_ic_private_mode_circle_fill_48_icon_color">@color/vantage_on_primary</color>
 </resources>

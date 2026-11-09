@@ -32,7 +32,6 @@ import mozilla.components.lib.state.ext.flowScoped
 import mozilla.components.support.base.feature.LifecycleAwareFeature
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.usesVantageChrome
-import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.utils.Settings
@@ -118,10 +117,9 @@ class HomepageEdgeToEdgeFeature(
     }
 
     private fun setBackground(background: Background) {
-        val isPrivateMode = browsingModeManager.mode == BrowsingMode.Private
-        activity.window?.setBackgroundDrawableResource(
-            if (isPrivateMode) R.color.fx_mobile_private_surface else background.resourceId
-        )
+        // Vantage: private browsing uses the same window background as normal browsing, so the
+        // white/dark theme keeps its colour instead of switching to the stock purple surface.
+        activity.window?.setBackgroundDrawableResource(background.resourceId)
     }
 
     /**
@@ -186,11 +184,10 @@ class HomepageEdgeToEdgeFeature(
      * wallpaper does not show through above the top bar. Falls back to the upstream colour otherwise.
      */
     private fun applyStatusBarBackground(view: View, toolbarState: BrowserToolbarState) {
-        val isPrivateMode = browsingModeManager.mode == BrowsingMode.Private
         val isNightMode =
             (activity.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                 Configuration.UI_MODE_NIGHT_YES
-        val useVantageChrome = !isPrivateMode && usesVantageChrome(activity)
+        val useVantageChrome = usesVantageChrome(activity)
 
         if (!useVantageChrome) {
             view.setBackgroundColor(getStatusBarColor(settings, toolbarState))
@@ -215,14 +212,12 @@ class HomepageEdgeToEdgeFeature(
 
     private fun getStatusBarColor(settings: Settings, toolbarState: BrowserToolbarState): Int {
         val shouldShow = !settings.shouldUseBottomToolbar || toolbarState.isShowingResultsScreen
-        val isPrivateMode = browsingModeManager.mode == BrowsingMode.Private
 
+        // Vantage: private browsing is treated like normal browsing for the status bar chrome.
         return when {
             !shouldShow -> Color.TRANSPARENT
-            isPrivateMode -> ContextCompat.getColor(activity, R.color.fx_mobile_private_surface)
             !settings.isTabStripEnabled &&
                 toolbarState.isShowingResultsScreen &&
-                browsingModeManager.mode == BrowsingMode.Normal &&
                 (settings.enableHomepageTrendingRecentSearch ||
                     toolbarState.editState.query.current.isNotEmpty() ||
                     toolbarState.editState.queryWasPrefilled) ->

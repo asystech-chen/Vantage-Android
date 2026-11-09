@@ -182,7 +182,15 @@ internal fun Homepage(
                 }
 
                 is HeaderState.Experimental.Private -> {
-                    ExperimentalPrivateHomepageHeader(alwaysUsePB = components.settings.ironfox.alwaysUsePrivateBrowsing, onHomeTapped = { browsingModeChanged(BrowsingMode.Normal) })
+                    // Vantage: private browsing shows the same homepage header as normal mode.
+                    HomepageHeader(
+                        browsingMode = BrowsingMode.Private,
+                        showStoriesButton = false,
+                        alwaysUsePB = components.settings.ironfox.alwaysUsePrivateBrowsing,
+                        browsingModeChanged = browsingModeChanged,
+                        onStoriesTapped = { interactor.onDiscoverMoreClicked() },
+                        logoSpacerHeight = vantageScreenHeight * 0.28f,
+                    )
                 }
 
                 is HeaderState.Normal -> {
@@ -192,18 +200,13 @@ internal fun Homepage(
                         alwaysUsePB = components.settings.ironfox.alwaysUsePrivateBrowsing,
                         browsingModeChanged = browsingModeChanged,
                         onStoriesTapped = { interactor.onDiscoverMoreClicked() },
-                        logoSpacerHeight =
-                            if (state is HomepageState.Normal && !state.browsingMode.isPrivate) {
-                                vantageScreenHeight * 0.28f
-                            } else {
-                                0.dp
-                            },
+                        logoSpacerHeight = vantageScreenHeight * 0.28f,
                     )
                 }
             }
 
-            // Vantage: extra functional search bar below the wordmark.
-            if (state is HomepageState.Normal && !state.browsingMode.isPrivate) {
+            // Vantage: extra functional search bar below the wordmark, shown in private mode too.
+            if (state is HomepageState.Normal || state is HomepageState.Private) {
                 Box(
                     modifier =
                         Modifier.fillMaxWidth()
@@ -218,7 +221,8 @@ internal fun Homepage(
                 with(state) {
                     when (this) {
                         is HomepageState.Private -> {
-                            PrivateBrowsingDescription(onLearnMoreClick = interactor::onLearnMoreClicked)
+                            // Vantage: private tabs reuse the normal homepage layout; the stock
+                            // "no traces left on this device" card is intentionally not shown.
                         }
 
                         is HomepageState.Normal -> {

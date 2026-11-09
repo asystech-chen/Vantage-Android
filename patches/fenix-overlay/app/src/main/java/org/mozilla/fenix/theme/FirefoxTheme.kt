@@ -40,25 +40,33 @@ fun FirefoxTheme(
     theme: Theme = getThemeProvider().provideTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colors: AcornColors =
-        when (theme) {
-            Theme.Light -> lightColorPalette
-            Theme.Dark -> darkColorPalette
-            Theme.Oled -> oledColorPalette
-            Theme.Private -> privateColorPalette
-        }
-
     // Vantage: the branded palette is used when Vantage is selected explicitly, or when the
     // device theme is followed and the system is currently dark.
     val useVantageTheme = theme == Theme.Dark && usesVantageDarkPalette(LocalContext.current)
     // Vantage: the light theme is also branded (blue actions, blue -> teal tab strip), but only
     // when the brand's white theme is selected or the device theme is followed.
     val useVantageLightTheme = theme == Theme.Light && usesVantageLightPalette(LocalContext.current)
+    // Vantage: private browsing is always dark, but it should follow the branded palette when
+    // the user picked a Vantage theme (dark or white) so the private surface stays consistent.
+    val useVantagePrivateTheme =
+        theme == Theme.Private &&
+            (usesVantageDarkPalette(LocalContext.current) ||
+                usesVantageLightPalette(LocalContext.current))
+
+    val colors: AcornColors =
+        when (theme) {
+            Theme.Light -> lightColorPalette
+            Theme.Dark -> darkColorPalette
+            Theme.Oled -> oledColorPalette
+            Theme.Private ->
+                if (useVantagePrivateTheme) darkColorPalette else privateColorPalette
+        }
 
     val colorScheme: ColorScheme =
         when {
             useVantageTheme -> vantageDarkColorScheme()
             useVantageLightTheme -> vantageLightColorScheme()
+            useVantagePrivateTheme -> vantageDarkColorScheme()
             else ->
                 when (theme) {
                     Theme.Light -> acornLightColorScheme()
@@ -72,6 +80,7 @@ fun FirefoxTheme(
         when {
             useVantageTheme -> vantageAcornGradientScheme
             useVantageLightTheme -> vantageLightAcornGradientScheme
+            useVantagePrivateTheme -> vantageAcornGradientScheme
             else ->
                 when (theme) {
                     Theme.Light -> lightAcornGradientScheme

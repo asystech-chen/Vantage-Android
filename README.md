@@ -207,6 +207,10 @@ Linter 配置位于 `.shellcheckrc` _（检查）_ 和 `.editorconfig` _（格�
 - `fenix-disable-network-connectivity-monitoring.patch`、`gecko-disable-network-id.patch`、`gecko-prevent-fingerprinting-via-chrome-resources.patch`、`geckoview-ironfox-settings-support-spoof-english.patch` 和 `glean-noop.patch` 改编自 [Tor Project](https://www.torproject.org/)。参见 [`LICENSE`](https://gitlab.torproject.org/tpo/core/tor/-/raw/HEAD/LICENSE)
 - 壁纸集取自 [Fennec F-Droid](https://gitlab.com/relan/fennecmedia)，可在 [Unsplash license](https://gitlab.com/relan/fennecmedia#licenses) 下使用
 
+## 致谢
+
+Vantage 基于 [IronFox](https://ironfoxoss.org/) 构建。感谢 IronFox 开源社区的贡献——IronFox 是 [Mull](https://web.archive.org/web/20250113132510/https://divestos.org/pages/our_apps#mull) 的继任者，为 Firefox Android 提供了坚实的隐私保护基线。Vantage 在 IronFox 之上进行品牌化与功能定制，没有 IronFox 上游的持续维护，本项目无法存在。
+
 ## 声明
 
 Mozilla Firefox 是 Mozilla 基金会的商标。

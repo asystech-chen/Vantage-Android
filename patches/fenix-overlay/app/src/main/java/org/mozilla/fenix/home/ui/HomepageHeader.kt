@@ -43,6 +43,9 @@ import org.mozilla.fenix.home.ui.HomepageTestTag.PRIVATE_BROWSING_HOMEPAGE_BUTTO
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.wallpapers.WallpaperTheme
 
+/** Vantage brand blue used for the private-browsing mask icon in the homepage header. */
+private val VANTAGE_PRIVATE_ICON_BLUE = Color(0xFF4A8FF7)
+
 /**
  * Header for the homepage.
  *
@@ -63,18 +66,13 @@ fun HomepageHeader(
     onStoriesTapped: () -> Unit,
     logoSpacerHeight: Dp = 0.dp,
 ) {
-    // In normal mode the wordmark and private-browsing button follow the wallpaper text color; in
-    // private mode there is no wallpaper, so the wordmark is untinted and the button uses its
-    // dedicated private-mode icon color.
-    val wordmarkTextColor =
-        if (browsingMode.isPrivate) {
-            null
-        } else {
-            WallpaperTheme.onWallpaper
-        }
+    // Vantage: private browsing keeps the same homepage appearance as normal mode, so the
+    // wordmark and the browsing-mode button both follow the wallpaper text color. In private
+    // mode the mask icon is tinted brand blue so it reads as the Vantage accent.
+    val wordmarkTextColor = WallpaperTheme.onWallpaper
     val privateBrowsingButtonColor =
         if (browsingMode.isPrivate) {
-            colorResource(getAttr(iconsR.attr.mozac_ic_private_mode_circle_fill_icon_color))
+            VANTAGE_PRIVATE_ICON_BLUE
         } else {
             WallpaperTheme.onWallpaper
         }
@@ -109,14 +107,13 @@ fun HomepageHeader(
             }
         }
 
-        if (!browsingMode.isPrivate) {
-            // Vantage: keep the private-browsing button pinned to the top of the page and only
-            // push the wordmark + search block down.
-            if (logoSpacerHeight > 0.dp) {
-                Spacer(modifier = Modifier.height(logoSpacerHeight))
-            }
-            WordmarkAndLogo(wordmarkTextColor = wordmarkTextColor)
+        // Vantage: keep the browsing-mode button pinned to the top of the page and only push the
+        // wordmark + search block down. This applies to private mode as well, so both modes share
+        // the exact same layout.
+        if (logoSpacerHeight > 0.dp) {
+            Spacer(modifier = Modifier.height(logoSpacerHeight))
         }
+        WordmarkAndLogo(wordmarkTextColor = wordmarkTextColor)
     }
 }
 

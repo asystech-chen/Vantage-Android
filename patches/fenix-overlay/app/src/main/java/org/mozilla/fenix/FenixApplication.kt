@@ -51,7 +51,6 @@ import mozilla.components.browser.state.state.selectedOrDefaultPrivateSearchEngi
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.browser.storage.sync.GlobalPlacesDependencyProvider
 import mozilla.components.compose.base.theme.Theme
-import mozilla.components.compose.base.theme.Theme.Private
 import mozilla.components.concept.ai.controls.isEnabled
 import mozilla.components.concept.base.crash.Breadcrumb
 import mozilla.components.concept.engine.webextension.WebExtension
@@ -1366,11 +1365,10 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
 
     @Composable
     override fun provideTheme(): Theme {
-        return if (components.appStore.state.mode.isPrivate) {
-            Private
-        } else {
-            DefaultThemeProvider.provideTheme()
-        }
+        // Vantage: private browsing reuses the normal theme palette so private tabs look the
+        // same as normal tabs (no violet/dark private theme). Browsing data isolation is
+        // unchanged; this only affects colours.
+        return DefaultThemeProvider.provideTheme()
     }
 
     /**

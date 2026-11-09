@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Vantage: private bottom bar top gradient recoloured from purple to the brand blue -> teal. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item>
+    <shape>
+        <gradient
+            android:angle="45"
+            android:startColor="#16406E"
+            android:centerColor="#1D3C8F"
+            android:endColor="#166B47"
+            android:type="linear" />
+    </shape>
+</item>
+<item android:top="-2dp" android:left="-2dp" android:right="-2dp">
+    <shape>
+        <stroke android:width="1dp" android:color="#1AFFFFFF" />
+    </shape>
+</item>
+</layer-list>

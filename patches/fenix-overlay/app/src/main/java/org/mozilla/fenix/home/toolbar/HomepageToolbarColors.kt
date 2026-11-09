@@ -31,14 +31,9 @@ fun homepageToolbarColors(
 ): ColorScheme {
     val colors = MaterialTheme.colorScheme
 
-    return when {
-        isPrivateMode ->
-            colors.copy(outlineVariant = colorResource(R.color.homepage_tab_edge_to_edge_private_toolbar_outline))
-
-        shouldUseEdgeToEdgeColors -> colors.withEdgeToEdgeToolbarColors()
-
-        else -> colors
-    }
+    // Vantage: private browsing shares the normal palette, so no private-specific outline is
+    // applied. isPrivateMode is kept in the signature for call-site compatibility.
+    return if (shouldUseEdgeToEdgeColors) colors.withEdgeToEdgeToolbarColors() else colors
 }
 
 /**
