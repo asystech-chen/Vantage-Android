@@ -1009,6 +1009,14 @@ function prep_fenix() {
   fi
   "${IRONFOX_CP}" -rf "${IRONFOX_TEMP}/fenix/app/src/main/res/" "${IRONFOX_FENIX}/app/src/main/res/" || return 1
 
+  # Re-apply the Fenix overlay from the repo on every build. Without this, dev/
+  ## rebuild-fenix builds keep whatever overlay the last prebuild applied (and
+  ### the res copy above reverts res to the prebuild snapshot), so overlay
+  #### changes silently disappear until a full prebuild is run again.
+  if [[ -d "${IRONFOX_FENIX_OVERLAY}" ]]; then
+    "${IRONFOX_CP}" -rf "${IRONFOX_FENIX_OVERLAY}/." "${IRONFOX_FENIX}/" || return 1
+  fi
+
   # Set-up the app ID, version name and version code
   if [[ "${IRONFOX_RELEASE}" == 1 ]]; then
     local -r fenix_app_id_suffix='vantage'
