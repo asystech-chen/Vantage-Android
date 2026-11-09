@@ -46,12 +46,38 @@ jobs:
       IRONFOX_OFFLINE: '1'
       KEYSTORE_DIR: /home/chen/.vantage-android-keys
     steps:
-      - name: 检查触发者
+      - name: 检查触发者与权限
+        env:
+          ACTOR: ${{ github.actor }}
+          VARIANT: ${{ inputs.variant }}
+          SIGN: ${{ inputs.sign }}
+          PUBLISH: ${{ inputs.publish }}
         run: |
-          if [ "${{ github.actor }}" != "asystech-chen" ]; then
-            echo "❌ 仅仓库所有者可触发构建"
-            exit 1
-          fi
+          set -euo pipefail
+          case "$ACTOR" in
+            asystech-chen)
+              echo "触发者 $ACTOR：所有者，全部权限"
+              ;;
+            mohengbkq)
+              if [ "$VARIANT" = "release" ]; then
+                echo "❌ $ACTOR 无权执行 release 构建"
+                exit 1
+              fi
+              if [ "$SIGN" = "true" ]; then
+                echo "❌ $ACTOR 无权使用发布签名（sign=true）"
+                exit 1
+              fi
+              if [ "$PUBLISH" = "true" ]; then
+                echo "❌ $ACTOR 无权发布 Release（publish=true）"
+                exit 1
+              fi
+              echo "触发者 $ACTOR：仅 dev 构建（发布签名关闭、不发布）"
+              ;;
+            *)
+              echo "❌ 无权触发构建：$ACTOR"
+              exit 1
+              ;;
+          esac
 
       - name: 检查工作区
         run: |
