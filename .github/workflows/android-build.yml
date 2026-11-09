@@ -183,8 +183,8 @@ jobs:
           }
           trap finish EXIT
 
-          # 与桌面 CI / 本地构建互斥；排队时状态保持 queued
-          exec 9>/run/lock/ci-build.lock
+          # 与桌面 CI 共用同一把构建锁（/home/ci 对两个 runner 都可写）；排队时状态保持 queued
+          exec 9>/home/ci/.vantage-ci-build.lock
           flock -w 43200 9
           echo "phase=running" >> "$state"
           echo "started=$(date +%s)" >> "$state"
