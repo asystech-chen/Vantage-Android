@@ -2,4 +2,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
   <!-- 浏览器菜单中打开 ASYS 搜索起始页的入口。 -->
   <string name="browser_menu_vantage_start_page">ASYS 搜索起始页</string>
+  <!-- Vantage：引导页欢迎标题（上游字符串带 IronFox 副标）。 -->
+  <string name="vantage_onboarding_welcome">欢迎使用 Vantage</string>
+  <!-- Vantage：关于页内容；%1$s 为应用名。声明 IronFox 贡献。 -->
+  <string name="vantage_about_content">%1$s 由 ASYS科技和墨衡倾力打造。基于 IronFox 浏览器构建，并感谢 IronFox 开源社区的贡献。</string>
 </resources>

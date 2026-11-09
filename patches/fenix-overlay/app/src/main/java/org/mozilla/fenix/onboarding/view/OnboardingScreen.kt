@@ -739,7 +739,8 @@ private fun defaultPreviewPages() =
 private fun touPageUIData() =
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.TERMS_OF_SERVICE,
-        title = stringResource(id = R.string.onboarding_welcome_to_firefox),
+        // Vantage: use our own welcome string so the upstream IronFox byline is gone.
+        title = stringResource(id = R.string.vantage_onboarding_welcome),
         description = "",
         termsOfService =
             OnboardingTermsOfService(

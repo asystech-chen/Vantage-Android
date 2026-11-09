@@ -7,4 +7,8 @@
   <string name="preference_vantage_theme">Vantage (blue/teal)</string>
   <string name="pref_key_vantage_shortcut_slot2" translatable="false">vantage_shortcut_slot2</string>
   <string name="pref_key_vantage_shortcut_slot3" translatable="false">vantage_shortcut_slot3</string>
+  <!-- Vantage: onboarding welcome title (upstream string carried an IronFox byline). -->
+  <string name="vantage_onboarding_welcome">Welcome to Vantage</string>
+  <!-- Vantage: About page content; %1$s is the app name. Declares IronFox attribution. -->
+  <string name="vantage_about_content">%1$s is produced by Vantage. Built on the IronFox browser, with contributions from the IronFox open-source community.</string>
 </resources>
