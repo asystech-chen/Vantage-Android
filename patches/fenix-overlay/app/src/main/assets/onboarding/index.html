@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Vantage 新用户引导</title>
+<style>
+  :root {
+    --page: #1c1b22;
+    --card: #23222b;
+    --card-2: #2b2a33;
+    --line: #35343d;
+    --text: #f5f4f8;
+    --muted: #a9a7b4;
+    --blue: #4a8ff7;
+    --teal: #22c7a6;
+    --blue-soft: rgba(74, 143, 247, 0.14);
+    --row-bg: #26252e;
+    --name: #e9e8ef;
+    --check: #d7d5e0;
+    --btn-bg: #2b2a33;
+    --btn-text: #f5f4f8;
+    --track: #4a4954;
+  }
+  html[data-mode="light"] {
+    --page: #f0f1f6;
+    --card: #ffffff;
+    --card-2: #f2f2f7;
+    --line: #dcdce6;
+    --text: #1c1b22;
+    --muted: #5f5e6b;
+    --blue-soft: rgba(74, 143, 247, 0.12);
+    --row-bg: #f5f5fa;
+    --name: #1c1b22;
+    --check: #3a3945;
+    --btn-bg: #e8e8ef;
+    --btn-text: #1c1b22;
+    --track: #c3c3ce;
+  }
+  html[data-mode="light"] .seg { background: #ececf1; }
+  html[data-mode="light"] .seg button { color: #5f5e6b; }
+  html[data-mode="light"] .row.note,
+  html[data-mode="light"] .row.flat { background: transparent; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0; height: 100vh; min-height: 100vh;
+    background: var(--page); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+    font-size: 14px; line-height: 1.55;
+    overflow: hidden;
+  }
+  .wrap {
+    height: 100%; min-height: 100%; display: flex;
+    align-items: center; justify-content: center;
+    padding: calc(16px + var(--inset-top, 0px)) 16px calc(16px + var(--inset-bottom, 0px));
+  }
+  .card {
+    width: 100%; max-width: 460px; max-height: 100%;
+    display: flex; flex-direction: column;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; overflow: hidden; position: relative;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, .28);
+  }
+  .card::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--teal));
+  }
+  .head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 14px; border-bottom: 1px solid var(--line);
+    flex: 0 0 auto;
+  }
+  .mark { width: 20px; height: 20px; flex: 0 0 auto; }
+  .brand { font-weight: 700; font-size: 14px; }
+  .tag {
+    font-size: 11px; color: var(--blue); background: var(--blue-soft);
+    border-radius: 999px; padding: 1px 8px; margin-left: 2px;
+  }
+  .skip {
+    margin-left: auto; color: var(--muted); background: none; border: 0;
+    font-size: 13px; padding: 6px 4px; cursor: pointer;
+  }
+  .body { flex: 1; min-height: 0; overflow-y: auto; padding: 20px 18px 8px; }
+  .step { display: none; }
+  .step.active { display: block; animation: fade .18s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--blue); background: var(--blue-soft);
+    border-radius: 999px; padding: 3px 10px; font-size: 11px; margin-bottom: 10px;
+  }
+  .pill::before {
+    content: ""; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--blue); display: inline-block;
+  }
+  h1 { font-size: 22px; line-height: 1.25; margin: 0 0 8px; font-weight: 700; letter-spacing: .2px; }
+  .lead { color: var(--muted); margin: 0 0 18px; font-size: 13px; }
+
+  .hero { display: flex; align-items: center; gap: 18px; }
+  .hero-copy { flex: 1; min-width: 0; }
+  .hero-mark { width: 92px; height: 92px; flex: 0 0 auto; }
+
+  .checks { list-style: none; margin: 0; padding: 0; }
+  .checks li { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; color: var(--check); font-size: 13px; }
+  .checks svg { flex: 0 0 auto; margin-top: 3px; }
+
+  .row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 12px; border: 1px solid var(--line);
+    border-radius: 9px; background: var(--row-bg); margin-bottom: 8px;
+  }
+  .row .copy { flex: 1; min-width: 0; }
+  .row .name { font-size: 13px; font-weight: 600; color: var(--name); }
+  .row .desc { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+  .row.flat { background: transparent; border: 0; padding: 6px 2px; }
+  .row.note { background: transparent; border-color: var(--line); border-style: dashed; }
+  .row.note .desc { margin: 0; }
+
+  .switch { position: relative; width: 42px; height: 24px; flex: 0 0 auto; }
+  .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; }
+  .switch .track {
+    position: absolute; inset: 0; border-radius: 999px; background: var(--track);
+    transition: background .16s ease;
+  }
+  .switch .knob {
+    position: absolute; top: 3px; left: 3px; width: 18px; height: 18px;
+    border-radius: 50%; background: #fff; transition: transform .16s ease;
+  }
+  .switch input:checked + .track { background: var(--blue); }
+  .switch input:checked + .track + .knob { transform: translateX(18px); }
+
+  .seg {
+    display: inline-flex; flex: 0 0 auto; border: 1px solid var(--line);
+    border-radius: 8px; overflow: hidden; background: var(--row-bg);
+  }
+  .seg button {
+    border: 0; background: transparent; color: var(--muted);
+    font-size: 12px; padding: 6px 10px; cursor: pointer;
+  }
+  .seg button.on { background: var(--blue); color: #fff; }
+
+  .btn {
+    border: 1px solid var(--line); background: var(--btn-bg); color: var(--btn-text);
+    border-radius: 8px; padding: 8px 12px; font-size: 12.5px; cursor: pointer;
+    flex: 0 0 auto;
+  }
+  .btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+  .btn:active { opacity: .85; }
+
+  .foot {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--line);
+  }
+  .dots { display: flex; gap: 6px; flex: 1; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--track); transition: background .15s; }
+  .dot.on { background: var(--blue); }
+  .foot .btn { min-width: 68px; }
+  .foot .btn[hidden] { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="card">
+    <header class="head">
+      <img class="mark" src="vantage-logo.png" alt="" />
+      <span class="brand">Vantage</span>
+      <span class="tag">新用户引导</span>
+      <button class="skip" id="skip">跳过</button>
+    </header>
+
+    <div class="body" id="body">
+      <!-- 1 欢迎 -->
+      <div class="step active" data-step="0">
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="pill">欢迎</span>
+            <h1>欢迎使用 Vantage</h1>
+            <p class="lead">先花一分钟，把外观和常用功能设好，所有选项之后都能改。</p>
+            <ul class="checks">
+              <li><svg width="13" height="13" viewBox="0 0 16 16"><path d="M2.5 8.5l3.2 3.2 7.8-7.8" fill="none" stroke="#4A8FF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>基于 Firefox ESR，更新稳定</li>
+              <li><svg width="13" height="13" viewBox="0 0 16 16"><path d="M2.5 8.5l3.2 3.2 7.8-7.8" fill="none" stroke="#4A8FF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>默认开启跟踪保护，不收集数据</li>
+              <li><svg width="13" height="13" viewBox="0 0 16 16"><path d="M2.5 8.5l3.2 3.2 7.8-7.8" fill="none" stroke="#4A8FF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>设置随时可改</li>
+            </ul>
+          </div>
+          <img class="hero-mark" src="vantage-logo.png" alt="" />
+        </div>
+      </div>
+
+      <!-- 2 外观 -->
+      <div class="step" data-step="1">
+        <span class="pill">外观</span>
+        <h1>先让它看起来顺眼</h1>
+        <p class="lead">选一套自己喜欢的样式，所有选项都能随时改。</p>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">Vantage 主题</div>
+            <div class="desc">深蓝配色、圆角标签栏，和桌面版使用同一套颜色。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="theme" checked />
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">配色模式</div>
+            <div class="desc">作用于界面和浏览器的默认配色。</div>
+          </div>
+          <div class="seg" id="mode">
+            <button data-mode="system" class="on">跟随系统</button>
+            <button data-mode="light">浅色</button>
+            <button data-mode="dark">深色</button>
+          </div>
+        </div>
+
+        <div class="row note">
+          <div class="copy"><div class="desc">应用第三方主题时，Vantage 会自动让位，不会覆盖你的主题。</div></div>
+        </div>
+      </div>
+
+      <!-- 3 自定义 -->
+      <div class="step" data-step="2">
+        <span class="pill">自定义</span>
+        <h1>自定义你的旅途</h1>
+        <p class="lead">挑几个顺手的设置，这里只放常用的，更多在设置页面里。</p>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">标签自动休眠</div>
+            <div class="desc">一段时间没看的标签会自动收起，省电也省内存。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="inactiveTabs" checked />
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">自动检查更新</div>
+            <div class="desc">启动时检查 Vantage 新版本，只提示，不自动安装。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="updater" checked />
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="row note">
+          <div class="copy"><div class="desc">完整选项都在 设置 → Vantage，之后随时可以改。</div></div>
+        </div>
+      </div>
+
+      <!-- 4 隐私 -->
+      <div class="step" data-step="3">
+        <span class="pill">隐私</span>
+        <h1>隐私默认已经调好</h1>
+        <p class="lead">Vantage 默认使用严格跟踪保护，不需要你在级别之间选择。</p>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">严格保护（默认）</div>
+            <div class="desc">拦截已知跟踪器、指纹脚本和隐蔽挖矿脚本，多数站点无需额外设置。</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">自动屏蔽第三方跟踪器</div>
+            <div class="desc">在严格模式基础上拦截第三方跟踪 Cookie，可以单独为站点放行。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="strict" checked />
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">DNS over HTTPS (DoH)</div>
+            <div class="desc">加密 DNS 查询，默认供应商可用性不佳时删除更稳妥的 DNS 解析。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="doh" checked />
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="row note">
+          <div class="copy"><div class="desc">单个站点可临时关闭邮箱保护，直接对该网站免费放行。</div></div>
+        </div>
+      </div>
+
+      <!-- 5 扩展 -->
+      <div class="step" data-step="4">
+        <span class="pill">扩展</span>
+        <h1>扩展</h1>
+        <p class="lead">Vantage 支持安装扩展，全部来自官方的 AMO 扩展商店。</p>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">扩展商店</div>
+            <div class="desc">浏览并安装适用于 Android 的扩展。</div>
+          </div>
+          <button class="btn" id="addons">打开扩展商店</button>
+        </div>
+
+        <div class="row note">
+          <div class="copy"><div class="desc">扩展的安装、更新和停用都在扩展管理器里统一处理。</div></div>
+        </div>
+      </div>
+
+      <!-- 6 导入与默认 -->
+      <div class="step" data-step="5">
+        <span class="pill">导入与默认</span>
+        <h1>最后一件事</h1>
+        <p class="lead">把 Vantage 设为默认浏览器，点击链接时就会直接用它打开。</p>
+
+        <div class="row">
+          <div class="copy">
+            <div class="name">设为默认浏览器</div>
+            <div class="desc">之后在系统设置里随时可以改回来。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="defaultBrowser" />
+            <span class="track"></span><span class="knob"></span>
+          </label>
+        </div>
+
+        <div class="row note">
+          <div class="copy"><div class="desc">这项随时都能在 设置 → 默认浏览器 里重新操作。</div></div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="foot">
+      <div class="dots" id="dots"></div>
+      <button class="btn" id="back" hidden>返回</button>
+      <button class="btn primary" id="next">继续</button>
+    </footer>
+  </section>
+</div>
+
+<script>
+(function () {
+  var bridge = window.vantageOnboarding || null;
+  var state = {
+    theme: true,
+    colorMode: "system",
+    inactiveTabs: true,
+    updater: true,
+    strict: true,
+    doh: true,
+    defaultBrowser: false
+  };
+
+  var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+  var dotsBox = document.getElementById("dots");
+  var back = document.getElementById("back");
+  var next = document.getElementById("next");
+  var index = 0;
+
+  steps.forEach(function (_, i) {
+    var d = document.createElement("span");
+    d.className = "dot" + (i === 0 ? " on" : "");
+    dotsBox.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function safeCall(name, value) {
+    console.log("bridge call: " + name + "=" + (value === undefined ? "" : value));
+    if (!bridge) { console.warn("bridge missing"); return; }
+    if (typeof bridge[name] !== "function") { console.warn("bridge." + name + " not a function"); return; }
+    try {
+      // Zero-argument native methods must be called without args: passing `undefined`
+      // becomes `null` on the Android side and the bridge reports "Method not found".
+      if (value === undefined) bridge[name]();
+      else bridge[name](value);
+    } catch (e) { console.error("bridge." + name + " error: " + e); }
+  }
+
+  function applyColorMode(mode) {
+    var root = document.documentElement;
+    root.removeAttribute("data-mode");
+    if (mode === "light") root.setAttribute("data-mode", "light");
+    // Keep the system bars in sync with the preview so the theme covers the whole screen.
+    safeCall("setPageTheme", mode);
+  }
+
+  function render() {
+    steps.forEach(function (s, i) { s.classList.toggle("active", i === index); });
+    dots.forEach(function (d, i) { d.classList.toggle("on", i === index); });
+    back.hidden = index === 0;
+    next.textContent = index === steps.length - 1 ? "完成" : "继续";
+    document.getElementById("body").scrollTop = 0;
+  }
+
+  function syncControls() {
+    document.getElementById("theme").checked = state.theme;
+    document.getElementById("inactiveTabs").checked = state.inactiveTabs;
+    document.getElementById("updater").checked = state.updater;
+    document.getElementById("strict").checked = state.strict;
+    document.getElementById("doh").checked = state.doh;
+    document.getElementById("defaultBrowser").checked = !!state.defaultBrowser;
+    Array.prototype.forEach.call(document.querySelectorAll("#mode button"), function (b) {
+      b.classList.toggle("on", b.getAttribute("data-mode") === state.colorMode);
+    });
+    applyColorMode(state.colorMode);
+  }
+
+  function loadState() {
+    if (!bridge || typeof bridge.getState !== "function") return;
+    try {
+      var raw = bridge.getState();
+      var parsed = JSON.parse(raw || "{}");
+      Object.keys(parsed).forEach(function (k) {
+        if (k in state) state[k] = parsed[k];
+      });
+      syncControls();
+    } catch (e) {}
+  }
+
+  function finish() {
+    safeCall("finish");
+  }
+
+  document.getElementById("theme").addEventListener("change", function (e) {
+    console.log("theme change: " + e.target.checked);
+    state.theme = e.target.checked;
+    safeCall("setTheme", state.theme);
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("#mode button"), function (b) {
+    b.addEventListener("click", function () {
+      console.log("mode click: " + b.getAttribute("data-mode"));
+      state.colorMode = b.getAttribute("data-mode");
+      syncControls();
+      safeCall("setColorMode", state.colorMode);
+    });
+  });
+
+  document.getElementById("inactiveTabs").addEventListener("change", function (e) {
+    console.log("inactiveTabs change: " + e.target.checked);
+    state.inactiveTabs = e.target.checked;
+    safeCall("setInactiveTabs", state.inactiveTabs);
+  });
+
+  document.getElementById("updater").addEventListener("change", function (e) {
+    console.log("updater change: " + e.target.checked);
+    state.updater = e.target.checked;
+    safeCall("setUpdater", state.updater);
+  });
+
+  document.getElementById("strict").addEventListener("change", function (e) {
+    console.log("strict change: " + e.target.checked);
+    state.strict = e.target.checked;
+    safeCall("setStrictTracking", state.strict);
+  });
+
+  document.getElementById("doh").addEventListener("change", function (e) {
+    console.log("doh change: " + e.target.checked);
+    state.doh = e.target.checked;
+    safeCall("setDoh", state.doh);
+  });
+
+  document.getElementById("defaultBrowser").addEventListener("change", function (e) {
+    console.log("defaultBrowser change: " + e.target.checked);
+    state.defaultBrowser = e.target.checked;
+    if (state.defaultBrowser) safeCall("requestDefaultBrowser");
+  });
+
+  document.getElementById("addons").addEventListener("click", function () {
+    console.log("addons click");
+    safeCall("openAddonStore");
+  });
+
+  back.addEventListener("click", function () {
+    console.log("back click, index=" + index);
+    if (index > 0) { index--; render(); }
+  });
+
+  next.addEventListener("click", function () {
+    console.log("next click, index=" + index);
+    if (index < steps.length - 1) {
+      index++;
+      render();
+    } else {
+      finish();
+    }
+  });
+
+  document.getElementById("skip").addEventListener("click", function () {
+    console.log("skip click");
+    finish();
+  });
+
+  function fixLayout() {
+    var h = window.innerHeight || document.documentElement.clientHeight || 0;
+    if (h > 0) {
+      document.documentElement.style.height = h + "px";
+      document.body.style.height = h + "px";
+    }
+  }
+  fixLayout();
+  window.addEventListener("resize", fixLayout);
+
+  loadState();
+  render();
+})();
+</script>
+</body>
+</html>
