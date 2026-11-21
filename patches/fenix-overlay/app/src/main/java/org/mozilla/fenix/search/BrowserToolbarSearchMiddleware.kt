@@ -221,8 +221,7 @@ class BrowserToolbarSearchMiddleware(
             return
         }
 
-        // Chinese IMEs can turn "about:onboarding" into "about：onboarding" (full-width colon).
-        when (url.trim().lowercase().replace('：', ':')) {
+        when (url.trim()) {
 /*            "about:crashes" -> {
                 // The list of past crashes can be accessed via "settings > about", but desktop and
                 // fennec users may be used to navigating to "about:crashes". So we intercept this here
@@ -232,13 +231,6 @@ class BrowserToolbarSearchMiddleware(
 
             "about:addons" -> {
                 navController.navigate(NavGraphDirections.actionGlobalAddonsManagementFragment())
-                browserStore.dispatch(EngagementFinished(abandoned = false))
-            }
-
-            "about:onboarding", "about:onboarding/" -> {
-                // Vantage: the onboarding settings live in a bundled web page, which cannot be
-                // served by Gecko's about: protocol, so route the URL to the in-app screen.
-                navController.navigate(NavGraphDirections.actionGlobalVantageOnboardingSettings())
                 browserStore.dispatch(EngagementFinished(abandoned = false))
             }
 

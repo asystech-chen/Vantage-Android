@@ -376,7 +376,7 @@
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <h1 id="doneTitle">设置完成</h1>
-        <p class="lead" id="doneBody">随时可以在地址栏输入 about:onboarding 重新打开这个引导。</p>
+        <p class="lead" id="doneBody">这些设置随时都能在 设置 里重新修改。</p>
         <button class="btn primary" id="doneButton">完成</button>
       </div>
     </div>
@@ -392,18 +392,6 @@
 <script>
 (function () {
   var bridge = window.vantageOnboarding || null;
-  // Opened from about:onboarding: same controls, but it is a settings page instead of the
-  // first-run flow, so the header reads "设置" and the skip action closes the page.
-  var settingsMode = /(?:^|[?&])mode=settings(?:&|$)/.test(window.location.search);
-  if (settingsMode) {
-    document.title = "Vantage 设置";
-    var tag = document.querySelector(".tag");
-    if (tag) tag.textContent = "设置";
-    var skipButton = document.getElementById("skip");
-    if (skipButton) skipButton.textContent = "关闭";
-    document.getElementById("doneBody").textContent =
-      "设置已保存。之后可以在地址栏输入 about:onboarding 重新打开这个页面。";
-  }
 
   var state = {
     theme: true,

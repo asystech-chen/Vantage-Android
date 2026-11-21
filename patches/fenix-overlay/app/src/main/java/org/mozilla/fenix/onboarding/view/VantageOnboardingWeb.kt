@@ -52,15 +52,10 @@ private val webLogger = Logger("VantageOnboardingWeb")
  * Vantage: the onboarding flow is a bundled web page so it can match the desktop
  * implementation. The page talks to [VantageOnboardingBridge] for the settings that
  * exist on Android; anything without an Android counterpart is simply not rendered.
- *
- * [settingsMode] reopens the same page from `about:onboarding`: the controls load the
- * current values and the page closes instead of finishing the first-run flow.
  */
 @Composable
 fun VantageOnboardingWeb(
     onFinish: () -> Unit,
-    settingsMode: Boolean = false,
-    onWebViewReady: (WebView) -> Unit = {},
 ) {
     val context = LocalContext.current
 
@@ -81,7 +76,6 @@ fun VantageOnboardingWeb(
         modifier = Modifier.fillMaxSize(),
         factory = { viewContext ->
             WebView(viewContext).apply {
-                onWebViewReady(this)
                 val systemIsLight = (viewContext.resources.configuration.uiMode and
                     Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_NO
                 setBackgroundColor(
@@ -140,7 +134,7 @@ fun VantageOnboardingWeb(
                     VantageOnboardingBridge(context = viewContext, onFinish = onFinish),
                     JS_INTERFACE,
                 )
-                loadUrl(if (settingsMode) "$ONBOARDING_URL?mode=settings" else ONBOARDING_URL)
+                loadUrl(ONBOARDING_URL)
             }
         },
     )
