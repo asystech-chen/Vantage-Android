@@ -116,6 +116,11 @@
   .row.flat { background: transparent; border: 0; padding: 6px 2px; }
   .row.note { background: transparent; border-color: var(--line); border-style: dashed; }
   .row.note .desc { margin: 0; }
+  .row .icon {
+    width: 30px; height: 30px; flex: 0 0 auto; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--blue); background: var(--blue-soft);
+  }
 
   .switch { position: relative; width: 42px; height: 24px; flex: 0 0 auto; }
   .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; }
@@ -153,11 +158,25 @@
     padding: 12px 14px;
     border-top: 1px solid var(--line);
   }
+  .foot[hidden] { display: none; }
   .dots { display: flex; gap: 6px; flex: 1; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--track); transition: background .15s; }
   .dot.on { background: var(--blue); }
   .foot .btn { min-width: 68px; }
   .foot .btn[hidden] { display: none; }
+
+  .done {
+    display: none; flex-direction: column; align-items: center;
+    text-align: center; padding: 28px 6px 20px;
+  }
+  .done.active { display: flex; animation: fade .18s ease-out; }
+  .done .done-icon {
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; background: var(--blue); margin-bottom: 14px;
+  }
+  .done h1 { margin-bottom: 6px; }
+  .done .lead { margin-bottom: 18px; }
 </style>
 </head>
 <body>
@@ -177,7 +196,7 @@
           <div class="hero-copy">
             <span class="pill">欢迎</span>
             <h1>欢迎使用 Vantage</h1>
-            <p class="lead">先花一分钟，把外观和常用功能设好，所有选项之后都能改。</p>
+            <p class="lead">先花一分钟，把外观和常用功能设好。所有选项之后都能改。</p>
             <ul class="checks">
               <li><svg width="13" height="13" viewBox="0 0 16 16"><path d="M2.5 8.5l3.2 3.2 7.8-7.8" fill="none" stroke="#4A8FF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>基于 Firefox ESR，更新稳定</li>
               <li><svg width="13" height="13" viewBox="0 0 16 16"><path d="M2.5 8.5l3.2 3.2 7.8-7.8" fill="none" stroke="#4A8FF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>默认开启跟踪保护，不收集数据</li>
@@ -192,12 +211,12 @@
       <div class="step" data-step="1">
         <span class="pill">外观</span>
         <h1>先让它看起来顺眼</h1>
-        <p class="lead">选一套自己喜欢的样式，所有选项都能随时改。</p>
+        <p class="lead">选一套自己喜欢的样子，所有选项都能随时改。</p>
 
         <div class="row">
           <div class="copy">
             <div class="name">Vantage 主题</div>
-            <div class="desc">深蓝配色、圆角标签栏，和桌面版使用同一套颜色。</div>
+            <div class="desc">蓝系配色，工具栏、菜单和页面使用同一套颜色。</div>
           </div>
           <label class="switch">
             <input type="checkbox" id="theme" checked />
@@ -207,8 +226,8 @@
 
         <div class="row">
           <div class="copy">
-            <div class="name">配色模式</div>
-            <div class="desc">作用于界面和浏览器的默认配色。</div>
+            <div class="name">颜色模式</div>
+            <div class="desc">作用于浏览器界面和网页的默认配色。</div>
           </div>
           <div class="seg" id="mode">
             <button data-mode="system" class="on">跟随系统</button>
@@ -218,7 +237,7 @@
         </div>
 
         <div class="row note">
-          <div class="copy"><div class="desc">应用第三方主题时，Vantage 会自动让位，不会覆盖你的主题。</div></div>
+          <div class="copy"><div class="desc">主题和颜色模式之后也能在 设置 → 外观与定制 里修改。</div></div>
         </div>
       </div>
 
@@ -226,12 +245,12 @@
       <div class="step" data-step="2">
         <span class="pill">自定义</span>
         <h1>自定义你的旅途</h1>
-        <p class="lead">挑几个顺手的设置，这里只放常用的，更多在设置页面里。</p>
+        <p class="lead">挑几个顺手的设置。这里只列常用的，更多在设置面板里。</p>
 
         <div class="row">
           <div class="copy">
             <div class="name">标签自动休眠</div>
-            <div class="desc">一段时间没看的标签会自动收起，省电也省内存。</div>
+            <div class="desc">内存紧张时休眠不活跃标签页，需要时再唤醒。</div>
           </div>
           <label class="switch">
             <input type="checkbox" id="inactiveTabs" checked />
@@ -242,7 +261,7 @@
         <div class="row">
           <div class="copy">
             <div class="name">自动检查更新</div>
-            <div class="desc">启动时检查 Vantage 新版本，只提示，不自动安装。</div>
+            <div class="desc">启动后检查 Vantage 新版本，只提示，不自动安装。</div>
           </div>
           <label class="switch">
             <input type="checkbox" id="updater" checked />
@@ -251,30 +270,64 @@
         </div>
 
         <div class="row note">
-          <div class="copy"><div class="desc">完整选项都在 设置 → Vantage，之后随时可以改。</div></div>
+          <div class="copy"><div class="desc">完整列表在 设置 → Vantage。之后随时可以改。</div></div>
         </div>
       </div>
 
-      <!-- 4 隐私 -->
+      <!-- 4 工作区 -->
       <div class="step" data-step="3">
-        <span class="pill">隐私</span>
-        <h1>隐私默认已经调好</h1>
-        <p class="lead">Vantage 默认使用严格跟踪保护，不需要你在级别之间选择。</p>
+        <span class="pill">工作区</span>
+        <h1>按项目整理你的标签页</h1>
+        <p class="lead">用集合（Collections）把同一项目的标签页收在一起；登录 Mozilla 账号还能在多台设备间同步。</p>
 
         <div class="row">
+          <span class="icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="3" width="8" height="8" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="13" width="8" height="8" rx="1.6" stroke="currentColor" stroke-width="1.8"/><rect x="13" y="13" width="8" height="8" rx="1.6" stroke="currentColor" stroke-width="1.8"/></svg>
+          </span>
+          <div class="copy">
+            <div class="name">标签页集合</div>
+            <div class="desc">把同一项目的标签页收进集合，在主页可以命名、折叠，再一键打开。</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 12h17M12 3.5c2.2 2.4 3.3 5.3 3.3 8.5S14.2 18.1 12 20.5c-2.2-2.4-3.3-5.3-3.3-8.5S9.8 5.9 12 3.5z" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+          <div class="copy">
+            <div class="name">多设备同步</div>
+            <div class="desc">用 Mozilla 账号同步书签、历史和打开的标签页。</div>
+          </div>
+        </div>
+
+        <div class="row note">
+          <div class="copy"><div class="desc">集合在主页的标签页菜单里创建；同步在 设置 → 账户 里登录。</div></div>
+        </div>
+      </div>
+
+      <!-- 5 隐私 -->
+      <div class="step" data-step="4">
+        <span class="pill">隐私</span>
+        <h1>隐私默认已经调好</h1>
+        <p class="lead">Vantage 默认使用严格跟踪保护，不需要你在级别之间选择。遇到网站因为保护而显示异常时，可以只对这个网站放宽。</p>
+
+        <div class="row">
+          <span class="icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
           <div class="copy">
             <div class="name">严格保护（默认）</div>
-            <div class="desc">拦截已知跟踪器、指纹脚本和隐蔽挖矿脚本，多数站点无需额外设置。</div>
+            <div class="desc">拦截已知跟踪器、跨站 Cookie、指纹脚本和挖矿脚本。不需要额外设置。</div>
           </div>
         </div>
 
         <div class="row">
           <div class="copy">
-            <div class="name">自动屏蔽第三方跟踪器</div>
-            <div class="desc">在严格模式基础上拦截第三方跟踪 Cookie，可以单独为站点放行。</div>
+            <div class="name">自动修复轻微的网站问题</div>
+            <div class="desc">对已知会被跟踪保护弄坏的网站自动放宽，只影响这些站点，不改变全局保护级别。</div>
           </div>
           <label class="switch">
-            <input type="checkbox" id="strict" checked />
+            <input type="checkbox" id="siteFixes" checked />
             <span class="track"></span><span class="knob"></span>
           </label>
         </div>
@@ -282,7 +335,7 @@
         <div class="row">
           <div class="copy">
             <div class="name">DNS over HTTPS (DoH)</div>
-            <div class="desc">加密 DNS 查询，默认供应商可用性不佳时删除更稳妥的 DNS 解析。</div>
+            <div class="desc">加密 DNS 查询，默认使用国内可用的 DoH 节点。</div>
           </div>
           <label class="switch">
             <input type="checkbox" id="doh" checked />
@@ -291,26 +344,7 @@
         </div>
 
         <div class="row note">
-          <div class="copy"><div class="desc">单个站点可临时关闭邮箱保护，直接对该网站免费放行。</div></div>
-        </div>
-      </div>
-
-      <!-- 5 扩展 -->
-      <div class="step" data-step="4">
-        <span class="pill">扩展</span>
-        <h1>扩展</h1>
-        <p class="lead">Vantage 支持安装扩展，全部来自官方的 AMO 扩展商店。</p>
-
-        <div class="row">
-          <div class="copy">
-            <div class="name">扩展商店</div>
-            <div class="desc">浏览并安装适用于 Android 的扩展。</div>
-          </div>
-          <button class="btn" id="addons">打开扩展商店</button>
-        </div>
-
-        <div class="row note">
-          <div class="copy"><div class="desc">扩展的安装、更新和停用都在扩展管理器里统一处理。</div></div>
+          <div class="copy"><div class="desc">单个网站出问题时，点地址栏的盾牌图标，就能只对这个网站关闭保护。</div></div>
         </div>
       </div>
 
@@ -332,12 +366,22 @@
         </div>
 
         <div class="row note">
-          <div class="copy"><div class="desc">这项随时都能在 设置 → 默认浏览器 里重新操作。</div></div>
+          <div class="copy"><div class="desc">这项随时都能在 系统设置 → 默认应用 里重新操作。</div></div>
         </div>
+      </div>
+
+      <!-- 完成 -->
+      <div class="done" id="doneView">
+        <div class="done-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h1 id="doneTitle">设置完成</h1>
+        <p class="lead" id="doneBody">随时可以在地址栏输入 about:onboarding 重新打开这个引导。</p>
+        <button class="btn primary" id="doneButton">完成</button>
       </div>
     </div>
 
-    <footer class="foot">
+    <footer class="foot" id="foot">
       <div class="dots" id="dots"></div>
       <button class="btn" id="back" hidden>返回</button>
       <button class="btn primary" id="next">继续</button>
@@ -348,21 +392,37 @@
 <script>
 (function () {
   var bridge = window.vantageOnboarding || null;
+  // Opened from about:onboarding: same controls, but it is a settings page instead of the
+  // first-run flow, so the header reads "设置" and the skip action closes the page.
+  var settingsMode = /(?:^|[?&])mode=settings(?:&|$)/.test(window.location.search);
+  if (settingsMode) {
+    document.title = "Vantage 设置";
+    var tag = document.querySelector(".tag");
+    if (tag) tag.textContent = "设置";
+    var skipButton = document.getElementById("skip");
+    if (skipButton) skipButton.textContent = "关闭";
+    document.getElementById("doneBody").textContent =
+      "设置已保存。之后可以在地址栏输入 about:onboarding 重新打开这个页面。";
+  }
+
   var state = {
     theme: true,
     colorMode: "system",
     inactiveTabs: true,
     updater: true,
-    strict: true,
+    siteFixes: true,
     doh: true,
     defaultBrowser: false
   };
 
   var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+  var doneView = document.getElementById("doneView");
+  var foot = document.getElementById("foot");
   var dotsBox = document.getElementById("dots");
   var back = document.getElementById("back");
   var next = document.getElementById("next");
   var index = 0;
+  var finished = false;
 
   steps.forEach(function (_, i) {
     var d = document.createElement("span");
@@ -383,28 +443,37 @@
     } catch (e) { console.error("bridge." + name + " error: " + e); }
   }
 
+  function prefersDark() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+
   function applyColorMode(mode) {
     var root = document.documentElement;
     root.removeAttribute("data-mode");
-    if (mode === "light") root.setAttribute("data-mode", "light");
+    var light = mode === "light" || (mode === "system" && !prefersDark());
+    if (light) root.setAttribute("data-mode", "light");
     // Keep the system bars in sync with the preview so the theme covers the whole screen.
     safeCall("setPageTheme", mode);
   }
 
   function render() {
+    finished = false;
+    doneView.classList.remove("active");
+    foot.hidden = false;
     steps.forEach(function (s, i) { s.classList.toggle("active", i === index); });
     dots.forEach(function (d, i) { d.classList.toggle("on", i === index); });
     back.hidden = index === 0;
+    document.getElementById("skip").hidden = false;
     next.textContent = index === steps.length - 1 ? "完成" : "继续";
     document.getElementById("body").scrollTop = 0;
   }
 
   function syncControls() {
-    document.getElementById("theme").checked = state.theme;
-    document.getElementById("inactiveTabs").checked = state.inactiveTabs;
-    document.getElementById("updater").checked = state.updater;
-    document.getElementById("strict").checked = state.strict;
-    document.getElementById("doh").checked = state.doh;
+    document.getElementById("theme").checked = !!state.theme;
+    document.getElementById("inactiveTabs").checked = !!state.inactiveTabs;
+    document.getElementById("updater").checked = !!state.updater;
+    document.getElementById("siteFixes").checked = !!state.siteFixes;
+    document.getElementById("doh").checked = !!state.doh;
     document.getElementById("defaultBrowser").checked = !!state.defaultBrowser;
     Array.prototype.forEach.call(document.querySelectorAll("#mode button"), function (b) {
       b.classList.toggle("on", b.getAttribute("data-mode") === state.colorMode);
@@ -412,7 +481,7 @@
     applyColorMode(state.colorMode);
   }
 
-  function loadState() {
+  function readBridgeState() {
     if (!bridge || typeof bridge.getState !== "function") return;
     try {
       var raw = bridge.getState();
@@ -425,7 +494,17 @@
   }
 
   function finish() {
+    if (finished) return;
+    finished = true;
     safeCall("finish");
+  }
+
+  function showDone() {
+    steps.forEach(function (s) { s.classList.remove("active"); });
+    doneView.classList.add("active");
+    foot.hidden = true;
+    document.getElementById("skip").hidden = true;
+    document.getElementById("body").scrollTop = 0;
   }
 
   document.getElementById("theme").addEventListener("change", function (e) {
@@ -455,10 +534,10 @@
     safeCall("setUpdater", state.updater);
   });
 
-  document.getElementById("strict").addEventListener("change", function (e) {
-    console.log("strict change: " + e.target.checked);
-    state.strict = e.target.checked;
-    safeCall("setStrictTracking", state.strict);
+  document.getElementById("siteFixes").addEventListener("change", function (e) {
+    console.log("siteFixes change: " + e.target.checked);
+    state.siteFixes = e.target.checked;
+    safeCall("setSiteFixes", state.siteFixes);
   });
 
   document.getElementById("doh").addEventListener("change", function (e) {
@@ -471,11 +550,8 @@
     console.log("defaultBrowser change: " + e.target.checked);
     state.defaultBrowser = e.target.checked;
     if (state.defaultBrowser) safeCall("requestDefaultBrowser");
-  });
-
-  document.getElementById("addons").addEventListener("click", function () {
-    console.log("addons click");
-    safeCall("openAddonStore");
+    // You cannot un-set the default browser from here; read the real state back.
+    setTimeout(readBridgeState, 800);
   });
 
   back.addEventListener("click", function () {
@@ -489,14 +565,23 @@
       index++;
       render();
     } else {
-      finish();
+      showDone();
     }
+  });
+
+  dots.forEach(function (d, i) {
+    d.addEventListener("click", function () {
+      index = i;
+      render();
+    });
   });
 
   document.getElementById("skip").addEventListener("click", function () {
     console.log("skip click");
     finish();
   });
+
+  document.getElementById("doneButton").addEventListener("click", finish);
 
   function fixLayout() {
     var h = window.innerHeight || document.documentElement.clientHeight || 0;
@@ -508,7 +593,7 @@
   fixLayout();
   window.addEventListener("resize", fixLayout);
 
-  loadState();
+  readBridgeState();
   render();
 })();
 </script>

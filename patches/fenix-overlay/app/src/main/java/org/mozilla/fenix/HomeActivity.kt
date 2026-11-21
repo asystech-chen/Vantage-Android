@@ -176,6 +176,7 @@ import org.mozilla.fenix.messaging.MessageNotificationWorker
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.onboarding.ensureMarketingChannelExists
 import org.mozilla.fenix.onboarding.seedOnboardingCompletedTimestampForDebugIfNeeded
+import org.mozilla.fenix.onboarding.VantageOnboardingTour
 import org.mozilla.fenix.pbmlock.DefaultPrivateBrowsingLockStorage
 import org.mozilla.fenix.pbmlock.PrivateBrowsingLockFeature
 import org.mozilla.fenix.perf.DefaultStartupPathProvider
@@ -526,12 +527,16 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
         val shouldShowOnboarding =
             !intent.isAllowedDuringOnboardingIntent(packageName) &&
-                with(components) {
-                    settings.shouldShowOnboarding(
-                        hasUserBeenOnboarded = fenixOnboarding.userHasBeenOnboarded(),
-                        forceOnboardingForBenchmark = intent.getBooleanExtra(EXTRA_FORCE_ONBOARDING, false),
-                    )
-                }
+                (
+                    with(components) {
+                        settings.shouldShowOnboarding(
+                            hasUserBeenOnboarded = fenixOnboarding.userHasBeenOnboarded(),
+                            forceOnboardingForBenchmark = intent.getBooleanExtra(EXTRA_FORCE_ONBOARDING, false),
+                        )
+                    } ||
+                        // Vantage: show the guide again once per onboarding tour, like desktop.
+                        (FeatureFlags.onboardingFeatureEnabled && VantageOnboardingTour.shouldShow(this))
+                )
 
         SplashScreenManager(
                 splashScreenOperation = createSplashScreenOperation(shouldShowOnboarding),

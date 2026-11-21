@@ -40,6 +40,10 @@
         app:popUpToInclusive="true" />
 
     <action
+        android:id="@+id/action_global_vantage_onboarding_settings"
+        app:destination="@id/vantageOnboardingSettingsFragment" />
+
+    <action
         android:id="@+id/action_global_wallpaper_onboarding_dialog"
         app:destination="@id/wallpaperOnboardingDialogFragment"
         app:popUpTo="@id/homeFragment" />
@@ -260,6 +264,10 @@
             app:popUpTo="@id/onboardingFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/vantageOnboardingSettingsFragment"
+        android:name="org.mozilla.fenix.onboarding.VantageOnboardingSettingsFragment" />
 
     <fragment
         android:id="@+id/homeFragment"

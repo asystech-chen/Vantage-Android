@@ -76,7 +76,11 @@ abstract class ThemeManager {
                 isVantageThemeSelected(activity) -> R.style.VantageTheme
                 isVantageLightThemeSelected(activity) -> R.style.VantageLightTheme
                 followsSystem ->
-                    if (isNightMode(activity)) R.style.VantageTheme else R.style.VantageLightTheme
+                    if (isVantageThemeEnabled(activity)) {
+                        if (isNightMode(activity)) R.style.VantageTheme else R.style.VantageLightTheme
+                    } else {
+                        R.style.NormalTheme
+                    }
                 IronFoxPreferences.shouldUseOledTheme(activity) -> R.style.Vantage_OLEDTheme
                 // Explicit dark keeps Fenix's stock dark palette; explicit light uses Fenix's
                 // stock light palette so both white/branded choices stay independent.

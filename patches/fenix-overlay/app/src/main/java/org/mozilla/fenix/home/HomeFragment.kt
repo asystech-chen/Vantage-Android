@@ -214,6 +214,9 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import org.ironfoxoss.ironfox.utils.IFMessageFeature
 import org.mozilla.fenix.ext.navigateSafe
 
+/** Vantage: URLs that open the onboarding settings page instead of searching. */
+private val VANTAGE_ONBOARDING_URLS = setOf("about:onboarding", "about:onboarding/")
+
 /** The home screen. */
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
@@ -931,9 +934,17 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
                     StartupTimeline.onTopSitesItemBound(activity = (requireActivity() as HomeActivity))
                 },
                 onSearchRequested = { query ->
-                    // Vantage: run the search in a new tab and switch to the browser.
-                    requireComponents.useCases.searchUseCases.newTabSearch.invoke(query)
-                    findNavController().openToBrowser()
+                    // Vantage: about:onboarding is the in-app settings page, not a search term.
+                    // Chinese IMEs can insert a full-width colon, so normalize it first.
+                    if (query.trim().lowercase().replace('：', ':') in VANTAGE_ONBOARDING_URLS) {
+                        findNavController().navigate(
+                            NavGraphDirections.actionGlobalVantageOnboardingSettings(),
+                        )
+                    } else {
+                        // Vantage: run the search in a new tab and switch to the browser.
+                        requireComponents.useCases.searchUseCases.newTabSearch.invoke(query)
+                        findNavController().openToBrowser()
+                    }
                 },
             )
 

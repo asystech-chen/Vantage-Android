@@ -9,6 +9,7 @@ import org.ironfoxoss.ironfox.utils.IronFoxPreferences
 import org.mozilla.fenix.theme.isVantageLightThemeSelected
 import org.mozilla.fenix.theme.isVantageThemeSelected
 import org.mozilla.fenix.theme.setVantageLightThemeSelected
+import org.mozilla.fenix.theme.setVantageThemeEnabled
 import org.mozilla.fenix.theme.setVantageThemeSelected
 import android.content.Context
 import android.content.res.Configuration
@@ -381,6 +382,10 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
     private fun setNewTheme(mode: Int, vantage: Boolean = false, vantageLight: Boolean = false) {
         setVantageThemeSelected(requireContext(), vantage)
         setVantageLightThemeSelected(requireContext(), vantageLight)
+        // Picking a branded theme explicitly also turns the master switch back on.
+        if (vantage || vantageLight) {
+            setVantageThemeEnabled(requireContext(), true)
+        }
 
         if (AppCompatDelegate.getDefaultNightMode() != mode) {
             AppCompatDelegate.setDefaultNightMode(mode)

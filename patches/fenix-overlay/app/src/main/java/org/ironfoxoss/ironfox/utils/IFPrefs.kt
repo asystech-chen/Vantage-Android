@@ -97,9 +97,9 @@ object IFPrefs {
     prefs.setStringPref(R.string.pref_key_crash_reporting_choice, CrashReportOption.Never.toString())
     prefs.setBoolPref(R.string.pref_key_crash_pull_never_show_again, true)
 
-    // Disable exceptions required to avoid minor breakage by default
-    prefs.setDefaultBoolPref(R.string.pref_key_tracking_protection_custom_allow_list_convenience, false) // [DEFAULT]
-    prefs.setDefaultBoolPref(R.string.pref_key_tracking_protection_strict_allow_list_convenience, false) // [DEFAULT]
+    // Auto-fix minor site breakage by default (matches the Vantage desktop defaults)
+    prefs.setDefaultBoolPref(R.string.pref_key_tracking_protection_custom_allow_list_convenience, true)
+    prefs.setDefaultBoolPref(R.string.pref_key_tracking_protection_strict_allow_list_convenience, true)
 
     // Disable the Firefox Referral Program
     prefs.setStringPref(R.string.pref_key_referral_code, "") // [DEFAULT]

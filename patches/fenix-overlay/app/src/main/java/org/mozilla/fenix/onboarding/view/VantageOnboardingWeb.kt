@@ -38,22 +38,30 @@ import org.json.JSONObject
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.getPreferenceKey
+import org.mozilla.fenix.theme.isVantageThemeEnabled
 import org.mozilla.fenix.theme.setVantageLightThemeSelected
+import org.mozilla.fenix.theme.setVantageThemeEnabled
 import org.mozilla.fenix.theme.setVantageThemeSelected
 import kotlin.math.roundToInt
 
 private const val ONBOARDING_URL = "file:///android_asset/onboarding/index.html"
 private const val JS_INTERFACE = "vantageOnboarding"
-private const val ADDONS_URL = "https://addons.mozilla.org/android/"
 private val webLogger = Logger("VantageOnboardingWeb")
 
 /**
  * Vantage: the onboarding flow is a bundled web page so it can match the desktop
  * implementation. The page talks to [VantageOnboardingBridge] for the settings that
  * exist on Android; anything without an Android counterpart is simply not rendered.
+ *
+ * [settingsMode] reopens the same page from `about:onboarding`: the controls load the
+ * current values and the page closes instead of finishing the first-run flow.
  */
 @Composable
-fun VantageOnboardingWeb(onFinish: () -> Unit) {
+fun VantageOnboardingWeb(
+    onFinish: () -> Unit,
+    settingsMode: Boolean = false,
+    onWebViewReady: (WebView) -> Unit = {},
+) {
     val context = LocalContext.current
 
     // The system adds a translucent scrim behind the bars when it thinks contrast is low.
@@ -73,6 +81,7 @@ fun VantageOnboardingWeb(onFinish: () -> Unit) {
         modifier = Modifier.fillMaxSize(),
         factory = { viewContext ->
             WebView(viewContext).apply {
+                onWebViewReady(this)
                 val systemIsLight = (viewContext.resources.configuration.uiMode and
                     Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_NO
                 setBackgroundColor(
@@ -131,7 +140,7 @@ fun VantageOnboardingWeb(onFinish: () -> Unit) {
                     VantageOnboardingBridge(context = viewContext, onFinish = onFinish),
                     JS_INTERFACE,
                 )
-                loadUrl(ONBOARDING_URL)
+                loadUrl(if (settingsMode) "$ONBOARDING_URL?mode=settings" else ONBOARDING_URL)
             }
         },
     )
@@ -177,8 +186,8 @@ private class VantageOnboardingBridge(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val preferences = context.components.settings.preferences
 
-    private var vantageThemeEnabled = true
-    private var colorMode = COLOR_SYSTEM
+    private var vantageThemeEnabled = isVantageThemeEnabled(context)
+    private var colorMode = readColorMode()
 
     @JavascriptInterface
     fun getState(): String {
@@ -189,7 +198,7 @@ private class VantageOnboardingBridge(
                 .put("colorMode", colorMode)
                 .put("inactiveTabs", context.components.settings.inactiveTabsAreEnabled)
                 .put("updater", context.components.settings.ironfox.updaterEnabled)
-                .put("strict", isStrictTrackingProtectionEnabled())
+                .put("siteFixes", isSiteFixesEnabled())
                 .put("doh", isDohEnabled())
                 .put("defaultBrowser", isDefaultBrowser())
                 .toString()
@@ -205,6 +214,7 @@ private class VantageOnboardingBridge(
     fun setTheme(enabled: Boolean) {
         logger.info("setTheme=$enabled")
         vantageThemeEnabled = enabled
+        persistThemeSelection()
     }
 
     @JavascriptInterface
@@ -213,6 +223,7 @@ private class VantageOnboardingBridge(
             COLOR_LIGHT, COLOR_DARK -> mode
             else -> COLOR_SYSTEM
         }
+        persistThemeSelection()
         logger.info("setColorMode=$colorMode")
         mainHandler.post { applyPageTheme(colorMode) }
     }
@@ -237,9 +248,14 @@ private class VantageOnboardingBridge(
     }
 
     @JavascriptInterface
-    fun setStrictTracking(enabled: Boolean) {
-        logger.info("setStrictTracking=$enabled")
-        putBoolean(context.getPreferenceKey(R.string.pref_key_tracking_protection_strict_default), enabled)
+    fun setSiteFixes(enabled: Boolean) {
+        logger.info("setSiteFixes=$enabled")
+        val settings = context.components.settings
+        settings.strictAllowListBaselineTrackingProtection = enabled
+        settings.strictAllowListConvenienceTrackingProtection = enabled
+        settings.customAllowListBaselineTrackingProtection = enabled
+        settings.customAllowListConvenienceTrackingProtection = enabled
+        applyTrackingProtection()
     }
 
     @JavascriptInterface
@@ -278,19 +294,6 @@ private class VantageOnboardingBridge(
     }
 
     @JavascriptInterface
-    fun openAddonStore() {
-        logger.info("openAddonStore")
-        mainHandler.post {
-            runCatching {
-                context.startActivity(
-                    Intent(Intent.ACTION_VIEW, Uri.parse(ADDONS_URL))
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                )
-            }.onFailure { logger.error("Unable to open the add-on store", it) }
-        }
-    }
-
-    @JavascriptInterface
     fun finish() {
         logger.info("finish called; colorMode=$colorMode vantageTheme=$vantageThemeEnabled")
         mainHandler.post {
@@ -302,12 +305,31 @@ private class VantageOnboardingBridge(
     }
 
     private fun applyTheme() {
+        persistThemeSelection()
+
         val nightMode = when (colorMode) {
             COLOR_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
             COLOR_DARK -> AppCompatDelegate.MODE_NIGHT_YES
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         }
         AppCompatDelegate.setDefaultNightMode(nightMode)
+    }
+
+    /**
+     * Saves the choice as soon as it is made, so it survives the app being killed while the
+     * page is open. Only the night-mode switch itself waits for the page to close: applying
+     * it recreates the activity and would tear down the page mid-edit.
+     *
+     * The stock light/dark/follow flags are written too; they are what Fenix restores from on
+     * the next launch when the branded theme is turned off.
+     */
+    private fun persistThemeSelection() {
+        setVantageThemeEnabled(context, vantageThemeEnabled)
+
+        val settings = context.components.settings
+        settings.shouldUseLightTheme = colorMode == COLOR_LIGHT
+        settings.shouldUseDarkTheme = colorMode == COLOR_DARK
+        settings.shouldFollowDeviceTheme = colorMode == COLOR_SYSTEM
 
         // The branded palettes are selected explicitly so the choice survives the night-mode
         // change; following the system already resolves to the matching Vantage palette.
@@ -327,11 +349,18 @@ private class VantageOnboardingBridge(
         }
     }
 
-    private fun isStrictTrackingProtectionEnabled(): Boolean =
-        preferences.getBoolean(
-            context.getPreferenceKey(R.string.pref_key_tracking_protection_strict_default),
-            true,
-        )
+    private fun readColorMode(): String =
+        when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO -> COLOR_LIGHT
+            AppCompatDelegate.MODE_NIGHT_YES -> COLOR_DARK
+            else -> COLOR_SYSTEM
+        }
+
+    private fun isSiteFixesEnabled(): Boolean {
+        val settings = context.components.settings
+        return settings.strictAllowListBaselineTrackingProtection &&
+            settings.strictAllowListConvenienceTrackingProtection
+    }
 
     private fun isDohEnabled(): Boolean =
         preferences.getBoolean(
@@ -348,6 +377,20 @@ private class VantageOnboardingBridge(
 
     private fun putBoolean(key: String, value: Boolean) {
         preferences.edit().putBoolean(key, value).apply()
+    }
+
+    /** Applies the site-fix switches to the running engine, like the ETP settings screen does. */
+    private fun applyTrackingProtection() {
+        val appContext = context.applicationContext
+        mainHandler.post {
+            runCatching {
+                val components = appContext.components
+                val policy = components.core.trackingProtectionPolicyFactory
+                    .createTrackingProtectionPolicy()
+                components.useCases.settingsUseCases.updateTrackingProtection.invoke(policy)
+                components.useCases.sessionUseCases.reload.invoke()
+            }.onFailure { logger.error("Unable to apply tracking protection", it) }
+        }
     }
 
     /**

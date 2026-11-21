@@ -304,6 +304,7 @@ class OnboardingFragment : Fragment() {
         }
 
         requireComponents.fenixOnboarding.finish()
+        VantageOnboardingTour.markCompleted(requireContext())
 
         val settings = requireComponents.settings
         settings.ironfox.ironFoxOnboardingCompleted = true
