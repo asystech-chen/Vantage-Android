@@ -99,10 +99,28 @@ jobs:
           set -euo pipefail
           cd "$GITHUB_WORKSPACE"
           git config --global --add safe.directory "$GITHUB_WORKSPACE" || true
-          git fetch --prune https://github.com/asystech-chen/Vantage-Android.git \
-            '+refs/heads/main:refs/remotes/origin/main'
-          git checkout -f -B main origin/main
-          git log --oneline -1
+          # 自愈：.git/index 被非 ci 用户改过属主后，ci 写不了 index；.git 目录可写就能删掉重建
+          [ -w .git/index ] || rm -f .git/index
+          URL=https://github.com/asystech-chen/Vantage-Android.git
+          sync_main() {
+            git fetch --prune "$URL" '+refs/heads/main:refs/remotes/origin/main' &&
+              git checkout -f -B main origin/main &&
+              git log --oneline -1
+          }
+          for i in 1 2 3; do
+            echo "== 同步尝试 $i/3（经代理）"
+            sync_main && exit 0
+            sleep 5
+          done
+          echo "== 代理连续失败，改直连重试"
+          unset http_proxy https_proxy
+          for i in 1 2 3; do
+            echo "== 同步尝试 $i/3（直连）"
+            sync_main && exit 0
+            sleep 5
+          done
+          echo "❌ 同步源码失败：代理与直连都不可用"
+          exit 1
 
       - name: 检查签名密钥
         if: inputs.variant == 'release' || inputs.sign
